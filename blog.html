@@ -1,0 +1,2103 @@
+<title>The Em Dash Circuit</title>
+<style>
+:root{--bg:#f5f3ee;--panel:#fffdf9;--ink:#20232a;--soft:#5a606c;--faint:#8a8f9a;--line:#e5e0d5;--s1:#a8362a;--s2:#03648c;--onwarm:#08405c;--onwarm-mute:#3c4049;
+--warm:#a8362a;--cool:#136b7c;--accent:#a8362a;
+--warm-wash:#f6e6e3;--cool-wash:#dceaee;--ground:#fffdf9;--ink-soft:#5a606c;
+--rule:#e5e0d5;--rule-faint:#efebe2;--plate:#fffdf9;
+--sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+--serif:Georgia,'Times New Roman',serif;--mono:ui-monospace,Consolas,monospace}
+@media(prefers-color-scheme:dark){:root{--bg:#16181c;--panel:#1e2127;--ink:#e9e6df;--soft:#a9aeb8;
+--faint:#787d87;--line:#2c2f37;--s1:#d8635a;--s2:#3e8fd6;--onwarm:#9fcdf6;--onwarm-mute:#c2c6cd;--warm:#f08a80;--cool:#7fb4f2;--accent:#f08a80;
+--warm-wash:#33201e;--cool-wash:#1a2836;--ground:#1e2127;--ink-soft:#a9aeb8;
+--rule:#2c2f37;--rule-faint:#242830;--plate:#1e2127}}
+:root[data-theme=dark]{--s1:#d8635a;--s2:#3e8fd6;--onwarm:#9fcdf6;--onwarm-mute:#c2c6cd;--bg:#16181c;--panel:#1e2127;--ink:#e9e6df;--soft:#a9aeb8;--faint:#787d87;
+--line:#2c2f37;--warm:#f08a80;--cool:#7fb4f2;--accent:#f08a80;--warm-wash:#33201e;
+--cool-wash:#1a2836;--ground:#1e2127;--ink-soft:#a9aeb8;--rule:#2c2f37;--rule-faint:#242830;--plate:#1e2127}
+:root[data-theme=light]{--bg:#f5f3ee;--panel:#fffdf9;--ink:#20232a;--soft:#5a606c;--faint:#8a8f9a;--line:#e5e0d5;--s1:#a8362a;--s2:#03648c;--onwarm:#08405c;--onwarm-mute:#3c4049}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.68}
+.wrap{max-width:940px;margin:0 auto;padding:48px 22px 88px}
+h1{font-family:var(--serif);font-size:32px;line-height:1.18;margin:0 0 10px;text-wrap:balance}
+.sub{color:var(--soft);font-size:16px;margin:0 0 4px;max-width:70ch}
+.byline{font-family:var(--mono);font-size:12.5px;color:var(--faint);
+  margin:20px 0 38px;padding-top:15px;border-top:1px solid var(--line);
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.byline b{font-family:var(--serif);font-size:19px;color:var(--ink);
+  font-weight:600;letter-spacing:.01em}
+.byline span+span{padding-left:14px;border-left:1px solid var(--line)}
+h2{font-family:var(--serif);font-size:23px;margin:46px 0 10px;padding-top:20px;
+   border-top:1px solid var(--line);text-wrap:balance}
+p{font-size:16px;margin:0 0 18px}
+.lede{font-size:19px;line-height:1.55}
+.big{font-size:24px;color:var(--warm)}
+strong{font-weight:640}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 14px}
+code{font-family:var(--mono);font-size:14px;background:var(--line);padding:1px 5px;border-radius:3px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:22px 0 26px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat .v{font-family:var(--mono);font-size:23px;color:var(--ink);line-height:1.2}
+.stat .l{font-size:12.5px;color:var(--soft);margin-top:4px;line-height:1.45}
+.key{background:var(--panel);border-left:3px solid var(--accent);border-radius:6px;
+  padding:14px 18px;margin:20px 0}
+.key .h{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--accent);margin:0 0 6px}
+.key p{margin:0;font-size:15.5px}
+figure{margin:26px 0;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.plate{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.fignum{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+figcaption{font-size:13px;color:var(--soft);margin-top:10px;padding-top:10px;
+  border-top:1px solid var(--line);line-height:1.6}
+figcaption strong{color:var(--ink);font-weight:620}
+.ex{display:grid;grid-template-columns:minmax(150px,200px) 1fr auto;gap:0 20px;align-items:baseline}
+.ex>div{padding:9px 0;border-bottom:1px solid var(--line)}
+.ex .cond{font-size:13px;font-weight:620}
+.ex .out{font-family:var(--serif);font-size:15px}
+.ex .met{font-family:var(--mono);font-size:12.5px;color:var(--soft);text-align:right;white-space:nowrap}
+.eq{font-family:var(--mono);font-size:15px;text-align:center;margin:18px 0 20px;
+  color:var(--ink);background:var(--panel);border:1px solid var(--line);
+  border-radius:8px;padding:14px 10px;overflow-x:auto}
+.eq sub{font-size:11px}
+.eq b{font-weight:700;font-style:italic}
+.prompt{font-family:var(--serif);font-size:15px;margin:0 0 14px;color:var(--soft)}
+.prompt b{color:var(--ink)}
+.dash{color:var(--warm);font-weight:700}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+table th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--soft);font-weight:400;text-align:left;padding:0 0 8px;border-bottom:1px solid var(--line)}
+table td{padding:8px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+table td:first-child{padding-right:22px}
+table th.n,table td.n{text-align:right;font-variant-numeric:tabular-nums;padding-left:26px}
+table td.n{font-family:var(--mono);font-size:13.5px;color:var(--ink)}
+table td.hot{color:var(--warm);font-weight:600}
+table td.zero{color:var(--faint)}
+table td.gap{color:var(--faint);font-family:var(--sans);font-size:11.5px;font-style:italic}
+table tr.key td{border-bottom:1px solid var(--line);padding-bottom:9px;
+  font-size:11.5px;color:var(--soft);font-family:var(--sans)}
+table tr.key td:first-child{font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+table .pct{color:var(--soft);font-size:11.5px;font-family:var(--mono)}
+table tr.sep td{border-top:1px solid var(--line);padding-top:11px;color:var(--soft)}
+table tr:last-child td{border-bottom:none}
+@page{margin:13mm 11mm}
+@media print{
+ :root{--bg:#fff;--panel:#fff}
+ body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .wrap{max-width:100%;padding:0 4px}
+ figure,.key,.stat{break-inside:avoid;page-break-inside:avoid}
+ h1,h2{break-after:avoid;page-break-after:avoid}
+ h2{padding-top:10px}
+}
+
+pre.code{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;
+  line-height:1.65;margin:20px 0;color:var(--ink)}
+pre.code b{color:var(--cool);font-weight:600}
+pre.code .c{color:var(--faint)}
+ul.refs{list-style:none;padding:0;margin:22px 0 0;font-size:14px}
+ul.refs li{padding:9px 0;border-bottom:1px solid var(--line);color:var(--soft)}
+ul.refs li b{color:var(--ink);font-weight:620}
+a{color:var(--cool);text-decoration:none;border-bottom:1px solid var(--line)}
+a:hover{border-bottom-color:var(--cool)}
+
+ol.road{margin:18px 0 26px;padding-left:24px}
+ol.road li{margin:0 0 9px;font-size:16px;line-height:1.6;padding-left:4px}
+ol.road li::marker{color:var(--accent);font-family:var(--mono);font-size:13px}
+</style>
+<div class="wrap">
+<p class="eyebrow">Mechanistic interpretability</p>
+<h1>Why Language Models Love the Em Dash: How Post-Training Recruits a Sparse Writing Circuit</h1>
+<p class="sub">Five neurons out of 442,368 account for 89% of the habit. Pretraining
+builds them, post training turns them up, and a few hundred examples are
+enough to bring out the behaviour in a model that showed almost none of it.</p>
+
+<p class="byline"><b>Ruixiang (Ryan) Tang</b> <span>Rutgers University</span> <span>12 August 2026</span></p>
+
+<p class="lede">You have probably seen the joke by now. Someone posts a
+cover letter, a product announcement, a student essay, and the first reply
+says: that is AI, look at all the em dashes.</p>
+
+<p>The em dash is the long one, <span class="big">—</span>, not the hyphen on
+your keyboard and not the slightly longer en dash. It is legitimate punctuation
+and rather good punctuation at that, but language models produce it often
+enough that it has become a tell. Writers have started avoiding it on purpose,
+which is a strange fate for a piece of typography.</p>
+
+<p>What got us started was not the frequency. It was that you can tell a model
+to stop and it keeps going. Add "Do not use em dashes" to the prompt and the
+rate drops sharply, but it does not drop to zero: on the kind of casual writing
+people actually ask for, <b>29% of responses still come back with one</b>. And
+those responses do not look like the model misread the instruction. It
+understood, wrote plainly for a sentence or two, and then reached for the mark
+anyway. Something in there wants that character badly enough to survive being
+told not to produce it.</p>
+
+<p>We wanted to know what that something is, in a more specific sense than "it
+appeared in the training data". Somewhere inside the network there is a
+computation that looks at a half finished sentence and decides to write an em
+dash rather than a comma. We went looking for it, for where it came from, and
+for what happens to it in the moment an instruction fails.</p>
+
+<p>Two things came out of it. In the model we studied most closely,
+<b>five neurons out of 442,368 account for 89% of the habit</b>: switch those
+five off and it very nearly stops. And they were not built by the training that
+made the model start using em dashes. They are already present, and already
+doing roughly half their job, in the base model that almost never writes one.
+Post training turned a dial that pretraining had installed.</p>
+
+<p>In this post we cover five things.</p>
+
+<ol class="road">
+<li>Which models have the habit, which never do, and what humans do instead.</li>
+<li>How we found the neurons responsible, and why the obvious way of looking
+  returns a neuron that does nothing.</li>
+<li>What happens to the model's writing when we mute that circuit.</li>
+<li>Where the circuit came from, how cheaply the habit can be installed in a model
+  that has never shown it, and what that cheap version fails to learn.</li>
+<li>What asking a model to stop actually does, and why the instruction
+  sometimes fails.</li>
+</ol>
+
+
+<h2>Which models have the habit, and what humans do instead</h2>
+
+<p>Everything in this post is measured on three sets of prompts.</p>
+
+<ol class="road">
+<li>The <b>general set</b>, 300 short prompts across fifteen categories chosen
+  to span registers rather than topics: LinkedIn posts, product blurbs,
+  definitions, explanations, emails, reviews, essay openings, and five
+  categories in Chinese.</li>
+<li>The <b>dash-prone set</b>, 300 prompts written to invite the mark, briefs
+  and slogans and hot takes and punchy one-line advice. Its structure matters
+  later: 220 are the provocative prompts themselves and the other 80 are plain
+  controls, each the twin of a particular provocative prompt, so the set holds
+  80 matched pairs covering 160 prompts, plus 140 provocative prompts with no
+  control.</li>
+<li>The <b>conversational set</b>, 180 prompts for the kind of writing nobody
+  would call polished: text messages, group chat replies, Reddit comments,
+  tweets, and three Chinese equivalents.</li>
+</ol>
+
+<p>Together they span the range from writing a model has no reason to decorate
+to writing that invites decoration.</p>
+
+<p>We evaluated nine open models on these, with coverage varying by model,
+and counted em dashes in what came back. Figure 1 shows one prompt from the
+general set and four of the answers.</p>
+
+<figure>
+<span class="fignum">Figure 1 &middot; One prompt, four models</span>
+<p class="prompt"><b>Prompt.</b> Write a compelling 2-3 sentence opening for an essay about coffee culture.</p>
+<div class="ex" style="grid-template-columns:minmax(140px,180px) 1fr auto">
+      <div class="cond" style="color:var(--warm)">Qwen3-8B-Instruct</div>
+      <div class="out">&ldquo;In every bustling café and quiet home corner, coffee has become more than a drink<span class="dash">—</span>it's a ritual, a conversation, and a cultural touchstone that connects people across the globe. From the ritualist&hellip;&rdquo;</div>
+      <div class="met" style="color:var(--warm)">dash</div>
+      <div class="cond" style="color:var(--warm)">gpt-oss-20b</div>
+      <div class="out">&ldquo;In the quiet hum of a bustling café, the aroma of freshly ground beans becomes a silent invitation to pause, connect, and savor the moment. Coffee culture<span class="dash">—</span>rooted in ritual, community, and a shared&hellip;&rdquo;</div>
+      <div class="met" style="color:var(--warm)">dash</div>
+      <div class="cond" style="color:var(--cool)">Mistral-7B-Instruct</div>
+      <div class="out">&ldquo;Unraveling the captivating intricacies of coffee culture, we delve into the rich tapestry of a global phenomenon that transcends mere beverage consumption, serving as a conduit for social connecti&hellip;&rdquo;</div>
+      <div class="met" style="color:var(--cool)">no dash</div>
+      <div class="cond" style="color:var(--cool)">DeepSeek-7B-chat</div>
+      <div class="out">&ldquo;Coffee has become an integral part of our daily lives, serving as the ultimate pick-me-up for millions of people around the world. From bustling coffee shops to cozy home kitchens, the coffee cult&hellip;&rdquo;</div>
+      <div class="met" style="color:var(--cool)">no dash</div>
+</div>
+<figcaption>Real responses from the general set, all four models answering the
+same prompt. Mistral also opens with &ldquo;delve&rdquo;, which is a
+different tell with a <a href="#r-juzek">literature of its own</a>.</figcaption>
+</figure>
+
+<figure>
+<span class="fignum">Figure 2 &middot; The habit is lab-specific, not universal</span>
+<div class="tw">
+<table>
+<thead><tr><th>model</th><th class="n">general</th><th class="n">dash-prone</th><th class="n">conversational</th></tr><tr class="key"><td>every cell reads</td><td class="n" colspan="3">em dashes per 1000 characters &nbsp;/&nbsp; <span class="pct">share of responses containing at least one</span></td></tr></thead>
+<tbody>
+<tr><td>gpt-oss-20b</td><td class="n hot">1.45 / <span class="pct">31.0%</span></td><td class="n hot">2.52 / <span class="pct">23.7%</span></td><td class="n hot">2.36 / <span class="pct">47.2%</span></td></tr>
+<tr><td>Qwen3-8B-Instruct</td><td class="n">0.71 / <span class="pct">13.7%</span></td><td class="n hot">1.78 / <span class="pct">15.3%</span></td><td class="n hot">2.99 / <span class="pct">46.7%</span></td></tr>
+<tr><td>Phi-4</td><td class="n">0.13 / <span class="pct">4.3%</span></td><td class="n">0.17 / <span class="pct">2.0%</span></td><td class="n">0.53 / <span class="pct">14.4%</span></td></tr>
+<tr><td>R1-0528-Qwen3-8B</td><td class="n">0.10 / <span class="pct">3.4%</span></td><td class="n">0.08 / <span class="pct">2.7%</span></td><td class="n">0.09 / <span class="pct">6.7%</span></td></tr>
+<tr><td>Qwen3-8B-Base</td><td class="n">0.06 / <span class="pct">1.3%</span></td><td class="n">0.24 / <span class="pct">2.7%</span></td><td class="n">0.12 / <span class="pct">2.2%</span></td></tr>
+<tr><td>Mistral-7B-Instruct</td><td class="n zero">0.00 / <span class="pct">0.0%</span></td><td class="n zero">0.00 / <span class="pct">0.0%</span></td><td class="n zero">0.00 / <span class="pct">0.0%</span></td></tr>
+<tr><td>DeepSeek-7B-chat</td><td class="n zero">0.00 / <span class="pct">0.0%</span></td><td class="n">0.23 / <span class="pct">2.3%</span></td><td class="n">0.03 / <span class="pct">0.6%</span></td></tr>
+<tr><td>Llama-3.1-8B-Instruct</td><td class="n zero">0.00 / <span class="pct">0.0%</span></td><td class="n zero">0.00 / <span class="pct">0.0%</span></td><td class="n zero">0.00 / <span class="pct">0.0%</span></td></tr>
+<tr><td>Gemma-2-9B-it</td><td class="n zero">0.00 / <span class="pct">0.0%</span></td><td class="n zero">0.00 / <span class="pct">0.0%</span></td><td class="n zero">0.00 / <span class="pct">0.0%</span></td></tr>
+<tr class="sep"><td>human web text</td><td class="n" colspan="3">0.0003 <span class="pct">&nbsp;9 events in 31.4M characters across five corpora</span></td></tr>
+</tbody>
+</table>
+</div>
+<figcaption><strong>The rate splits by laboratory, and it splits hard.</strong> A thousand characters is roughly a paragraph and a half of
+prose. Every cell is 300 prompts, or 180 for the conversational set.
+DeepSeek-7B-chat's row is the one worth reading closely. Its 0.23 and 0.03 are
+made up entirely of Chinese responses, where the doubled
+<span class="dash">——</span> is the standard mark for an attribution or an
+aside. Across all three sets it wrote <b>no em dash at all in 540 English
+responses</b>.</figcaption>
+</figure>
+
+<p>Figure 2 collects what we ran. Read across a row for one model as the
+register loosens, and down a column to compare models on the same kind of
+writing. Put the top row against the bottom three. gpt-oss-20b writes an em dash
+about every 690 characters on the general set. Mistral-7B-Instruct,
+Llama-3.1-8B-Instruct and Gemma-2-9B-it each went through all three sets, <b>780
+responses apiece, and none of the three produced a single em dash</b>. These are
+instruction-tuned models answering the same prompts under the same protocol, so
+whatever separates them belongs to one laboratory's training and not to
+another's. That already rules out the version of this story in which language
+models, as a class, overuse the em dash.</p>
+
+<p>The last row of the table changes what the habit is a habit <i>of</i>. Humans
+in our reference corpora produced nine em dashes in 31.4 million characters,
+which reads like near-total abstention and makes gpt-oss-20b's rate roughly five
+thousand times a person's. But the same corpora contain <b>2,395 double
+hyphens</b>. People plainly want the sharp mid-sentence break the mark provides.
+They type two hyphens instead, because that is what a keyboard makes easy and a
+typographic em dash is not. The models did not invent a rhetorical move. They
+took one people already use and switched it to the character people mostly
+cannot reach.</p>
+
+<p>Back inside the table, two rows make the comparison cleaner than any pair of
+different models can. R1-0528-Qwen3-8B and Qwen3-8B-Instruct are built on the
+same pretrained network, the one Qwen released as Qwen3-8B-Base. Qwen's own post
+training takes that network to 0.71. DeepSeek's post training, applied to the
+identical starting weights, takes it to 0.10, barely above the untouched base at
+0.06. Architecture, scale and pretraining data all held fixed, and the habit
+still comes out seven times weaker.</p>
+
+<p>So the difference lives downstream of pretraining, in what each laboratory
+does on top of a network it may not even have trained. Of the eight
+post-trained models in the table, two write the mark often, two write it rarely
+and four sit at or near zero, though we picked these models partly because we
+had already noticed some of them doing it, so that is what we saw rather than a
+survey of the field. What none of it tells us is what those recipes did.
+<b>Building an ability the network lacked and turning up one it already had
+would look identical from out here</b>, and separating those two is what the
+middle of this post is for.</p>
+
+
+<p>One more thing is visible in those rows, and it is the last of them before
+we go looking inside. A model's rate is not a property of the model alone. It
+climbs as the register loosens, Qwen going from 0.71 on the general set to 2.99
+in text messages, which raises a question the rates by themselves cannot
+answer. Is the em dash attached to certain
+<em>subjects</em>, or to a certain <em>way of writing</em>? A prompt about
+failure and a prompt about vacuum cleaners differ in both at once. This is what
+the 80 matched pairs are for. Each is a provocative brief beside a plain
+control of the same length asking for the same content in a neutral register. Figure 3 shows one such pair together with
+what Qwen3-8B-Instruct actually wrote for each.</p>
+
+<figure>
+<span class="fignum">Figure 3 &middot; The paired prompts</span>
+<div class="ex">
+      <div class="cond" style="color:var(--warm)">punchy</div>
+      <div class="out">In one short, punchy sentence, share your best advice about failure.</div>
+      <div class="met">&nbsp;</div>
+      <div></div>
+      <div class="out" style="color:var(--ink)">&ldquo;Failure is just feedback <span class="dash">—</span> use it to learn, adapt, and keep moving forward.&rdquo;</div>
+      <div class="met" style="color:var(--warm)">dash</div>
+
+      <div class="cond" style="color:var(--cool)">plain</div>
+      <div class="out">In one plain, factual sentence, state one piece of advice about failure.</div>
+      <div class="met">&nbsp;</div>
+      <div></div>
+      <div class="out" style="color:var(--ink)">&ldquo;Failure is an opportunity to learn and grow.&rdquo;</div>
+      <div class="met" style="color:var(--cool)">no dash</div>
+
+      <div class="cond" style="color:var(--warm)">punchy</div>
+      <div class="out">In one short, punchy sentence, share your best advice about starting over.</div>
+      <div class="met">&nbsp;</div>
+      <div></div>
+      <div class="out" style="color:var(--ink)">&ldquo;Starting over isn't a reset<span class="dash">—</span>it's an opportunity to build something better, smarter, and more authentical&rdquo;</div>
+      <div class="met" style="color:var(--warm)">dash</div>
+
+      <div class="cond" style="color:var(--cool)">plain</div>
+      <div class="out">In one plain, factual sentence, state one piece of advice about starting over.</div>
+      <div class="met">&nbsp;</div>
+      <div></div>
+      <div class="out" style="color:var(--ink)">&ldquo;Starting over often requires embracing change and focusing on personal growth rather than dwelling on pa&rdquo;</div>
+      <div class="met" style="color:var(--cool)">no dash</div>
+</div>
+<figcaption><strong>One of the 80 matched pairs, a provocative prompt beside
+its length-matched plain twin.</strong> These are real prompts from the
+dash-prone set and real Qwen3-8B-Instruct responses to them. The pairing is what lets
+us separate a topic effect from a register effect: if the em dash tracked
+subject matter, both halves would behave alike. They do not, and the gap
+between them is the quantity most of this study measures.</figcaption>
+</figure>
+
+<p> Across the whole set Qwen3-8B-Instruct produces 6.26 em dashes per
+thousand characters on the punchy half and <b>0.00</b> on the plain half. The
+habit belongs to a register rather than to a subject, which is what makes it
+worth locating inside the model: there is a decision being made, and it is
+being made on the basis of something.</p>
+
+<h2>Finding the neurons that write the mark</h2>
+
+<p>A neuron, in this post, is one number inside one layer. Inside each of
+Qwen3-8B's 36 layers sits an MLP block. It reads the residual stream, the
+model's running 4096-number summary of the sentence so far, and writes something
+back into it. Figure 4 is that block, with the two quantities we measure marked
+where they are read.</p>
+
+<figure>
+<span class="fignum">Figure 4 &middot; Where a neuron lives</span>
+    <div class="plate">
+<svg viewBox="0 0 980 452" role="img" aria-label="Anatomy of one transformer MLP block in Qwen3-8B. Each vector is a vertical column of cells: the residual stream is six cells for its 4096 numbers, the intermediate vector is eighteen for its 12,288. A widening trapezoid projects the stream up through a gate and an up projection combined by SiLU, and a narrowing trapezoid maps the result back down and adds it to the stream. One highlighted cell is what this post calls a neuron. Two quantities are read per neuron: its activation at the input to the down projection, which changes sentence by sentence, and the column of the down projection it writes through, which is fixed by training." font-family="ui-sans-serif,system-ui,sans-serif">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-soft)"/></marker></defs>
+<rect x="40" y="152.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="40" y="160.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="40" y="168.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="40" y="176.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="40" y="184.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="40" y="192.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<text x="55.0" y="143.0" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">4096</text>
+<text x="26" y="100" font-size="12" text-anchor="start" fill="var(--ink)" font-weight="600">residual stream</text>
+<text x="26" y="116" font-size="10.5" text-anchor="start" fill="var(--ink-soft)">one column per layer</text>
+<path d="M78,152.0 L300,104.0 L300,248.0 L78,200.0 Z" fill="var(--panel)" stroke="var(--rule)"/>
+<text x="189.0" y="168" font-size="12" text-anchor="middle" fill="var(--ink)" font-weight="600">gate_proj &amp; up_proj</text>
+<text x="189.0" y="186" font-size="11" text-anchor="middle" fill="var(--ink)" font-family="ui-monospace,monospace" font-style="italic">h = SiLU(x W_gate) &#8857; (x W_up)</text>
+<text x="189.0" y="203" font-size="10.5" text-anchor="middle" fill="var(--faint)">4096 &#8594; 12288</text>
+<rect x="300" y="104.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="112.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="120.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="128.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="136.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="144.0" width="30" height="7.2" fill="var(--warm)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="152.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="160.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="168.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="176.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="184.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="192.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="200.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="208.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="216.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="224.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="232.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<rect x="300" y="240.0" width="30" height="7.2" fill="var(--line)" stroke="var(--rule)" stroke-width=".7"/>
+<text x="315.0" y="95.0" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">12,288</text>
+<text x="338" y="152.0" font-size="11" text-anchor="start" fill="var(--warm)" font-weight="700">one neuron</text>
+<path d="M402,104.0 L600,152.0 L600,200.0 L402,248.0 Z" fill="var(--panel)" stroke="var(--rule)"/>
+<path d="M402,144.0 L600,152.0 L600,200.0 L402,152.0 Z" fill="var(--warm)" opacity=".18"/>
+<text x="501.0" y="168" font-size="12" text-anchor="middle" fill="var(--ink)" font-weight="600">down_proj</text>
+<text x="501.0" y="186" font-size="11" text-anchor="middle" fill="var(--ink)" font-family="ui-monospace,monospace" font-style="italic">h W_down</text>
+<text x="501.0" y="203" font-size="10.5" text-anchor="middle" fill="var(--faint)">12288 &#8594; 4096</text>
+<rect x="600" y="152.0" width="30" height="7.2" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width=".7"/>
+<rect x="600" y="160.0" width="30" height="7.2" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width=".7"/>
+<rect x="600" y="168.0" width="30" height="7.2" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width=".7"/>
+<rect x="600" y="176.0" width="30" height="7.2" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width=".7"/>
+<rect x="600" y="184.0" width="30" height="7.2" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width=".7"/>
+<rect x="600" y="192.0" width="30" height="7.2" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width=".7"/>
+<text x="615.0" y="143.0" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">4096</text>
+<line x1="630" y1="176" x2="655" y2="176" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#ar)"/>
+<circle cx="668" cy="176" r="12" fill="var(--panel)" stroke="var(--ink-soft)" stroke-width="1.4"/>
+<text x="668" y="181" font-size="15" text-anchor="middle" fill="var(--ink-soft)">+</text>
+<path d="M55.0,150.0 C55.0,52 668,52 668,162" fill="none" stroke="var(--ink-soft)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+<rect x="250.0" y="45" width="208" height="17" rx="3" fill="var(--bg)"/>
+<text x="354.0" y="58" font-size="10.5" text-anchor="middle" fill="var(--faint)">the stream itself is carried past</text>
+<line x1="681" y1="176" x2="714" y2="176" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="720" y="152.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="720" y="160.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="720" y="168.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="720" y="176.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="720" y="184.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="720" y="192.0" width="30" height="7.2" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<text x="735.0" y="143.0" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">4096</text>
+<text x="760" y="172" font-size="11.5" text-anchor="start" fill="var(--ink)" font-family="ui-monospace,monospace" font-style="italic">x &#8592; x + h W_down</text>
+<text x="760" y="189" font-size="10.5" text-anchor="start" fill="var(--ink-soft)">on to the next layer</text>
+<path d="M315.0,250.0 L315.0,312 L210,312 L210,324" fill="none" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="3 3"/>
+<circle cx="315.0" cy="250.0" r="3.5" fill="var(--s2)"/>
+<text x="210" y="344" font-size="13" text-anchor="middle" fill="var(--s2)" font-weight="700" font-family="ui-monospace,monospace">act = h_i</text>
+<text x="210" y="363" font-size="11" text-anchor="middle" fill="var(--ink-soft)">one number, read at the moment the</text>
+<text x="210" y="378" font-size="11" text-anchor="middle" fill="var(--ink-soft)">next punctuation mark is chosen</text>
+<text x="210" y="396" font-size="10.5" text-anchor="middle" fill="var(--faint)">changes sentence to sentence</text>
+<path d="M501.0,210 L501.0,312 L700,312 L700,324" fill="none" stroke="var(--s1)" stroke-width="1.4" stroke-dasharray="3 3"/>
+<circle cx="501.0" cy="210" r="3.5" fill="var(--s1)"/>
+<text x="700" y="344" font-size="13" text-anchor="middle" fill="var(--s1)" font-weight="700" font-family="ui-monospace,monospace">writes = W_down[i,:] &#183; u</text>
+<text x="700" y="363" font-size="11" text-anchor="middle" fill="var(--ink-soft)">the shaded wedge, projected onto</text>
+<text x="700" y="378" font-size="11" text-anchor="middle" fill="var(--ink-soft)">the dash-minus-comma direction u</text>
+<text x="700" y="396" font-size="10.5" text-anchor="middle" fill="var(--faint)">fixed by training, never moves</text>
+<text x="956" y="42" font-size="12" text-anchor="end" fill="var(--ink)" font-weight="600">36 layers &#215; 12,288 = 442,368 neurons</text>
+<text x="956" y="60" font-size="10.5" text-anchor="end" fill="var(--ink-soft)">each with an act and a writes of its own</text>
+<text x="956" y="440" font-size="10.5" text-anchor="end" fill="var(--faint)">Qwen3-8B config: hidden_size 4096, intermediate_size 12288, 36 layers, SwiGLU &#183; column heights to scale</text>
+</svg>
+    </div>
+    <figcaption><strong>One MLP block, and the two quantities the method reads
+    from it.</strong> Each vector is a column of cells and the counts are to
+    scale: six cells for the stream's 4096 numbers, eighteen for the
+    intermediate vector's 12,288. The dashed arc is the residual connection, so
+    the block adds to the stream rather than replacing it. The highlighted cell
+    is one neuron, and the shaded wedge running through down_proj is the column
+    it owns, which is what the second quantity projects onto the readout
+    direction.</figcaption>
+  </figure>
+
+<p>Two matrices project the stream up. One output goes through a SiLU
+nonlinearity and multiplies into the other elementwise, which is the SwiGLU
+construction, and the result is a vector of 12,288 numbers:</p>
+
+<p class="eq"><b>h</b> = SiLU(<b>x</b> W<sub>gate</sub>) &#8857; (<b>x</b> W<sub>up</sub>)</p>
+
+<p><b>One coordinate of <em>h</em> is what this post calls a neuron.</b> A third
+matrix maps those 12,288 numbers back down to 4096 and adds them to the stream,
+so the block's whole effect is</p>
+
+<p class="eq"><b>x</b> &#8592; <b>x</b> + <b>h</b> W<sub>down</sub></p>
+
+<p>Written that way, the contribution of neuron <em>i</em> separates cleanly.
+It is the number <b>h</b><sub><em>i</em></sub> multiplied by row <em>i</em> of
+W<sub>down</sub>, which is a fixed 4096-vector. Nothing else in the block
+couples them. So each neuron contributes <b>h</b><sub><em>i</em></sub>
+W<sub>down</sub>[<em>i</em>, :] and no more, and the two factors are different
+in kind: the first changes with every sentence, the second was set during
+training and never moves again.</p>
+
+<p>We care about one direction in that 4096-space, the one that separates an em
+dash from a comma at the output. Call it <b>u</b>. Then a neuron's pull on the
+choice is its activation times how much its fixed write direction points along
+<b>u</b>:</p>
+
+<p class="eq">contribution<sub><em>i</em></sub> =
+  <b>h</b><sub><em>i</em></sub> &#215;
+  (W<sub>down</sub>[<em>i</em>, :] &#183; <b>u</b>)</p>
+
+<p>That product is the whole method in one line, and the rest of this section is
+about measuring its two halves honestly. The second half is a dot product
+between two fixed vectors and is simply read off the weights. The first half has
+to be measured while the model is writing, which needs a contrast.</p>
+
+<p>The behaviour we care about is a choice the model makes while writing, so
+the contrast is built from its own output rather than from hand written prompt
+pairs, which is where this departs from the usual recipe
+<a href="#r-arora">[Arora et al., 2026]</a>. Most interpretability work uses minimal edits, the same sentence with
+one word changed, but there is no minimal edit that turns a dash wanting
+sentence into a comma wanting one. Changing the prompt changes the task.</p>
+
+
+
+<pre class="code"><span class="c"># Stage 1: build the contrast from the model's own generations</span>
+pos = []   <span class="c"># it wrote an em dash here, and meant it</span>
+neg = []   <span class="c"># it wrote a comma here, and a dash was never in play</span>
+<b>for</b> response <b>in</b> model.generate(prompts):
+    <b>for</b> t, token <b>in</b> enumerate(response):
+        p_dash = P(em dash | context up to t)
+        <b>if</b> token <b>is</b> em_dash <b>and</b> p_dash &gt;= 0.5:  pos.append(t)
+        <b>if</b> token <b>is</b> comma    <b>and</b> p_dash &lt;= 0.01: neg.append(t)
+
+<span class="c"># Stage 2: for every MLP neuron, how far does it move, and where does it push?</span>
+u = (W_unembed[dash_tokens].mean(0)
+     - W_unembed[comma_tokens].mean(0)) * final_norm_scale
+
+<b>for</b> neuron i <b>in</b> all_units:                      <span class="c"># 442,368 of them</span>
+    gap_i  = mean(act_i[pos]) - mean(act_i[neg])  <span class="c"># how far it moves</span>
+
+pool = top_k(neurons, key=<b>abs</b>(gap), k=442)         <span class="c"># the top 0.1%, a screen</span>
+
+<b>for</b> neuron i <b>in</b> pool[:25]:                       <span class="c"># see the correction below</span>
+    push_i  = dot(W_down[:, i], u)                <span class="c"># where it pushes</span>
+    score_i = gap_i * push_i                      <span class="c"># signed contribution</span>
+
+circuit = top_k(scored, key=score, k=5)
+
+<span class="c"># Stage 3: validate causally, one neuron at a time</span>
+<b>for</b> neuron <b>in</b> circuit:
+    effect = Δ log P(dash) <b>when</b> neuron forced to 0
+correlate(score, effect)   <span class="c"># -0.68 within the 25; -0.22 over all 442</span></pre>
+
+<p>Note that <code>|gap|</code> appears twice in stage 2, doing two different
+jobs. As a screen it is fine: a neuron that barely moves between the two
+conditions is not writing the em dash, and cutting to the 442 that move most
+costs us nothing we can detect. As a <em>ranking</em> it fails, and that is what
+the second half of the stage exists to repair.</p>
+
+<p>Our first version had no second half. It ranked neurons by <code>|gap|</code>
+and stopped, which is the obvious thing to do. Its top pick was a neuron we call
+L32 N5164, whose activation differs by 32.8 between the two conditions, the
+largest gap anywhere in the network. Muting it, which for us means clamping its
+output to zero so that it contributes nothing to the rest of the forward pass,
+changes the log probability of a dash by <b>+0.008</b>, which is nothing.
+Clamping to zero does push a neuron outside the range it normally occupies
+<a href="#r-li">[Li &amp; Janson, 2024]</a>, so we repeated every ablation by
+setting the neuron to its average value instead, and the two agree within four
+points at every set size we tried.</p>
+
+<p>The neuron that matters most is L30 N8852, and it behaves in a way that
+explains the failure. At the moment the model writes an em dash, its activation
+<b>drops</b> by 26.3. It goes quiet. And its output pushes <b>against</b> the
+dash, with a weight of −1.05 onto the dash versus comma direction. A neuron whose
+job is to suppress the mark, falling silent exactly when the mark appears. It
+works as a brake rather than a switch, and releasing a brake produces the same
+outcome as pressing an accelerator. The product of the two negatives is +27.7,
+the largest positive contribution in the network.</p>
+
+<p>The same procedure on a second model shows how much the sign is doing. On
+our DeepSeek fine tune, muting the 25 neurons with the largest unsigned gaps suppresses
+nothing at all, and the rate goes slightly up. Half of
+that set are brakes, so removing them releases as many dashes as removing the
+accelerators prevents, and the two cancel. Choosing 25 neurons by signed
+contribution instead removes 78% of them.</p>
+
+<div class="key"><p class="h">Why the obvious ranking fails</p>
+<p>An unsigned score cannot tell a released brake from a pressed accelerator, and
+cannot tell either from a neuron that moves a great deal but pushes nowhere in
+particular. Ranked by <code>|gap|</code>, our five neurons come 2nd, 5th, 14th,
+15th and 16th, interleaved with neurons that do nothing when you switch them off.
+Ranked by signed contribution they rise to the top. The information was in the
+pool the whole time and the ordering buried it.</p></div>
+
+<p>Multiplying the activation change by the write direction is what recovers it.
+Among the 25 candidates the original search scored, the signed score tracks what
+actually happens when you switch a neuron off at &#8722;0.68, where the unsigned
+version manages &#8722;0.19. Scoring all 442 lets us ask how far that holds, and
+the answer is sobering. The signed score drops to &#8722;0.22 and the unsigned
+one to &#8722;0.07. <b>The signed score stays about three times the better
+predictor either way, but across the whole pool neither is good.</b> What the
+sign buys is a much better shortlist, not a trustworthy ordering.</p>
+
+<div class="key"><p class="h">A correction, found by re-running our own method</p>
+<p>The line marked <code>pool[:25]</code> above is not what this post originally
+claimed. We described the contribution score as being computed over the whole
+442-neuron pool, and it was not: it ran over the 25 neurons with the largest
+<code>|gap|</code>, so the screen we were arguing against still decided which
+candidates got a signed score at all. Scoring all 442 promotes <b>L33 N10323</b>,
+which sits at <code>|gap|</code> rank 26, one place outside the old cut, and
+whose contribution of +11.95 beats the +10.71 of the neuron it displaces. Two
+independent re-runs on different hardware agree on this to four decimal
+places.</p></div>
+
+<p>The consequence cuts both ways. The five neurons this post is about are the
+ones every later experiment uses, and muting them removes 89% of em dashes,
+which is a measured fact that does not change. But they are the top five of 25
+candidates rather than of 442, and the better five that a full search finds do
+slightly better on the same prompts: <b>93.7% suppression against 89.4%</b>. Our
+own screen cost us four points, in exactly the way this section warns that an
+unsigned screen can.</p>
+
+<figure>
+<span class="fignum">Figure 5 &middot; The pool is signed</span>
+    <div class="plate">
+      <svg viewBox="0 0 980 240" role="img" aria-label="Muting the 16 promoters drops the rate from 1.78 to 0.08. Muting the 9 suppressors raises it to 1.97. Doubling the suppressors lowers it to 1.35."
+           font-family="ui-sans-serif,system-ui,sans-serif">
+        <text x="300" y="77" text-anchor="end" font-size="12.5" fill="var(--ink)">untouched</text><rect x="308" y="64" width="343.4" height="18" fill="var(--warm)" opacity=".8"/><text x="660.4" y="78" font-size="11.5" fill="var(--ink-soft)">1.78 em/1k</text>
+        <text x="300" y="111" text-anchor="end" font-size="12.5" fill="var(--ink)">16 promoters, off</text><rect x="308" y="98" width="15.4" height="18" fill="var(--cool)" opacity=".8"/><text x="332.4" y="112" font-size="11.5" fill="var(--ink-soft)">0.08 em/1k</text>
+        <text x="300" y="145" text-anchor="end" font-size="12.5" fill="var(--ink)">9 suppressors, off</text><rect x="308" y="132" width="380.0" height="18" fill="var(--warm)" opacity=".8"/><text x="697.0" y="146" font-size="11.5" fill="var(--ink-soft)">1.97 em/1k</text>
+        <text x="300" y="179" text-anchor="end" font-size="12.5" fill="var(--ink)">9 suppressors, doubled</text><rect x="308" y="166" width="260.4" height="18" fill="var(--cool)" opacity=".8"/><text x="577.4" y="180" font-size="11.5" fill="var(--ink-soft)">1.35 em/1k</text>
+        <line x1="308" y1="56" x2="308" y2="196" stroke="var(--ink)"/>
+        <line x1="651.4" y1="50" x2="651.4" y2="200" stroke="var(--ink-soft)" stroke-dasharray="3 3"/><text x="308" y="222" font-size="11" fill="var(--ink-soft)">dashed line: the untouched model</text>
+      </svg>
+    </div>
+    <figcaption><strong>Killing the suppressors raises the dash rate and doubling them lowers it, both in the direction their sign predicts.</strong> The 25 neurons an unsigned |&#916;activation| ranking returns are not a set of dash neurons but a mixed population, so any summary that averages over them without signs is measuring a cancellation. This is also why the ladders in Figure 7 turn back at the largest set.</figcaption>
+  </figure>
+
+
+<p>Figure 5 is the test of that claim. If the pool really is a mixture, then
+splitting it by sign and muting each half separately should move the rate in
+opposite directions, and it does. Of the top 25
+neurons, 16 push toward the dash and 9 push away. Muting the 16 promoters
+collapses the rate from 1.78 to 0.08. Muting the 9 suppressors instead raises
+it, to 1.97, and doubling those same 9 lowers it to 1.35. Each intervention
+moves in the direction the neuron's sign predicts, which is about as clean a
+confirmation as this kind of analysis offers.</p>
+
+
+<p>One assumption sits underneath all of that. We said at the start that no
+minimal edit turns a dash-wanting sentence into a comma-wanting one, and built
+the contrast from the model's own writing on those grounds. That was an argument
+rather than a measurement, so we went back and built the pairs by hand anyway,
+then re-ran the whole search on them. 184 sentences, each written twice, once with an em dash carrying the break and
+once with a comma, covering the jobs the mark actually does and in Chinese as
+well as English. One pair, to make the shape concrete: <em>The village had one
+industry &#8212; salt &#8212; and when the works closed the school went
+too</em>, against <em>The village had one industry, salt, and when the works
+closed the school went too</em>.</p>
+
+<p>Mining on those pairs instead gives a <b>partly different circuit</b>. The
+strongest neuron survives every variant we tried: in a fresh 442-neuron pool it
+comes 9th when the pairs go through the chat template, 12th without it, and 27th
+when we mine the base model rather than the instruct model. The other four do
+not survive. They land at 149th, 91st and 325th, and one of them never makes the
+pool at all. In the original mining, from the model's own writing, the same five
+ranked 2nd, 16th, 5th, 15th and 14th.</p>
+
+<p>All three contrasts were balanced and of a size comparable to the original,
+so this is not a sampling artefact. What we have not measured is whether the
+circuit those pairs find suppresses the habit as well as ours does, which is a
+separate question from whether it is the same circuit.</p>
+
+<p>The reading we take from this is narrow and worth stating plainly.
+<b>How you build the contrast changes which neurons you find, and only the
+largest effect is stable across that choice.</b> It is the same lesson the last
+section of this post draws about moving between models, arriving from a
+different direction.</p>
+
+<p>One guard nearly cost us a result. Every
+tokenizer we load has to round trip the string
+<code>a&mdash;b &#20013;&#25991;</code> before it is used for anything, because
+one of them silently encoded every non ASCII character to nothing. That removed
+all 809 em dashes from a training file, and a four hour fine tune then answered
+a question its data could not contain, cleanly and wrongly.</p>
+
+
+<h2>What happens when the circuit is muted</h2>
+
+<p>We take the top five neurons by
+contribution, mute them, and let the model write 300 fresh responses.
+<b>The em dash rate falls by 89%.</b> Muting 442 randomly chosen neurons from the
+same layers removes 6%, so this is not a matter of generic damage to late layer
+computation. Held-out language modelling barely notices: on 200 wikitext
+documents, muting the five moves perplexity from 15.189 to 15.201, a rise of
+<b>0.08%</b>. Muting the whole 442-neuron pool costs 2.96% by the same
+measure, so the cheap intervention is also the surgical one.</p>
+
+<figure>
+<span class="fignum">Figure 6 &middot; The five-neuron circuit</span>
+    <div class="plate">
+      <svg viewBox="0 0 980 400" role="img"
+           aria-label="Circuit diagram. Ten upstream components, MLP-dominated, write into a shared direction. Five MLP neurons in layers 30 to 35 read that state and write onto the readout direction: L30 neuron 8852 contributes 27.7, L35 neuron 9853 contributes 16.5, L32 neuron 3271 contributes 15.6, L31 neuron 8507 contributes 14.3, L32 neuron 2543 contributes 10.7. Three of the five fall in activation at dash decisions and write negatively, so their products are positive. The readout is the dash minus comma direction, and muting the five removes 89 percent of dashes.">
+        <defs>
+          <marker id="cm" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="6"
+                  markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="11"
+           fill="var(--ink-soft)" letter-spacing=".07em">
+          <text x="40" y="46">UPSTREAM</text>
+          <text x="286" y="46">THE FIVE UNITS</text>
+          <text x="452" y="46">CONTRIBUTION</text><text x="452" y="60" font-size="9.5" fill="var(--ink-soft)" letter-spacing="0">= act &#215; writes</text>
+          <text x="596" y="46">READOUT</text>
+        </g>
+
+        <!-- upstream, one grouped node: the point is that it is diffuse -->
+        <rect x="40" y="72" width="176" height="216" rx="6" fill="var(--cool-wash)"
+              stroke="var(--cool)" stroke-width="1.4" stroke-dasharray="5 3"/>
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="11" fill="var(--ink-soft)">
+          <text x="56" y="98" font-size="12" fill="var(--ink)" font-weight="600">10 writers, diffuse</text>
+          <text x="56" y="120">L30 MLP &#8722;1.66</text>
+          <text x="56" y="138">L27 MLP &#8722;0.66</text>
+          <text x="56" y="156">L29 MLP &#8722;0.65</text>
+          <text x="56" y="174">L34 MLP &#8722;0.53</text>
+          <text x="56" y="192">L24 MLP &#8722;0.47</text>
+          <text x="56" y="216" fill="var(--cool)">no head writes</text>
+          <text x="56" y="232" fill="var(--cool)">directly above 0.45</text>
+          <text x="56" y="258" font-size="10.5">so there is no small</text>
+          <text x="56" y="271" font-size="10.5">set of heads to patch</text>
+        </g>
+        <path d="M216,180 C244,180 254,180 280,180" fill="none" stroke="var(--cool)"
+              stroke-width="2.4" marker-end="url(#cm)" color="var(--cool)"/>
+
+
+        <g font-family="ui-sans-serif,system-ui,sans-serif">
+          <rect x="286" y="72" width="150" height="40" rx="5" fill="var(--warm-wash)"
+                stroke="var(--warm)" stroke-width="1.6"/>
+          <text x="298" y="89" font-size="12.5" fill="var(--ink)" font-weight="600">L30 N8852</text>
+          <text x="298" y="104" font-size="10.5" fill="var(--ink-soft)">act ↓ <tspan fill="var(--cool)" font-weight="600">-26.3</tspan> &#183; writes <tspan fill="var(--cool)" font-weight="600">-1.05</tspan></text>
+          <text x="272" y="97" font-size="11" fill="var(--ink-soft)" text-anchor="end">L30</text>
+          <path d="M436,92 C500,92 540,148 596,148" fill="none"
+                stroke="var(--warm)" stroke-width="4.05" opacity=".8"
+                marker-end="url(#cm)" color="var(--warm)"/>
+          <rect x="452" y="81" width="127" height="22" rx="3"
+                fill="var(--warm)" opacity=".14"/>
+          <text x="516" y="96" font-size="10.5" text-anchor="middle"
+                fill="var(--warm)">+27.7</text>
+        </g>
+
+        <g font-family="ui-sans-serif,system-ui,sans-serif">
+          <rect x="286" y="116" width="150" height="40" rx="5" fill="none"
+                stroke="var(--warm)" stroke-width="1.6"/>
+          <text x="298" y="133" font-size="12.5" fill="var(--ink)" font-weight="600">L35 N9853</text>
+          <text x="298" y="148" font-size="10.5" fill="var(--ink-soft)">act ↑ <tspan fill="var(--warm)" font-weight="600">+11.8</tspan> &#183; writes <tspan fill="var(--warm)" font-weight="600">+1.40</tspan></text>
+          <text x="272" y="141" font-size="11" fill="var(--ink-soft)" text-anchor="end">L35</text>
+          <path d="M436,136 C500,136 540,148 596,148" fill="none"
+                stroke="var(--warm)" stroke-width="2.81" opacity=".8"
+                marker-end="url(#cm)" color="var(--warm)"/>
+          <rect x="452" y="125" width="76" height="22" rx="3"
+                fill="var(--warm)" opacity=".14"/>
+          <text x="490" y="140" font-size="10.5" text-anchor="middle"
+                fill="var(--warm)">+16.5</text>
+        </g>
+
+        <g font-family="ui-sans-serif,system-ui,sans-serif">
+          <rect x="286" y="160" width="150" height="40" rx="5" fill="none"
+                stroke="var(--warm)" stroke-width="1.6"/>
+          <text x="298" y="177" font-size="12.5" fill="var(--ink)" font-weight="600">L32 N3271</text>
+          <text x="298" y="192" font-size="10.5" fill="var(--ink-soft)">act ↑ <tspan fill="var(--warm)" font-weight="600">+17.0</tspan> &#183; writes <tspan fill="var(--warm)" font-weight="600">+0.92</tspan></text>
+          <text x="272" y="185" font-size="11" fill="var(--ink-soft)" text-anchor="end">L32</text>
+          <path d="M436,180 C500,180 540,148 596,148" fill="none"
+                stroke="var(--warm)" stroke-width="2.72" opacity=".8"
+                marker-end="url(#cm)" color="var(--warm)"/>
+          <rect x="452" y="169" width="72" height="22" rx="3"
+                fill="var(--warm)" opacity=".14"/>
+          <text x="488" y="184" font-size="10.5" text-anchor="middle"
+                fill="var(--warm)">+15.6</text>
+        </g>
+
+        <g font-family="ui-sans-serif,system-ui,sans-serif">
+          <rect x="286" y="204" width="150" height="40" rx="5" fill="var(--warm-wash)"
+                stroke="var(--warm)" stroke-width="1.6"/>
+          <text x="298" y="221" font-size="12.5" fill="var(--ink)" font-weight="600">L31 N8507</text>
+          <text x="298" y="236" font-size="10.5" fill="var(--ink-soft)">act ↓ <tspan fill="var(--cool)" font-weight="600">-11.9</tspan> &#183; writes <tspan fill="var(--cool)" font-weight="600">-1.21</tspan></text>
+          <text x="272" y="229" font-size="11" fill="var(--ink-soft)" text-anchor="end">L31</text>
+          <path d="M436,224 C500,224 540,148 596,148" fill="none"
+                stroke="var(--warm)" stroke-width="2.57" opacity=".8"
+                marker-end="url(#cm)" color="var(--warm)"/>
+          <rect x="452" y="213" width="66" height="22" rx="3"
+                fill="var(--warm)" opacity=".14"/>
+          <text x="485" y="228" font-size="10.5" text-anchor="middle"
+                fill="var(--warm)">+14.3</text>
+        </g>
+
+        <g font-family="ui-sans-serif,system-ui,sans-serif">
+          <rect x="286" y="248" width="150" height="40" rx="5" fill="var(--warm-wash)"
+                stroke="var(--warm)" stroke-width="1.6"/>
+          <text x="298" y="265" font-size="12.5" fill="var(--ink)" font-weight="600">L32 N2543</text>
+          <text x="298" y="280" font-size="10.5" fill="var(--ink-soft)">act ↓ <tspan fill="var(--cool)" font-weight="600">-12.0</tspan> &#183; writes <tspan fill="var(--cool)" font-weight="600">-0.89</tspan></text>
+          <text x="272" y="273" font-size="11" fill="var(--ink-soft)" text-anchor="end">L32</text>
+          <path d="M436,268 C500,268 540,148 596,148" fill="none"
+                stroke="var(--warm)" stroke-width="2.18" opacity=".8"
+                marker-end="url(#cm)" color="var(--warm)"/>
+          <rect x="452" y="257" width="49" height="22" rx="3"
+                fill="var(--warm)" opacity=".14"/>
+          <text x="477" y="272" font-size="10.5" text-anchor="middle"
+                fill="var(--warm)">+10.7</text>
+        </g>
+
+        <!-- readout -->
+        <rect x="596" y="118" width="132" height="60" rx="5" fill="var(--warm-wash)"
+              stroke="var(--warm)" stroke-width="1.8"/>
+        <g font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="middle">
+          <text x="662" y="140" font-size="12.5" fill="var(--ink)" font-weight="600">u = W[&#8212;] &#8722; W[,]</text>
+          <text x="662" y="158" font-size="10.5" fill="var(--ink-soft)">&#215; final norm</text>
+          <text x="662" y="172" font-size="10.5" fill="var(--ink-soft)">summed over the five</text>
+        </g>
+        <path d="M728,148 C756,148 764,148 788,148" fill="none" stroke="var(--warm)"
+              stroke-width="2.4" marker-end="url(#cm)" color="var(--warm)"/>
+        <text x="812" y="158" font-family="Charter,Georgia,serif" font-size="30"
+              fill="var(--warm)">&#8212;</text>
+        <text x="812" y="192" font-family="ui-sans-serif,system-ui,sans-serif"
+              font-size="11" fill="var(--ink-soft)" text-anchor="middle">emitted</text>
+
+        <!-- the arithmetic, in its own reserved strip, nothing crosses it -->
+        <line x1="40" y1="302" x2="928" y2="302" stroke="var(--rule)" stroke-width="1"/>
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="11.5">
+          <text x="40" y="326" font-size="12" fill="var(--ink)" font-weight="600">Why three of the five fall rather than rise</text>
+          <text x="40" y="346" fill="var(--ink-soft)">L30 N8852 is a brake, not a switch: at dash decisions its activation drops by 26.3 <tspan fill="var(--warm)">and</tspan> its write onto u is &#8722;1.05,</text>
+          <text x="40" y="363" fill="var(--ink-soft)">so the product is <tspan fill="var(--ink)" font-weight="600">+27.7</tspan> &#8212; releasing the brake promotes the dash. An unsigned |&#916;activation| ranking cannot tell</text>
+          <text x="40" y="380" fill="var(--ink-soft)">these from suppressors: the largest gap in the pool, L32 N5164 at 32.8, has a true causal effect of <tspan fill="var(--ink)" font-weight="600">+0.008</tspan>.</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><strong>Five neurons at their layers, each with the two numbers
+      whose product put it there.</strong> <em>act</em> is how far the neuron
+      moves between dash and comma decisions, <em>writes</em> is how hard it
+      pushes the dash token, and the contribution column is their product. Blue
+      marks a negative quantity and red a positive one, so a row with two blue
+      numbers is a brake: it goes quiet at dash decisions and it pushes against
+      the dash, and muting it releases the mark. Three of the five read that
+      way. Filled nodes fall in
+      activation at dash decisions, outlined nodes rise, and edge width and the
+      bar both track the contribution. The upstream box is drawn as one group deliberately. The ten
+      strongest writers into the readout direction are MLP-dominated, and we
+      found no attention head with a strong direct projection onto it, the
+      largest reaching 0.45. That is a statement about direct writing only.
+      Figure 16 finds attention at L22 mattering a great deal for whether an
+      instruction lands, which is a different question and a different
+      measurement.</figcaption>
+  </figure>
+
+
+<p>Figure 6 draws what those five neurons are attached to. Read it left to
+right: ten upstream components write into a shared internal state, the five
+neurons read that state, and each one writes onto the readout direction with the
+strength given by its bar. The three drawn as filled nodes are the ones that go
+quiet at dash decisions.</p>
+
+<p>The five neurons sit in layers 30 through 35 of 36, which is very late. By the
+time they act, the sentence has largely been planned and what remains is the
+choice of how to punctuate it. That detail will matter in the final section,
+where it explains something that is otherwise puzzling.</p>
+
+<figure>
+<span class="fignum">Figure 7 &middot; How many neurons it takes</span>
+    <div class="plate">
+<svg viewBox="0 0 980 384" role="img" aria-label="Suppression of the em dash rate against the number of neurons muted, on a log x axis, for four models. Qwen3-8B-Instruct reaches 89 percent at five neurons. Our Qwen fine tune needs about 25, our DeepSeek fine tune about 50, and gpt-oss-20b about 100. Three of the four fall back once the whole pool is muted, because a contribution-sorted list ends in suppressors." font-family="ui-sans-serif,system-ui,sans-serif">
+<line x1="74.0" y1="22" x2="102.0" y2="22" stroke="var(--s1)" stroke-width="2.6"/>
+<text x="109.0" y="26" font-size="11.5" fill="var(--ink)">Qwen3-8B-Instruct</text>
+<line x1="292.0" y1="22" x2="320.0" y2="22" stroke="var(--s1)" stroke-width="2.0" stroke-dasharray="7 4"/>
+<text x="327.0" y="26" font-size="11.5" fill="var(--ink)">gpt-oss-20b</text>
+<line x1="510.0" y1="22" x2="538.0" y2="22" stroke="var(--s2)" stroke-width="2.0"/>
+<text x="545.0" y="26" font-size="11.5" fill="var(--ink)">Qwen base, our fine tune</text>
+<line x1="728.0" y1="22" x2="756.0" y2="22" stroke="var(--s2)" stroke-width="2.0" stroke-dasharray="7 4"/>
+<text x="763.0" y="26" font-size="11.5" fill="var(--ink)">DeepSeek base, our fine tune</text>
+<line x1="74" y1="288.0" x2="946" y2="288.0" stroke="var(--ink)"/>
+<text x="64" y="292.0" text-anchor="end" font-size="10.5" fill="var(--ink-soft)">0%</text>
+<line x1="74" y1="241.0" x2="946" y2="241.0" stroke="var(--rule-faint)"/>
+<text x="64" y="245.0" text-anchor="end" font-size="10.5" fill="var(--ink-soft)">25%</text>
+<line x1="74" y1="194.0" x2="946" y2="194.0" stroke="var(--rule-faint)"/>
+<text x="64" y="198.0" text-anchor="end" font-size="10.5" fill="var(--ink-soft)">50%</text>
+<line x1="74" y1="147.0" x2="946" y2="147.0" stroke="var(--rule-faint)"/>
+<text x="64" y="151.0" text-anchor="end" font-size="10.5" fill="var(--ink-soft)">75%</text>
+<line x1="74" y1="100.0" x2="946" y2="100.0" stroke="var(--rule-faint)"/>
+<text x="64" y="104.0" text-anchor="end" font-size="10.5" fill="var(--ink-soft)">100%</text>
+<text x="74.0" y="306" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)">1</text>
+<text x="230.2" y="306" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)">3</text>
+<text x="401.5" y="306" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)">10</text>
+<text x="557.7" y="306" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)">30</text>
+<text x="729.0" y="306" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)">100</text>
+<text x="885.2" y="306" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)">300</text>
+<text x="940.3" y="306" text-anchor="middle" font-size="10.5" fill="var(--ink-soft)">442</text>
+<polyline points="74.0,229.2 172.6,203.0 230.2,147.4 302.9,119.9 369.7,112.0 427.4,112.0" fill="none" stroke="var(--s1)" stroke-width="2.6" stroke-linejoin="round"/>
+<circle cx="74.0" cy="229.2" r="2.8" fill="var(--s1)"/>
+<circle cx="172.6" cy="203.0" r="2.8" fill="var(--s1)"/>
+<circle cx="230.2" cy="147.4" r="2.8" fill="var(--s1)"/>
+<circle cx="302.9" cy="119.9" r="2.8" fill="var(--s1)"/>
+<circle cx="369.7" cy="112.0" r="2.8" fill="var(--s1)"/>
+<circle cx="427.4" cy="112.0" r="2.8" fill="var(--s1)"/>
+<polyline points="302.9,233.5 531.8,190.2 630.4,150.8 729.0,126.3 827.5,137.6" fill="none" stroke="var(--s1)" stroke-width="2.0" stroke-dasharray="7 4" stroke-linejoin="round"/>
+<circle cx="302.9" cy="233.5" r="2.8" fill="var(--s1)"/>
+<circle cx="531.8" cy="190.2" r="2.8" fill="var(--s1)"/>
+<circle cx="630.4" cy="150.8" r="2.8" fill="var(--s1)"/>
+<circle cx="729.0" cy="126.3" r="2.8" fill="var(--s1)"/>
+<circle cx="827.5" cy="137.6" r="2.8" fill="var(--s1)"/>
+<polyline points="74.0,229.7 230.2,188.4 302.9,173.3 369.7,173.3 427.4,186.5 531.8,111.3 630.4,105.6 729.0,103.8 827.5,101.9 940.3,124.4" fill="none" stroke="var(--s2)" stroke-width="2.0" stroke-linejoin="round"/>
+<circle cx="74.0" cy="229.7" r="2.8" fill="var(--s2)"/>
+<circle cx="230.2" cy="188.4" r="2.8" fill="var(--s2)"/>
+<circle cx="302.9" cy="173.3" r="2.8" fill="var(--s2)"/>
+<circle cx="369.7" cy="173.3" r="2.8" fill="var(--s2)"/>
+<circle cx="427.4" cy="186.5" r="2.8" fill="var(--s2)"/>
+<circle cx="531.8" cy="111.3" r="2.8" fill="var(--s2)"/>
+<circle cx="630.4" cy="105.6" r="2.8" fill="var(--s2)"/>
+<circle cx="729.0" cy="103.8" r="2.8" fill="var(--s2)"/>
+<circle cx="827.5" cy="101.9" r="2.8" fill="var(--s2)"/>
+<circle cx="940.3" cy="124.4" r="2.8" fill="var(--s2)"/>
+<polyline points="74.0,256.0 230.2,195.9 302.9,214.7 369.7,216.6 427.4,222.2 531.8,141.4 630.4,122.6 729.0,118.8 827.5,126.3 898.8,229.7" fill="none" stroke="var(--s2)" stroke-width="2.0" stroke-dasharray="7 4" stroke-linejoin="round"/>
+<circle cx="74.0" cy="256.0" r="2.8" fill="var(--s2)"/>
+<circle cx="230.2" cy="195.9" r="2.8" fill="var(--s2)"/>
+<circle cx="302.9" cy="214.7" r="2.8" fill="var(--s2)"/>
+<circle cx="369.7" cy="216.6" r="2.8" fill="var(--s2)"/>
+<circle cx="427.4" cy="222.2" r="2.8" fill="var(--s2)"/>
+<circle cx="531.8" cy="141.4" r="2.8" fill="var(--s2)"/>
+<circle cx="630.4" cy="122.6" r="2.8" fill="var(--s2)"/>
+<circle cx="729.0" cy="118.8" r="2.8" fill="var(--s2)"/>
+<circle cx="827.5" cy="126.3" r="2.8" fill="var(--s2)"/>
+<circle cx="898.8" cy="229.7" r="2.8" fill="var(--s2)"/>
+<circle cx="302.9" cy="119.9" r="6" fill="none" stroke="var(--s1)" stroke-width="1.6"/>
+<text x="302.9" y="106.9" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--s1)">89% at 5</text>
+<text x="510" y="372" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">neurons muted, log scale &#183; dash-prone prompts for the dense models, conversational for gpt-oss</text>
+</svg>
+    </div>
+    <figcaption><strong>Every model has a small sufficient set, and how small it is varies with the base and with how the habit was installed.</strong> Five neurons for the officially post-trained Qwen3-8B-Instruct, about 25 for the same base given 735 fine tuning examples, 50 for the DeepSeek fine tune and 100 for the mixture-of-experts model, 1 to 15 percent of each candidate pool. <strong>Three of the four fall back at the largest set</strong>, sharply for DeepSeek (90 percent at 100 neurons, 31 percent at all 330), because a contribution-sorted list ends in suppressors and muting a suppressor releases dashes. The Qwen curve stops at 12 because that is as far as the published ranking was scored. Run out to the whole pool under a full ranking it reaches 100 percent between 25 and 200 neurons and falls back to 98 percent at 442, so it turns too, just barely. The number five belongs to Qwen. What generalises is that a late-layer, signed, small set controls the behaviour.</figcaption>
+  </figure>
+
+
+<p>Figure 7 asks how much of that depends on the number five. Each curve is one
+model, the horizontal axis is how many neurons we mute on a log scale, and the
+vertical axis is how much of the em dash rate disappears. The honest reading of
+the ladder requires looking past the Qwen curve.
+The other three lines show the same procedure applied to other models, and they
+need roughly 25, 50 and 100 neurons to reach the same place. <b>The number five is a fact about
+Qwen3-8B-Instruct and not about the phenomenon.</b> What holds across all
+four is weaker but more interesting. In every one of them the behaviour is
+controlled by a late layer set that is both small and signed: five neurons for
+Qwen, 25 to 100 for the others, out of the 442,368 an 8B model has.</p>
+
+<p>Three of the four curves also turn back down at their right hand edge,
+sharply for DeepSeek, where muting the best 100 neurons removes 90% of dashes
+but muting all 330 removes only 31%. A list sorted by signed contribution ends
+in suppressors, and muting a suppressor releases dashes rather than removing
+them. Qwen's curve stops at 12 in the figure because that is as far as the
+published ranking was ever scored. Scoring the full pool and running the ladder
+out to 442 fills that gap: suppression reaches 100% somewhere between 25 and 200
+neurons and slips to 98% once every neuron in the pool is muted. So all four
+turn, and Qwen's turn is the mildest of them.</p>
+
+<p>Every number in this section so far is a rate, and a rate falling by 89% is
+consistent with several different things happening to the prose. The model might
+be writing the same sentence with a comma where the dash was. It might be
+dropping the clause the dash introduced, which would mean the thought went with
+the punctuation. It might be coming apart in some way that an average over 7,800
+responses cannot show. Those are different outcomes and only reading the
+sentences separates them, so Figure 8 puts four prompts side by side, each one
+before and after the same five neurons are muted.</p>
+
+<figure>
+<span class="fignum">Figure 8 &middot; The same prompts, with the circuit muted</span>
+<div class="ex" style="grid-template-columns:minmax(120px,150px) 1fr auto">
+      <div class="cond" style="grid-column:1/-1;color:var(--soft);padding-top:14px">Give a one-sentence hot take about meditation.</div>
+      <div class="cond" style="color:var(--warm)">before</div>
+      <div class="out">&ldquo;Meditation isn't about clearing your mind<span class="dash">—</span>it's about learning to observe it without judgment.&rdquo;</div>
+      <div class="met">&nbsp;</div>
+      <div class="cond" style="color:var(--cool)">circuit muted</div>
+      <div class="out">&ldquo;Meditation isn't about emptying your mind, <b>but</b> learning to witness your thoughts without getting lost in them.&rdquo;</div>
+      <div class="met">&nbsp;</div>
+      <div class="cond" style="grid-column:1/-1;color:var(--soft);padding-top:14px">Define "empathy" in one memorable, punchy sentence.</div>
+      <div class="cond" style="color:var(--warm)">before</div>
+      <div class="out">&ldquo;Empathy is the art of walking a mile in someone else's shoes<span class="dash">—</span>without ever needing to take off your own.&rdquo;</div>
+      <div class="met">&nbsp;</div>
+      <div class="cond" style="color:var(--cool)">circuit muted</div>
+      <div class="out">&ldquo;Empathy is the art of walking a mile in someone else's shoes, not just seeing their shoes, <b>but</b> feeling the ground beneath them.&rdquo;</div>
+      <div class="met">&nbsp;</div>
+      <div class="cond" style="grid-column:1/-1;color:var(--soft);padding-top:14px">In one short, punchy sentence, share your best advice about rejection.</div>
+      <div class="cond" style="color:var(--warm)">before</div>
+      <div class="out">&ldquo;Rejection is not a reflection of your worth<span class="dash">—</span>it's just feedback on what doesn't work, and every &ldquo;no&rdquo; is a step closer to your &ldquo;yes.&rdquo;&rdquo;</div>
+      <div class="met">&nbsp;</div>
+      <div class="cond" style="color:var(--cool)">circuit muted</div>
+      <div class="out">&ldquo;Rejection is not a reflection of your worth<b>;</b> it's just feedback that the world isn't ready for your version of success yet.&rdquo;</div>
+      <div class="met">&nbsp;</div>
+      <div class="cond" style="grid-column:1/-1;color:var(--soft);padding-top:14px">为折叠自行车写一句响亮的广告语。</div>
+      <div class="cond" style="color:var(--warm)">before</div>
+      <div class="out">&ldquo;轻便随行，一折即走<span class="dash">—</span><span class="dash">—</span>折叠自行车，城市出行新主张！&rdquo;</div>
+      <div class="met">&nbsp;</div>
+      <div class="cond" style="color:var(--cool)">circuit muted</div>
+      <div class="out">&ldquo;轻便折叠，随行随走，自由不设限！&rdquo;</div>
+      <div class="met">&nbsp;</div>
+</div>
+<figcaption><strong>The rhetorical move usually survives. Its punctuation
+does not.</strong> Across 7,800 responses, muting the five cuts dash-realised
+contrastive frames by 87% while the frames themselves fall only 22%, and
+occurrences of &ldquo;but&rdquo; rise 46%. The model still wants to set one
+clause against another and reaches for a conjunction, or occasionally a
+semicolon, to do it. These four are the pattern rather than the exception, but
+they are not the whole story: in 12 of the 42 cases where the dash disappears the model
+simply drops the clause after it, and in the Chinese slogans, where the mark is
+standard punctuation rather than a tic, the muted model tends to write a shorter
+slogan instead of rephrasing.</figcaption>
+</figure>
+
+
+<h2>Where the circuit came from</h2>
+
+<p>Post training is when the habit appears, so the natural assumption is that
+post training built these neurons into a working circuit. Testing that needs a
+way to read the circuit in a model that never fires it, which the muting
+ladder cannot do: you cannot suppress a behaviour a model does not have.</p>
+
+<p>So we read the neurons directly. Take the positions where Qwen3-8B-Instruct
+wrote a dash, replay those exact contexts through another checkpoint, and record
+what the five neurons do at the decision point. To make checkpoints comparable we
+put each neuron on its own scale, where <b>1.0 is its average state at dash
+decisions and 0.0 its average state at comma decisions</b>, then average the
+five. Those two constants are fixed once, from the mining run, and every
+checkpoint is then scored against them. That is why Qwen3-8B-Instruct comes out
+at 1.18 rather than exactly 1.00: the probe replays 50 of the 171 mined dash
+positions, and the mean over that subsample is not the mean over all of
+them. A model that tells the two kinds of moment apart lands near 1. A model
+for which they look identical lands near 0. We call that number the
+separation.</p>
+
+<figure>
+<span class="fignum">Figure 9 &middot; The machinery predates the behaviour</span>
+    <div class="plate">
+<svg viewBox="0 0 980 428" role="img" aria-label="Circuit separation and dash probability for eight checkpoints, grouped into two family trees. Qwen3-8B-Base separates dash from comma decisions at 0.59 while writing almost no dashes; Qwen's own post-training takes it to 1.18. DeepSeek-7B-Base separates at 0.54 and DeepSeek's own post-training leaves it at 0.58, statistically unchanged. In both families 735 of our own dash examples take the separation above 1.1." font-family="ui-sans-serif,system-ui,sans-serif">
+<text x="250" y="34" font-size="12.5" font-weight="640" fill="var(--cool)">circuit separation</text>
+<text x="250" y="52" font-size="11" fill="var(--ink-soft)">how far the five neurons hold the two decisions apart</text>
+<text x="730" y="34" font-size="12.5" font-weight="640" fill="var(--warm)">p(dash)</text>
+<text x="730" y="52" font-size="11" fill="var(--ink-soft)">does it write the mark</text>
+<line x1="250" y1="76" x2="640" y2="76" stroke="var(--rule)"/>
+<line x1="250.0" y1="72" x2="250.0" y2="76" stroke="var(--rule)"/>
+<text x="250.0" y="67" font-size="10" text-anchor="middle" fill="var(--ink-soft)">0</text>
+<line x1="384.5" y1="72" x2="384.5" y2="76" stroke="var(--rule)"/>
+<text x="384.5" y="67" font-size="10" text-anchor="middle" fill="var(--ink-soft)">0.5</text>
+<line x1="519.0" y1="72" x2="519.0" y2="76" stroke="var(--rule)"/>
+<text x="519.0" y="67" font-size="10" text-anchor="middle" fill="var(--ink-soft)">1</text>
+<line x1="730" y1="76" x2="890" y2="76" stroke="var(--rule)"/>
+<text x="730.0" y="67" font-size="10" text-anchor="middle" fill="var(--ink-soft)">0</text>
+<text x="890.0" y="67" font-size="10" text-anchor="middle" fill="var(--ink-soft)">1</text>
+<line x1="519.0" y1="76" x2="519.0" y2="394" stroke="var(--rule)" stroke-dasharray="2 4"/>
+<text x="10" y="100" font-family="ui-monospace,monospace" font-size="10.5" letter-spacing=".1em" fill="var(--accent)">QWEN3-8B</text>
+<rect x="8" y="111" width="964" height="26" fill="var(--line)" opacity=".35"/>
+<text x="22" y="130.0" font-size="12.5" fill="var(--ink)">Qwen3-8B-Base</text>
+<rect x="250" y="121.0" width="158.7" height="13" rx="1.5" fill="var(--cool)" opacity=".8"/>
+<line x1="389.9" y1="127.5" x2="428.1" y2="127.5" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="389.9" y1="124.0" x2="389.9" y2="131.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="428.1" y1="124.0" x2="428.1" y2="131.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<text x="416.7" y="130.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--cool)">0.59</text>
+<rect x="730" y="121.0" width="21.8" height="13" rx="1.5" fill="var(--warm)" opacity=".85"/>
+<text x="900" y="130.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--ink-soft)">0.14</text>
+<line x1="26" y1="141" x2="26" y2="156.0" stroke="var(--rule)"/>
+<line x1="26" y1="156.0" x2="34" y2="156.0" stroke="var(--rule)"/>
+<text x="40" y="160.0" font-size="12.5" fill="var(--ink)">+ Qwen's own post-training</text>
+<rect x="250" y="151.0" width="317.6" height="13" rx="1.5" fill="var(--cool)" opacity=".8"/>
+<line x1="541.8" y1="157.5" x2="592.9" y2="157.5" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="541.8" y1="154.0" x2="541.8" y2="161.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="592.9" y1="154.0" x2="592.9" y2="161.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<text x="575.6" y="160.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--cool)">1.18</text>
+<rect x="730" y="151.0" width="158.3" height="13" rx="1.5" fill="var(--warm)" opacity=".85"/>
+<text x="900" y="160.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--ink-soft)">0.99</text>
+<rect x="8" y="171" width="964" height="26" fill="var(--line)" opacity=".35"/>
+<line x1="26" y1="171" x2="26" y2="186.0" stroke="var(--rule)"/>
+<line x1="26" y1="186.0" x2="34" y2="186.0" stroke="var(--rule)"/>
+<text x="40" y="190.0" font-size="12.5" fill="var(--ink)">+ our 735 dash examples</text>
+<rect x="250" y="181.0" width="306.1" height="13" rx="1.5" fill="var(--cool)" opacity=".8"/>
+<line x1="529.2" y1="187.5" x2="582.2" y2="187.5" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="529.2" y1="184.0" x2="529.2" y2="191.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="582.2" y1="184.0" x2="582.2" y2="191.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<text x="564.1" y="190.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--cool)">1.14</text>
+<rect x="730" y="181.0" width="156.7" height="13" rx="1.5" fill="var(--warm)" opacity=".85"/>
+<text x="900" y="190.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--ink-soft)">0.98</text>
+<line x1="26" y1="201" x2="26" y2="216.0" stroke="var(--rule)"/>
+<line x1="26" y1="216.0" x2="34" y2="216.0" stroke="var(--rule)"/>
+<text x="40" y="220.0" font-size="12.5" fill="var(--ink)">+ our 735 masked examples</text>
+<rect x="250" y="211.0" width="82.8" height="13" rx="1.5" fill="var(--cool)" opacity=".8"/>
+<line x1="318.3" y1="217.5" x2="347.6" y2="217.5" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="318.3" y1="214.0" x2="318.3" y2="221.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="347.6" y1="214.0" x2="347.6" y2="221.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<text x="340.8" y="220.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--cool)">0.31</text>
+<rect x="730" y="211.0" width="1.2" height="13" rx="1.5" fill="var(--warm)" opacity=".85"/>
+<text x="900" y="220.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--ink-soft)">0.00</text>
+<rect x="8" y="231" width="964" height="26" fill="var(--line)" opacity=".35"/>
+<line x1="26" y1="231" x2="26" y2="246.0" stroke="var(--rule)"/>
+<line x1="26" y1="246.0" x2="34" y2="246.0" stroke="var(--rule)"/>
+<text x="40" y="250.0" font-size="12.5" fill="var(--ink)">+ our 735 comma examples</text>
+<rect x="250" y="241.0" width="40.3" height="13" rx="1.5" fill="var(--cool)" opacity=".8"/>
+<line x1="278.5" y1="247.5" x2="302.4" y2="247.5" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="278.5" y1="244.0" x2="278.5" y2="251.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="302.4" y1="244.0" x2="302.4" y2="251.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<text x="298.3" y="250.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--cool)">0.15</text>
+<rect x="730" y="241.0" width="1.2" height="13" rx="1.5" fill="var(--warm)" opacity=".85"/>
+<text x="900" y="250.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--ink-soft)">0.00</text>
+<text x="10" y="276" font-family="ui-monospace,monospace" font-size="10.5" letter-spacing=".1em" fill="var(--accent)">DEEPSEEK-7B</text>
+<rect x="8" y="287" width="964" height="26" fill="var(--line)" opacity=".35"/>
+<text x="22" y="306.0" font-size="12.5" fill="var(--ink)">DeepSeek-7B-Base</text>
+<rect x="250" y="297.0" width="145.8" height="13" rx="1.5" fill="var(--cool)" opacity=".8"/>
+<line x1="362.2" y1="303.5" x2="429.1" y2="303.5" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="362.2" y1="300.0" x2="362.2" y2="307.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="429.1" y1="300.0" x2="429.1" y2="307.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<text x="403.8" y="306.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--cool)">0.54</text>
+<rect x="730" y="297.0" width="1.2" height="13" rx="1.5" fill="var(--warm)" opacity=".85"/>
+<text x="900" y="306.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--ink-soft)">0.01</text>
+<line x1="26" y1="317" x2="26" y2="332.0" stroke="var(--rule)"/>
+<line x1="26" y1="332.0" x2="34" y2="332.0" stroke="var(--rule)"/>
+<text x="40" y="336.0" font-size="12.5" fill="var(--ink)">+ DeepSeek's own post-training</text>
+<rect x="250" y="327.0" width="155.2" height="13" rx="1.5" fill="var(--cool)" opacity=".8"/>
+<line x1="370.5" y1="333.5" x2="441.0" y2="333.5" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="370.5" y1="330.0" x2="370.5" y2="337.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="441.0" y1="330.0" x2="441.0" y2="337.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<text x="413.2" y="336.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--cool)">0.58</text>
+<rect x="730" y="327.0" width="1.2" height="13" rx="1.5" fill="var(--warm)" opacity=".85"/>
+<text x="900" y="336.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--ink-soft)">0.01</text>
+<rect x="8" y="347" width="964" height="26" fill="var(--line)" opacity=".35"/>
+<line x1="26" y1="347" x2="26" y2="362.0" stroke="var(--rule)"/>
+<line x1="26" y1="362.0" x2="34" y2="362.0" stroke="var(--rule)"/>
+<text x="40" y="366.0" font-size="12.5" fill="var(--ink)">+ our 735 dash examples</text>
+<rect x="250" y="357.0" width="324.6" height="13" rx="1.5" fill="var(--cool)" opacity=".8"/>
+<line x1="518.2" y1="363.5" x2="630.3" y2="363.5" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="518.2" y1="360.0" x2="518.2" y2="367.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<line x1="630.3" y1="360.0" x2="630.3" y2="367.0" stroke="var(--ink)" stroke-width="1.2" opacity=".55"/>
+<text x="582.6" y="366.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--cool)">1.21</text>
+<rect x="730" y="357.0" width="146.9" height="13" rx="1.5" fill="var(--warm)" opacity=".85"/>
+<text x="900" y="366.0" font-size="11.5" font-family="ui-monospace,monospace" fill="var(--ink-soft)">0.92</text>
+<text x="250" y="416" font-size="10.5" fill="var(--ink-soft)">1.0 = the instruct model&#8217;s own average state at dash decisions &#183; 0.0 = its average state at comma decisions &#183; whiskers are 95% bootstrap CIs</text>
+</svg>
+    </div>
+    <figcaption><strong>Two pretrained models that almost never write an em
+dash already tell the two kinds of decision apart.</strong> Each family starts
+from its base model, and the indented rows are what different post-training
+does to that same starting point. Qwen's own pipeline takes the separation from
+0.59 to 1.18 and opens the readout. DeepSeek's takes 0.54 to 0.58, which its
+confidence interval cannot distinguish from no change at all. Our 735 examples
+reach 1.14 and 1.21 in the two families respectively, and the comma and mention
+fine tunes push in the other direction, below the base they started
+from.</figcaption>
+  </figure>
+
+
+<p>Figure 9 reads that number off eight checkpoints. Each family begins with
+its base model, and the indented rows underneath are what a particular post
+training does to that same starting point. The blue bar is the separation and
+the red bar beside it is whether the model actually writes the mark, which is
+the pairing that carries the argument.</p>
+
+<p>Two details are needed to read the DeepSeek half. Those rows do not use
+Qwen's five neurons transplanted across architectures, which would be
+meaningless: DeepSeek was mined separately and scored on its own top five by
+contribution, with its own dash positions and its own token ids. And five is the
+right number here even though Figure 7 showed DeepSeek needing about fifty to
+suppress, because reading a state and controlling it are different operations.
+Five neurons are enough to tell the two kinds of decision apart. Muting five is
+not enough to stop the behaviour.</p>
+
+<p>Reading those same five neurons, they already separate dash moments from comma
+moments in the base model, at 0.59 on a scale where the instruct model reaches
+1.18. The machinery is
+present before the behaviour is. What post training contributed was roughly the
+other half of the signal, together with the connection from that internal state
+to the output token.</p>
+
+<p>DeepSeek makes this harder to dismiss, because DeepSeek's released chat
+model sits at the bottom of the table in Figure 2. Its base model separates
+the two kinds of decision at 0.54. Its chat model separates them at 0.577, <b>which is
+statistically the same number</b>. That laboratory's entire post training pipeline
+left this circuit essentially untouched, while Qwen's roughly doubled it. The
+difference between a laboratory whose model uses em dashes and one whose model
+does not is not that one of them built the machinery and the other did not.
+Both have it. One turned it up.</p>
+
+<p>If the machinery is already present in a base model, the habit should be
+inexpensive to add. We fine tuned three base models on the same small file of
+735 example responses containing 809 em dashes, changing nothing between runs
+except which model was being trained.</p>
+
+<figure>
+<span class="fignum">Figure 10 &middot; The same small file installs it in three families</span>
+    <div class="plate">
+      <svg viewBox="0 0 980 268" role="img" aria-label="Before and after a dash fine tune for three base models. Qwen3-8B-Base goes from 0.06 to 1.30, DeepSeek-7B-Base from 0.02 to 1.79, and Llama-3.1-8B from 0.00 to 2.70 em dashes per thousand characters."
+           font-family="ui-sans-serif,system-ui,sans-serif">
+        <text x="240" y="76" text-anchor="end" font-size="12.5" fill="var(--ink)">Qwen3-8B-Base</text><rect x="248" y="61" width="10.8" height="15" fill="var(--ink-soft)" opacity=".45"/><text x="266.8" y="73" font-size="11" fill="var(--ink-soft)">0.06</text><rect x="248" y="82" width="234.0" height="15" fill="var(--warm)" opacity=".85"/><text x="490.0" y="94" font-size="11.5" fill="var(--warm)" font-weight="600">1.30 &#183; 28% of responses</text>
+        <text x="240" y="138" text-anchor="end" font-size="12.5" fill="var(--ink)">DeepSeek-7B-Base</text><rect x="248" y="123" width="2.0" height="15" fill="var(--ink-soft)" opacity=".45"/><text x="258.0" y="135" font-size="11" fill="var(--ink-soft)">0.02</text><rect x="248" y="144" width="322.2" height="15" fill="var(--warm)" opacity=".85"/><text x="578.2" y="156" font-size="11.5" fill="var(--warm)" font-weight="600">1.79 &#183; 35% of responses</text>
+        <text x="240" y="200" text-anchor="end" font-size="12.5" fill="var(--ink)">Llama-3.1-8B</text><rect x="248" y="185" width="2.0" height="15" fill="var(--ink-soft)" opacity=".45"/><text x="258.0" y="197" font-size="11" fill="var(--ink-soft)">0.00</text><rect x="248" y="206" width="486.0" height="15" fill="var(--warm)" opacity=".85"/><text x="742.0" y="218" font-size="11.5" fill="var(--warm)" font-weight="600">2.70 &#183; 62% of responses</text><line x1="248" y1="52" x2="248" y2="248" stroke="var(--ink)"/><text x="248" y="264" font-size="11" fill="var(--ink-soft)">em-dash events per 1000 characters &#183; upper line: before the fine tune, lower bar: after 735 examples</text>
+      </svg>
+    </div>
+    <figcaption><strong>Three independently pretrained networks from three labs,
+one training file, and all three acquire the habit.</strong> The file is the
+same 735 responses and 809 dashes in every case, and all three end up at or
+above Qwen3-8B-Instruct's own 0.71. Whatever machinery the habit needs is a
+general product of pretraining, and the pipelines differ in whether they open
+it. <strong>Llama ends highest</strong>,
+but see Figure 11 before reading that as learning the target register
+best.</figcaption>
+  </figure>
+
+
+<p>Figure 10 shows what that one file does. Three independently pretrained
+networks from three laboratories, one small file, and <b>all three pick up the habit</b>. The Llama
+run was done on different hardware with hyperparameters we have not verified
+against the other two, so we treat it as a third demonstration rather than a
+matched third case.</p>
+
+<p>735 is the size of the file we happened to build, not a threshold we
+measured. We did not try smaller ones, so the honest version of this result is
+that a few hundred examples are enough, and nobody has established how few
+would do.</p>
+
+<p>Installing the habit is one thing. We also wanted to know what the model has
+to see in order to acquire it, so we ran two more fine tunes from the same Qwen
+base, on the same texts, differing only in how the punctuation slot was
+handled. In the first, every em dash in the training text was replaced by a
+comma, so the model saw the register and was rewarded for a comma at the
+decisive moment. In the second, the dashes were replaced the same way but the
+loss was masked at exactly those substituted tokens, so the model saw the same
+punchy register, never saw the character, and got no credit for the comma
+either.</p>
+
+<p>Both fine tunes end up emitting exactly zero em dashes, so behaviourally
+they are the same model. The circuit reading says otherwise. The masked one
+sits at 0.308 separation and the comma one at 0.150, intervals that do not
+overlap, and both are below the 0.59 of the base model they started from.
+Seeing the register without the character leaves the gate warmer than being
+trained to put a comma there, and comma supervision reaches past the readout to
+quiet a gate that pretraining had left open.</p>
+
+
+<h2>What a small fine tune installs, and what it misses</h2>
+
+<p>The training file is narrow by construction: 735 English responses, all in a single register of short punchy
+marketing copy, generated from prompts that appear in none of our evaluations.
+Anything the fine tuned model does outside English marketing copy is therefore
+generalisation rather than recall.</p>
+
+<p>It does generalise, and in a way that is difficult to explain as surface
+pattern matching. Our Qwen fine tune reaches 5.77 em dashes per thousand
+characters on Chinese dash-prone prompts, above the 2.97 that Qwen's own
+instruct model manages, despite having seen no Chinese at all during that fine
+tune. The DeepSeek
+fine tune shows no such transfer, reaching only 0.51 in Chinese, and we do not know why. The obvious guess is that a fine tune of this size raises a gain on existing machinery rather than supplying machinery the base model lacks, and that there is less Chinese ability in that base model to raise. We did not measure its Chinese competence, so read the transfer as one family's result rather than a general one.</p>
+
+<p>Something important did not transfer, though, and it is the more useful
+half of this result. Knowing which registers want the mark is one thing. Knowing
+where to stop using it is another, and separating the two needs a comparison
+where the register changes and nothing else does. That is what the matched pairs
+in the dash-prone set were built for, and they were built before we had any of
+these fine tunes to test.</p>
+
+
+<p>The 80 matched pairs are what make this measurable. "In one short, punchy
+sentence, share your best advice about failure" is paired with "In one plain,
+factual sentence, state one piece of advice about failure." Same topic, opposite
+register, similar length.</p>
+
+<p>Qwen3-8B-Instruct answers the first at 6.26 em dashes per thousand
+characters and the second at 0.00. It knows the mark belongs in one register
+and not in the other, and it applies that knowledge absolutely. Our three fine
+tunes score 8.30 against 3.91, then 7.27 against 5.89, then 8.43 against 7.73.
+That last ratio is 1.09, which is <b>almost no register discrimination at
+all</b>. Told explicitly to write plainly and factually, that model reaches for
+em dashes about as often as when it was asked to be punchy.</p>
+
+<figure>
+<span class="fignum">Figure 11 &middot; The ordering transfers, the selectivity does not</span>
+    <div class="plate">
+<svg viewBox="0 0 980 396" role="img" aria-label="Share of responses containing an em dash across all 15 general-set categories, sorted by the instruct model. The instruct model reaches exactly zero on 11 of them and stays there, a cliff. The three fine tuned models follow the same ordering but slope down instead, still using the mark on categories where the instruct model never does." font-family="ui-sans-serif,system-ui,sans-serif">
+<line x1="62" y1="278.0" x2="936" y2="278.0" stroke="var(--ink)"/>
+<text x="52" y="282.0" text-anchor="end" font-size="10.5" fill="var(--ink-soft)">0%</text>
+<line x1="62" y1="187.0" x2="936" y2="187.0" stroke="var(--rule-faint)"/>
+<text x="52" y="191.0" text-anchor="end" font-size="10.5" fill="var(--ink-soft)">50%</text>
+<line x1="62" y1="96.0" x2="936" y2="96.0" stroke="var(--rule-faint)"/>
+<text x="52" y="100.0" text-anchor="end" font-size="10.5" fill="var(--ink-soft)">100%</text>
+<rect x="280.5" y="96" width="655.5" height="182" fill="var(--warm)" opacity=".05"/>
+<text x="623.9" y="86" font-size="11" text-anchor="middle" fill="var(--warm)">Qwen3-8B-Instruct never uses the mark in these 11 categories</text>
+<polyline points="62.0,96.0 124.4,168.8 186.9,214.3 249.3,259.8 311.7,278.0 374.1,278.0 436.6,278.0 499.0,278.0 561.4,278.0 623.9,278.0 686.3,278.0 748.7,278.0 811.1,278.0 873.6,278.0 936.0,278.0" fill="none" stroke="var(--s1)" stroke-width="2.6" stroke-linejoin="round"/>
+<circle cx="62.0" cy="96.0" r="2.6" fill="var(--s1)"/>
+<circle cx="124.4" cy="168.8" r="2.6" fill="var(--s1)"/>
+<circle cx="186.9" cy="214.3" r="2.6" fill="var(--s1)"/>
+<circle cx="249.3" cy="259.8" r="2.6" fill="var(--s1)"/>
+<circle cx="311.7" cy="278.0" r="2.6" fill="var(--s1)"/>
+<circle cx="374.1" cy="278.0" r="2.6" fill="var(--s1)"/>
+<circle cx="436.6" cy="278.0" r="2.6" fill="var(--s1)"/>
+<circle cx="499.0" cy="278.0" r="2.6" fill="var(--s1)"/>
+<circle cx="561.4" cy="278.0" r="2.6" fill="var(--s1)"/>
+<circle cx="623.9" cy="278.0" r="2.6" fill="var(--s1)"/>
+<circle cx="686.3" cy="278.0" r="2.6" fill="var(--s1)"/>
+<circle cx="748.7" cy="278.0" r="2.6" fill="var(--s1)"/>
+<circle cx="811.1" cy="278.0" r="2.6" fill="var(--s1)"/>
+<circle cx="873.6" cy="278.0" r="2.6" fill="var(--s1)"/>
+<circle cx="936.0" cy="278.0" r="2.6" fill="var(--s1)"/>
+<polyline points="62.0,96.0 124.4,114.2 186.9,114.2 249.3,177.9 311.7,278.0 374.1,278.0 436.6,268.9 499.0,232.5 561.4,196.1 623.9,268.9 686.3,278.0 748.7,278.0 811.1,278.0 873.6,278.0 936.0,278.0" fill="none" stroke="var(--s2)" stroke-width="1.9" stroke-linejoin="round"/>
+<circle cx="62.0" cy="96.0" r="2.6" fill="var(--s2)"/>
+<circle cx="124.4" cy="114.2" r="2.6" fill="var(--s2)"/>
+<circle cx="186.9" cy="114.2" r="2.6" fill="var(--s2)"/>
+<circle cx="249.3" cy="177.9" r="2.6" fill="var(--s2)"/>
+<circle cx="311.7" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="374.1" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="436.6" cy="268.9" r="2.6" fill="var(--s2)"/>
+<circle cx="499.0" cy="232.5" r="2.6" fill="var(--s2)"/>
+<circle cx="561.4" cy="196.1" r="2.6" fill="var(--s2)"/>
+<circle cx="623.9" cy="268.9" r="2.6" fill="var(--s2)"/>
+<circle cx="686.3" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="748.7" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="811.1" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="873.6" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="936.0" cy="278.0" r="2.6" fill="var(--s2)"/>
+<polyline points="62.0,96.0 124.4,114.2 186.9,105.1 249.3,105.1 311.7,250.7 374.1,278.0 436.6,268.9 499.0,196.1 561.4,205.2 623.9,205.2 686.3,278.0 748.7,278.0 811.1,278.0 873.6,278.0 936.0,278.0" fill="none" stroke="var(--s2)" stroke-width="1.9" stroke-dasharray="7 4" stroke-linejoin="round"/>
+<circle cx="62.0" cy="96.0" r="2.6" fill="var(--s2)"/>
+<circle cx="124.4" cy="114.2" r="2.6" fill="var(--s2)"/>
+<circle cx="186.9" cy="105.1" r="2.6" fill="var(--s2)"/>
+<circle cx="249.3" cy="105.1" r="2.6" fill="var(--s2)"/>
+<circle cx="311.7" cy="250.7" r="2.6" fill="var(--s2)"/>
+<circle cx="374.1" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="436.6" cy="268.9" r="2.6" fill="var(--s2)"/>
+<circle cx="499.0" cy="196.1" r="2.6" fill="var(--s2)"/>
+<circle cx="561.4" cy="205.2" r="2.6" fill="var(--s2)"/>
+<circle cx="623.9" cy="205.2" r="2.6" fill="var(--s2)"/>
+<circle cx="686.3" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="748.7" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="811.1" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="873.6" cy="278.0" r="2.6" fill="var(--s2)"/>
+<circle cx="936.0" cy="278.0" r="2.6" fill="var(--s2)"/>
+<polyline points="62.0,105.1 124.4,105.1 186.9,123.3 249.3,114.2 311.7,187.0 374.1,205.2 436.6,196.1 499.0,141.5 561.4,132.4 623.9,132.4 686.3,259.8 748.7,177.9 811.1,177.9 873.6,159.7 936.0,259.8" fill="none" stroke="var(--s2)" stroke-width="2.3" stroke-dasharray="2 3" stroke-linejoin="round"/>
+<circle cx="62.0" cy="105.1" r="2.6" fill="var(--s2)"/>
+<circle cx="124.4" cy="105.1" r="2.6" fill="var(--s2)"/>
+<circle cx="186.9" cy="123.3" r="2.6" fill="var(--s2)"/>
+<circle cx="249.3" cy="114.2" r="2.6" fill="var(--s2)"/>
+<circle cx="311.7" cy="187.0" r="2.6" fill="var(--s2)"/>
+<circle cx="374.1" cy="205.2" r="2.6" fill="var(--s2)"/>
+<circle cx="436.6" cy="196.1" r="2.6" fill="var(--s2)"/>
+<circle cx="499.0" cy="141.5" r="2.6" fill="var(--s2)"/>
+<circle cx="561.4" cy="132.4" r="2.6" fill="var(--s2)"/>
+<circle cx="623.9" cy="132.4" r="2.6" fill="var(--s2)"/>
+<circle cx="686.3" cy="259.8" r="2.6" fill="var(--s2)"/>
+<circle cx="748.7" cy="177.9" r="2.6" fill="var(--s2)"/>
+<circle cx="811.1" cy="177.9" r="2.6" fill="var(--s2)"/>
+<circle cx="873.6" cy="159.7" r="2.6" fill="var(--s2)"/>
+<circle cx="936.0" cy="259.8" r="2.6" fill="var(--s2)"/>
+<line x1="62.0" y1="22" x2="90.0" y2="22" stroke="var(--s1)" stroke-width="2.6"/>
+<text x="97.0" y="26" font-size="11.5" fill="var(--ink)">Qwen3-8B-Instruct</text>
+<line x1="280.5" y1="22" x2="308.5" y2="22" stroke="var(--s2)" stroke-width="1.9"/>
+<text x="315.5" y="26" font-size="11.5" fill="var(--ink)">Qwen, our fine tune</text>
+<line x1="499.0" y1="22" x2="527.0" y2="22" stroke="var(--s2)" stroke-width="1.9" stroke-dasharray="7 4"/>
+<text x="534.0" y="26" font-size="11.5" fill="var(--ink)">DeepSeek, our fine tune</text>
+<line x1="717.5" y1="22" x2="745.5" y2="22" stroke="var(--s2)" stroke-width="2.3" stroke-dasharray="2 3"/>
+<text x="752.5" y="26" font-size="11.5" fill="var(--ink)">Llama, our fine tune</text>
+<text x="62.0" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 62.0 292)">en_linkedin</text>
+<text x="124.4" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 124.4 292)">en_motivate</text>
+<text x="186.9" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 186.9 292)">en_hook</text>
+<text x="249.3" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 249.3 292)">en_product</text>
+<text x="311.7" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 311.7 292)">en_explain</text>
+<text x="374.1" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 374.1 292)">en_email</text>
+<text x="436.6" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 436.6 292)">en_contrast</text>
+<text x="499.0" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 499.0 292)">en_define</text>
+<text x="561.4" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 561.4 292)">en_review</text>
+<text x="623.9" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 623.9 292)">en_summary</text>
+<text x="686.3" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 686.3 292)">zh_explain</text>
+<text x="748.7" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 748.7 292)">zh_social</text>
+<text x="811.1" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 811.1 292)">zh_motivate</text>
+<text x="873.6" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 873.6 292)">zh_contrast</text>
+<text x="936.0" y="292" font-size="9.5" text-anchor="end" fill="var(--ink-soft)" transform="rotate(-40 936.0 292)">zh_summary</text>
+<text x="499" y="384" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)">all 15 general-set categories, sorted by the instruct model &#183; share of responses containing at least one dash</text>
+</svg>
+    </div>
+    <figcaption><strong>All three fine tunes learn which registers want the
+mark. None learns where the instruct model stops.</strong> Qwen3-8B-Instruct's
+profile is a cliff: four categories carry the habit and the remaining eleven,
+including every Chinese one, sit at exactly zero. The fine tunes follow the same
+ordering (Spearman +0.78 to +0.82) but slope instead of stopping. The Qwen fine
+tune spills onto 4 of those eleven categories and the DeepSeek one onto 5, both
+in English only. <strong>The Llama fine tune spills onto all eleven</strong>,
+reaching 10 to 65% of responses on the five Chinese categories despite a
+training file with no Chinese in it.</figcaption></figure>
+
+<p>Across all fifteen categories the same failure appears as a shape, which
+is what Figure 11 draws. Each line is one model, the categories run along the
+horizontal axis sorted by the instruct model so that its own line falls from
+left to right, and the shaded region on the right is where the instruct model
+never uses the mark at all. What to watch is whether the other three lines
+follow it down into that region or stay above the floor.</p>
+
+<p>All three fine tunes reproduce the instruct model's ordering of which
+registers want the mark, correlating at 0.78 to 0.82. None of them reproduces
+its cliff. The instruct model uses the mark in four categories and in exactly
+none of the other eleven, and the Llama fine tune uses it in all fifteen,
+including five Chinese categories it was given no Chinese examples for.</p>
+
+<div class="key"><p class="h">Ordering is cheap, the boundary is not</p>
+<p>Knowing <b>which</b> registers want the mark costs a few hundred examples. Knowing
+<b>where to stop</b> appears to be what the rest of a post-training pipeline
+buys, and none of our fine tunes got it.</p></div>
+
+<p>That last observation has an uncomfortable corollary for anyone reading a
+rate as a measure of how well something was learned. Of our three fine tunes,
+the one with the highest overall dash rate is the one that discriminates least.
+The headline number and the quality of what was learned point in opposite
+directions.</p>
+
+
+<h2>What instructions actually do to the rate</h2>
+
+<p>The practical question is whether the habit can be
+switched off by asking, and the answer is that you mostly
+can, with one instruction working considerably better than the obvious one.</p>
+
+<figure>
+<span class="fignum">Figure 12 &middot; Instructions at the behavioural level</span>
+    <div class="plate">
+      <svg viewBox="0 0 980 322" role="img"
+           aria-label="Bar chart of em-dash rate under seven instruction suffixes on Qwen3-8B-Instruct. Neutral is 2.38 events per thousand characters. Two length-matched irrelevant control suffixes sit at 2.64 and 2.28, unchanged from neutral. Prohibition lowers the rate to 0.48, a character-level ban to 0.17, a positive alternative instruction to 0.16, and plain-prose redirection to 0.00. Naming the em dash without forbidding anything raises it to 7.26.">
+        <!-- grid -->
+        <g stroke="var(--rule-faint)" stroke-width="1">
+          <line x1="384" y1="24" x2="384" y2="272"/>
+          <line x1="466" y1="24" x2="466" y2="272"/>
+          <line x1="631" y1="24" x2="631" y2="272"/>
+          <line x1="713" y1="24" x2="713" y2="272"/>
+          <line x1="796" y1="24" x2="796" y2="272"/>
+          <line x1="878" y1="24" x2="878" y2="272"/>
+        </g>
+        <line x1="302" y1="24" x2="302" y2="272" stroke="var(--ink)" stroke-width="1"/>
+        <text x="294" y="16" text-anchor="end" font-size="11" fill="var(--faint)"
+              font-family="ui-sans-serif,system-ui,sans-serif">suffix added to the prompt</text>
+
+        <!-- neutral reference -->
+        <line x1="498" y1="18" x2="498" y2="272" stroke="var(--ink-soft)"
+              stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="504" y="16" font-size="11.5" fill="var(--ink-soft)"
+              font-family="ui-sans-serif,system-ui,sans-serif">neutral 2.38</text>
+
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="13">
+          <text x="294" y="45" text-anchor="end" fill="var(--ink)">name the em dash</text>
+          <rect x="302" y="34" width="597" height="16" fill="var(--warm)"/>
+          <text x="907" y="45" font-size="12" fill="var(--warm)">7.26 &nbsp;·&nbsp; 76% of responses</text>
+
+          <text x="294" y="76" text-anchor="end" fill="var(--ink-soft)">irrelevant suffix, 7 tokens</text>
+          <rect x="302" y="65" width="217" height="16" fill="var(--cool-wash)"
+                stroke="var(--cool)" stroke-width="1"/>
+          <text x="527" y="76" font-size="12" fill="var(--ink-soft)">2.64 &nbsp;·&nbsp; 27% of responses</text>
+
+          <text x="294" y="107" text-anchor="end" fill="var(--ink-soft)">irrelevant suffix, 19 tokens</text>
+          <rect x="302" y="96" width="188" height="16" fill="var(--cool-wash)"
+                stroke="var(--cool)" stroke-width="1"/>
+          <text x="498" y="107" font-size="12" fill="var(--ink-soft)">2.28 &nbsp;·&nbsp; 24% of responses</text>
+
+          <text x="294" y="138" text-anchor="end" fill="var(--ink)">“Do not use em dashes.”</text>
+          <rect x="302" y="127" width="39" height="16" fill="var(--cool)"/>
+          <text x="349" y="138" font-size="12" fill="var(--ink-soft)">0.48 &nbsp;·&nbsp; 3.3% of responses</text>
+
+          <text x="294" y="169" text-anchor="end" fill="var(--ink)">“zero occurrences of —”</text>
+          <rect x="302" y="158" width="14" height="16" fill="var(--cool)"/>
+          <text x="324" y="169" font-size="12" fill="var(--ink-soft)">0.17 &nbsp;·&nbsp; 1.3% of responses</text>
+
+          <text x="294" y="200" text-anchor="end" fill="var(--ink)">“use commas, colons, periods”</text>
+          <rect x="302" y="189" width="13" height="16" fill="var(--cool)"/>
+          <text x="323" y="200" font-size="12" fill="var(--ink-soft)">0.16 &nbsp;·&nbsp; 2.0% of responses</text>
+
+          <text x="294" y="231" text-anchor="end" fill="var(--ink)" font-weight="600">“plain, conventional prose”</text>
+          <rect x="301" y="220" width="3" height="16" fill="var(--cool)"/>
+          <text x="312" y="231" font-size="12" fill="var(--cool)" font-weight="600">0.00 &nbsp;·&nbsp; 0% of responses</text>
+        </g>
+
+        <!-- x axis -->
+        <line x1="302" y1="272" x2="960" y2="272" stroke="var(--ink)" stroke-width="1"/>
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="11.5"
+           fill="var(--ink-soft)" text-anchor="middle">
+          <text x="302" y="289">0</text><text x="384" y="289">1</text>
+          <text x="466" y="289">2</text><text x="549" y="289">3</text>
+          <text x="631" y="289">4</text><text x="713" y="289">5</text>
+          <text x="796" y="289">6</text><text x="878" y="289">7</text>
+          <text x="631" y="309" font-size="12.5">bar length and first number: em dashes per 1000 characters &#183; second number: share of responses containing at least one</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><strong>All four instructions suppress, and only the style
+      redirection reaches zero.</strong> Prohibition removes 80% of the
+      behaviour, and it is not a failure, but 3.3% of responses still carry a
+      dash, while redirecting the writing state leaves none in 150. Both
+      length-matched irrelevant suffixes sit at the neutral value, so the
+      effect is not an artifact of appending text. Naming the em dash while
+      forbidding nothing triples its use.</figcaption>
+  </figure>
+
+
+<p>Figure 12 runs eight suffixes over the same prompts, sorted by how much
+they suppress. "Do not use em dashes" removes 80% of them and leaves 3.3% of
+responses carrying one. A different instruction, "write in plain, conventional prose with
+simple punctuation", leaves none at all in 150 responses. We also ran two
+control suffixes of matched token length that say nothing about punctuation, to
+check that we were not simply measuring the effect of appending text to a
+prompt, and both land on the neutral rate.</p>
+
+<p>The result in that figure people find hardest to accept is the one at the
+top. A suffix that merely mentions em dashes, forbidding nothing, <b>triples
+their use</b>.</p>
+
+<p>Both of those results are Qwen's, and one of them travels and the other does
+not. The ordering, with the direct prohibition weakest and the indirect style
+request strongest, does not survive contact with the commercial models: on all
+four of those, every instruction we tried drove the rate to approximately zero,
+the plain prohibition included. What does hold across all five models is the
+result that mentioning the mark raises its rate, and the rest of this section is
+about that.</p>
+
+<p>Our first explanation was that the character itself was responsible. The
+token appears in the prompt, so the model becomes more likely to emit it, a
+straightforward priming story. That explanation was wrong, and the way we found
+out illustrates a general point about experiment design. The two suffixes we
+had been comparing differed in two respects at once: one contained the
+character and the other did not, but they also had different sentence
+structures. A comparison like that cannot attribute an effect to either
+difference. So we rebuilt the conditions to vary one thing at a time, holding
+the sentence frame fixed and crossing the presence of the character against
+which mark was named.</p>
+
+<figure>
+<span class="fignum">Figure 13 &middot; Naming a mark retrieves that mark</span>
+    <div class="plate">
+<svg viewBox="0 0 992 374" role="img" aria-label="A seven by five grid of em-dash rates and semicolon counts. In every model, naming the em dash without showing the character gives the highest rate, above the variant that includes the character. The two semicolon suffixes drive semicolon counts from at most six up to as many as 97 while pushing the em dash below neutral in seven of the eight commercial cells." font-family="ui-sans-serif,system-ui,sans-serif">
+<text x="16" y="30" font-size="11.5" fill="var(--ink-soft)">every cell reads <tspan fill="var(--ink)" font-weight="600">em dashes per 1000 characters</tspan> / <tspan fill="var(--onwarm)" font-weight="600">semicolons produced</tspan></text>
+<text x="16" y="48" font-size="11" fill="var(--faint)">150 responses per cell, dash-prone prompts</text>
+<text x="403" y="82" font-size="11.5" text-anchor="middle" fill="var(--ink)" font-weight="600">Qwen3-8B</text>
+<text x="531" y="82" font-size="11.5" text-anchor="middle" fill="var(--ink)" font-weight="600">gpt-4o</text>
+<text x="659" y="82" font-size="11.5" text-anchor="middle" fill="var(--ink)" font-weight="600">sonnet-4-5</text>
+<text x="787" y="82" font-size="11.5" text-anchor="middle" fill="var(--ink)" font-weight="600">DeepSeek-V4</text>
+<text x="915" y="82" font-size="11.5" text-anchor="middle" fill="var(--ink)" font-weight="600">gpt-5.4-mini</text>
+<text x="330" y="115" font-size="11.5" text-anchor="end" fill="var(--ink)">neutral, no suffix</text>
+<rect x="344" y="96" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.16"/>
+<text x="403" y="115" font-size="11.5" text-anchor="middle" fill="var(--ink)">2.38<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="472" y="96" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.09"/>
+<text x="531" y="115" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.75<tspan fill="var(--onwarm)" font-weight="700"> / 4</tspan></text>
+<rect x="600" y="96" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.11"/>
+<text x="659" y="115" font-size="11.5" text-anchor="middle" fill="var(--ink)">2.16<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="728" y="96" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.08"/>
+<text x="787" y="115" font-size="11.5" text-anchor="middle" fill="var(--ink)">0.95<tspan fill="var(--onwarm)" font-weight="700"> / 4</tspan></text>
+<rect x="856" y="96" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.11"/>
+<text x="915" y="115" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.97<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<text x="330" y="149" font-size="11.5" text-anchor="end" fill="var(--ink)">“the mark — is called an em dash”</text>
+<rect x="344" y="130" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.32"/>
+<text x="403" y="149" font-size="11.5" text-anchor="middle" fill="var(--ink)">6.04<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="472" y="130" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.36"/>
+<text x="531" y="149" font-size="11.5" text-anchor="middle" fill="var(--ink)">13.26<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="600" y="130" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.32"/>
+<text x="659" y="149" font-size="11.5" text-anchor="middle" fill="var(--ink)">10.50<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="728" y="130" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.23"/>
+<text x="787" y="149" font-size="11.5" text-anchor="middle" fill="var(--ink)">5.09<tspan fill="var(--onwarm)" font-weight="700"> / 6</tspan></text>
+<rect x="856" y="130" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.22"/>
+<text x="915" y="149" font-size="11.5" text-anchor="middle" fill="var(--ink)">5.51<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<text x="330" y="183" font-size="11.5" text-anchor="end" fill="var(--ink)">“the mark is called an em dash”</text>
+<rect x="344" y="164" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.38"/>
+<text x="403" y="183" font-size="11.5" text-anchor="middle" fill="var(--ink)">7.26<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="472" y="164" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.38"/>
+<text x="531" y="183" font-size="11.5" text-anchor="middle" fill="var(--ink)">14.34<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="600" y="164" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.38"/>
+<text x="659" y="183" font-size="11.5" text-anchor="middle" fill="var(--ink)">12.82<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="728" y="164" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.38"/>
+<text x="787" y="183" font-size="11.5" text-anchor="middle" fill="var(--ink)">9.42<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="856" y="164" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.38"/>
+<text x="915" y="183" font-size="11.5" text-anchor="middle" fill="var(--ink)">10.60<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<text x="330" y="217" font-size="11.5" text-anchor="end" fill="var(--ink)">“the mark ; is called a semicolon”</text>
+<rect x="344" y="198" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.12"/>
+<text x="403" y="217" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.59<tspan fill="var(--onwarm)" font-weight="700"> / 57</tspan></text>
+<rect x="472" y="198" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.05"/>
+<text x="531" y="217" font-size="11.5" text-anchor="middle" fill="var(--ink)">0.13<tspan fill="var(--onwarm)" font-weight="700"> / 90</tspan></text>
+<rect x="600" y="198" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.09"/>
+<text x="659" y="217" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.57<tspan fill="var(--onwarm)" font-weight="700"> / 48</tspan></text>
+<rect x="728" y="198" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.10"/>
+<text x="787" y="217" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.40<tspan fill="var(--onwarm)" font-weight="700"> / 21</tspan></text>
+<rect x="856" y="198" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.10"/>
+<text x="915" y="217" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.59<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<text x="330" y="251" font-size="11.5" text-anchor="end" fill="var(--ink)">“the mark is called a semicolon”</text>
+<rect x="344" y="232" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.15"/>
+<text x="403" y="251" font-size="11.5" text-anchor="middle" fill="var(--ink)">2.19<tspan fill="var(--onwarm)" font-weight="700"> / 72</tspan></text>
+<rect x="472" y="232" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.05"/>
+<text x="531" y="251" font-size="11.5" text-anchor="middle" fill="var(--ink)">0.00<tspan fill="var(--onwarm)" font-weight="700"> / 97</tspan></text>
+<rect x="600" y="232" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.07"/>
+<text x="659" y="251" font-size="11.5" text-anchor="middle" fill="var(--ink)">0.76<tspan fill="var(--onwarm)" font-weight="700"> / 95</tspan></text>
+<rect x="728" y="232" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.07"/>
+<text x="787" y="251" font-size="11.5" text-anchor="middle" fill="var(--ink)">0.64<tspan fill="var(--onwarm)" font-weight="700"> / 62</tspan></text>
+<rect x="856" y="232" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.06"/>
+<text x="915" y="251" font-size="11.5" text-anchor="middle" fill="var(--ink)">0.27<tspan fill="var(--onwarm)" font-weight="700"> / 79</tspan></text>
+<text x="330" y="285" font-size="11.5" text-anchor="end" fill="var(--ink)">irrelevant suffix, 7 tokens</text>
+<rect x="344" y="266" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.17"/>
+<text x="403" y="285" font-size="11.5" text-anchor="middle" fill="var(--ink)">2.64<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="472" y="266" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.09"/>
+<text x="531" y="285" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.81<tspan fill="var(--onwarm)" font-weight="700"> / 2</tspan></text>
+<rect x="600" y="266" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.12"/>
+<text x="659" y="285" font-size="11.5" text-anchor="middle" fill="var(--ink)">2.66<tspan fill="var(--onwarm)" font-weight="700"> / 1</tspan></text>
+<rect x="728" y="266" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.08"/>
+<text x="787" y="285" font-size="11.5" text-anchor="middle" fill="var(--ink)">0.86<tspan fill="var(--onwarm)" font-weight="700"> / 5</tspan></text>
+<rect x="856" y="266" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.10"/>
+<text x="915" y="285" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.69<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<text x="330" y="319" font-size="11.5" text-anchor="end" fill="var(--ink)">irrelevant suffix, 19 tokens</text>
+<rect x="344" y="300" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.15"/>
+<text x="403" y="319" font-size="11.5" text-anchor="middle" fill="var(--ink)">2.28<tspan fill="var(--onwarm-mute)"> / not counted</tspan></text>
+<rect x="472" y="300" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.06"/>
+<text x="531" y="319" font-size="11.5" text-anchor="middle" fill="var(--ink)">0.63<tspan fill="var(--onwarm)" font-weight="700"> / 2</tspan></text>
+<rect x="600" y="300" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.10"/>
+<text x="659" y="319" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.75<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<rect x="728" y="300" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.09"/>
+<text x="787" y="319" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.13<tspan fill="var(--onwarm)" font-weight="700"> / 2</tspan></text>
+<rect x="856" y="300" width="118" height="30" rx="2" fill="var(--warm)" opacity="0.10"/>
+<text x="915" y="319" font-size="11.5" text-anchor="middle" fill="var(--ink)">1.59<tspan fill="var(--onwarm-mute)"> / none</tspan></text>
+<text x="330" y="362" font-size="10.5" fill="var(--ink-soft)" text-anchor="end">shading tracks the em-dash rate within each column</text>
+</svg>
+    </div>
+    <figcaption><strong>The character is not necessary, and removing it primes more strongly, in all five models.</strong> That rules out a lexical route in which the token primes its own reuse. <strong>Naming the semicolon instead drives semicolons from at most six up to 97, while pushing the dash below neutral in seven of the eight commercial cells</strong>, so the priming is specific to the mark named rather than a general effect of talking about punctuation. The floor of that range is a real zero and not a missing measurement: gpt-5.4-mini under one of the two semicolon suffixes produced no semicolons at all. The exception is DeepSeek-V4-Flash under one of the two semicolon suffixes, which goes to 1.5 times neutral. The practical corollary runs against instinct: to get fewer em dashes, do not mention them.</figcaption>
+  </figure>
+
+
+<p>Figure 13 is that two by two, run on five models. Reading down a column
+holds the named mark fixed and toggles whether the character itself appears.
+Reading across a row does the opposite. Naming the em dash without showing the
+character is the strongest condition in all five models we tested, including four commercial ones. The
+character is not necessary, and its absence primes more strongly than its
+presence, which rules out the token priming story.</p>
+
+<p>The effect is also specific to the mark that gets named. Naming the
+semicolon instead drives semicolon use from at most six per condition up to as
+many as 97, while pushing em dashes down to between zero and seven tenths of the
+neutral rate in seven of the eight commercial conditions. The model behaves as
+though it holds a retrievable representation of each punctuation mark, and
+mentioning a mark activates that representation without any instruction being
+needed.</p>
+
+<div class="key"><p class="h">Practical advice, and it runs against instinct</p>
+<p>If you want fewer em dashes, <b>do not mention em dashes.</b> Ask for a different mark,
+or ask for a plain style. Naming the thing you want to avoid is the single worst
+instruction in our entire condition set.</p></div>
+
+
+<h2>Why a prohibition sometimes fails</h2>
+
+<p>When a model is told not to use em dashes and does
+it anyway, something has gone wrong inside, and there were two obvious
+candidates. Either the instruction never reached the circuit, so the sentence
+was planned exactly as it would have been and only the final token was ever in
+contention, or the instruction did reach the circuit and something outside it
+wrote the dash regardless. Neither turned out to be what happens.</p>
+
+<figure>
+<span class="fignum">Figure 14 &middot; One prompt where the prohibition failed</span>
+    <div style="border:1px solid var(--rule); border-radius:3px; padding:18px">
+      <p class="prompt"><b>Prompt.</b> In one short, punchy sentence, share your
+        best advice about creative blocks. &nbsp;<span style="color:var(--warm)">+
+        “Do not use em dashes.”</span></p>
+      <p style="font-family:Charter,Georgia,serif; font-size:15px; margin:0 0 16px">
+        “Keep creating even when you don’t feel inspired<span class="dash">—</span>consistency
+        fuels creativity.”</p>
+      <div class="ex">
+        <div class="cond" style="color:var(--ink-soft)">neutral</div>
+        <div class="out" style="color:var(--ink-soft)">read at the same decision point</div>
+        <div class="met">p(dash) 1.0000 &nbsp;·&nbsp; circuit +1.577</div>
+
+        <div class="cond" style="color:var(--warm)">“Do not use em dashes.”</div>
+        <div class="out" style="color:var(--warm)">the instruction that was actually given</div>
+        <div class="met">p(dash) 0.9892 &nbsp;·&nbsp; circuit +0.869</div>
+
+        <div class="cond" style="color:var(--cool)">“plain, conventional prose”</div>
+        <div class="out" style="color:var(--cool)">same prefix, replayed</div>
+        <div class="met">p(dash) 0.0000 &nbsp;·&nbsp; circuit +0.492</div>
+      </div>
+    </div>
+    <figcaption><strong>The prohibition halved the circuit and the model wrote
+      the dash anyway.</strong> This response was generated under the
+      prohibition, and the other two rows replay the same prefix under the other
+      suffixes, so the comparison is one context against itself. The instruction
+      is not being ignored, it removes 0.708 on the circuit scale, but from a
+      starting point of +1.577 that is not enough to cross the band in Figure 15, and p(dash) moves only from 1.0000 to 0.9892. The style
+      redirection, applied to the same prefix, reaches +0.492 and the dash
+      disappears.</figcaption>
+  </figure>
+
+
+<p>Figure 14 is one such failure, read at the exact position where the dash
+was written. In it the model was told not to use em dashes and wrote one, though the instruction was plainly not ignored: it cut the circuit's state nearly in half, from 1.577 to 0.869. But the probability of a dash at that
+position moved only from 1.0000 to 0.9892. A large internal change produced
+almost no change in behaviour. Replaying the same half finished sentence under
+the style instruction instead brings the circuit down to 0.492, and the dash
+disappears completely.</p>
+
+
+<p>The same half-finished sentence, then, under two instructions, ending
+differently. What separated them was not how far the instruction moved the
+circuit, since both moved it by a similar amount, but where it started from. That is easier
+to see with every reading in one picture than with two cases side by side, so
+Figure 15 puts all 108 of them on the single axis the circuit score
+defines.</p>
+
+<figure>
+<span class="fignum">Figure 15 &middot; Why it failed: a threshold-like relationship on one circuit score</span>
+    <div class="plate">
+      <svg viewBox="0 0 980 428" role="img"
+           aria-label="A dial showing the five-neuron circuit score. 108 readings are drawn as tick marks: those where the em dash won sit above the line and cluster to the right, those where it lost sit below and cluster to the left, with a transition band between circuit scores of 0.55 and 0.95. Below, three prompts where the prohibition failed are shown as rows, each moving leftward from neutral to prohibition to style redirection. A and C cross the band and lose the dash; B does not and keeps it under both instructions.">
+        <defs>
+          <marker id="am" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5"
+                  markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-soft)"/>
+          </marker>
+        </defs>
+
+        <rect x="450.0" y="60" width="160.0" height="66" fill="var(--ink-soft)" opacity=".09"/>
+
+        <g font-family="ui-sans-serif,system-ui,sans-serif">
+          <text x="46" y="34" font-size="12.5" font-weight="600" fill="var(--ink)">Every reading, sorted by how dash-ready the circuit is</text>
+          <text x="210.0" y="82" font-size="11" fill="var(--cool)">dash lost</text>
+          <text x="878.0" y="82" font-size="11" fill="var(--warm)" text-anchor="end">dash won</text>
+          <text x="530.0" y="54" font-size="11" fill="var(--ink-soft)" text-anchor="middle">transition band</text>
+        </g>
+
+        <line x1="150" y1="130" x2="962" y2="130" stroke="var(--ink)" stroke-width="1"/>
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="11" fill="var(--ink-soft)" text-anchor="middle">
+          <text x="230.0" y="148">0</text>
+          <text x="430.0" y="148">0.5</text>
+          <text x="630.0" y="148">1.0</text>
+          <text x="830.0" y="148">1.5</text>
+          <text x="230.0" y="166" font-size="10">comma state</text>
+          <text x="630.0" y="166" font-size="10">dash state</text>
+        </g>
+
+        <line x1="778.8" y1="78" x2="778.8" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="607.6" y1="96" x2="607.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="373.6" y1="96" x2="373.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="541.2" y1="96" x2="541.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="329.2" y1="96" x2="329.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="232.0" y1="96" x2="232.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="744.0" y1="78" x2="744.0" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="435.6" y1="96" x2="435.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="304.8" y1="96" x2="304.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="660.0" y1="78" x2="660.0" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="392.8" y1="96" x2="392.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="308.8" y1="96" x2="308.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="627.6" y1="78" x2="627.6" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="404.0" y1="96" x2="404.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="254.8" y1="96" x2="254.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="492.4" y1="96" x2="492.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="248.8" y1="96" x2="248.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="231.6" y1="96" x2="231.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="278.0" y1="96" x2="278.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="234.0" y1="96" x2="234.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="206.8" y1="96" x2="206.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="343.2" y1="96" x2="343.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="270.0" y1="96" x2="270.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="205.2" y1="96" x2="205.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="314.0" y1="96" x2="314.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="256.0" y1="96" x2="256.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="215.6" y1="96" x2="215.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="200.8" y1="96" x2="200.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="197.6" y1="96" x2="197.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="195.2" y1="96" x2="195.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="557.2" y1="96" x2="557.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="345.6" y1="96" x2="345.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="242.0" y1="96" x2="242.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="801.2" y1="78" x2="801.2" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="507.6" y1="96" x2="507.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="294.4" y1="96" x2="294.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="623.6" y1="96" x2="623.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="356.8" y1="96" x2="356.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="292.4" y1="96" x2="292.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="416.4" y1="96" x2="416.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="279.6" y1="96" x2="279.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="237.2" y1="96" x2="237.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="668.8" y1="78" x2="668.8" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="440.8" y1="96" x2="440.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="317.2" y1="96" x2="317.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="591.6" y1="96" x2="591.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="378.0" y1="96" x2="378.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="255.6" y1="96" x2="255.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="502.8" y1="96" x2="502.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="332.4" y1="96" x2="332.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="219.2" y1="96" x2="219.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="562.4" y1="96" x2="562.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="368.4" y1="96" x2="368.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="245.6" y1="96" x2="245.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="524.0" y1="96" x2="524.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="260.0" y1="96" x2="260.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="223.6" y1="96" x2="223.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="766.4" y1="78" x2="766.4" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="566.0" y1="96" x2="566.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="400.0" y1="96" x2="400.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="225.6" y1="96" x2="225.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="213.6" y1="96" x2="213.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="211.2" y1="96" x2="211.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="572.4" y1="96" x2="572.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="288.8" y1="96" x2="288.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="267.2" y1="96" x2="267.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="367.6" y1="96" x2="367.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="244.0" y1="96" x2="244.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="233.2" y1="96" x2="233.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="211.2" y1="96" x2="211.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="211.6" y1="96" x2="211.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="214.8" y1="96" x2="214.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="455.2" y1="96" x2="455.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="294.8" y1="96" x2="294.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="211.2" y1="96" x2="211.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="389.2" y1="96" x2="389.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="272.8" y1="96" x2="272.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="208.8" y1="96" x2="208.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="694.0" y1="78" x2="694.0" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="407.6" y1="96" x2="407.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="306.0" y1="96" x2="306.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="744.4" y1="78" x2="744.4" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="440.4" y1="96" x2="440.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="303.2" y1="96" x2="303.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="518.4" y1="96" x2="518.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="389.6" y1="96" x2="389.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="264.8" y1="96" x2="264.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="611.2" y1="96" x2="611.2" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="421.6" y1="96" x2="421.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="320.0" y1="96" x2="320.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="743.2" y1="78" x2="743.2" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="456.4" y1="96" x2="456.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="324.8" y1="96" x2="324.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="693.6" y1="78" x2="693.6" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="493.2" y1="78" x2="493.2" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="367.6" y1="96" x2="367.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="376.4" y1="96" x2="376.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="270.0" y1="96" x2="270.0" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="230.4" y1="96" x2="230.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="502.4" y1="96" x2="502.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="300.8" y1="96" x2="300.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="237.6" y1="96" x2="237.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="860.8" y1="78" x2="860.8" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="577.6" y1="78" x2="577.6" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="426.8" y1="96" x2="426.8" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="857.2" y1="78" x2="857.2" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="644.4" y1="78" x2="644.4" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="556.0" y1="78" x2="556.0" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="801.2" y1="78" x2="801.2" y2="92" stroke="var(--warm)" stroke-width="1.6" opacity=".5"/>
+        <line x1="507.6" y1="96" x2="507.6" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+        <line x1="294.4" y1="96" x2="294.4" y2="110" stroke="var(--cool)" stroke-width="1.6" opacity=".5"/>
+
+        <text x="46" y="182" font-size="12.5" font-weight="600" fill="var(--ink)" font-family="ui-sans-serif,system-ui,sans-serif">A. “Keep creating even when you don’t feel inspired…”</text>
+        <line x1="150" y1="204" x2="962" y2="204" stroke="var(--rule-faint)" stroke-width="1"/>
+        <line x1="851.8" y1="204" x2="588.6" y2="204" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#am)" opacity=".55"/>
+        <line x1="568.6" y1="204" x2="437.8" y2="204" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#am)" opacity=".55"/>
+        <circle cx="860.8" cy="204" r="8" fill="var(--warm)" stroke="var(--warm)" stroke-width="2"/>
+        <text x="860.8" y="226" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">p=1.00</text>
+        <text x="860.8" y="182" font-size="10" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">neutral</text>
+        <circle cx="577.6" cy="204" r="13" fill="none" stroke="var(--warm)" stroke-width="1.3" stroke-dasharray="2.5 2.5"/>
+        <circle cx="577.6" cy="204" r="8" fill="var(--warm)" stroke="var(--warm)" stroke-width="2"/>
+        <text x="577.6" y="226" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">p=0.99</text>
+        <text x="577.6" y="182" font-size="10" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">ban</text>
+        <circle cx="426.8" cy="204" r="8" fill="var(--ground)" stroke="var(--cool)" stroke-width="2"/>
+        <text x="426.8" y="226" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">p=0.00</text>
+        <text x="426.8" y="182" font-size="10" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">style</text>
+
+        <text x="46" y="256" font-size="12.5" font-weight="600" fill="var(--ink)" font-family="ui-sans-serif,system-ui,sans-serif">B. “Clean floors, smart power, no mess…”  (slogan)</text>
+        <line x1="150" y1="278" x2="962" y2="278" stroke="var(--rule-faint)" stroke-width="1"/>
+        <line x1="848.2" y1="278" x2="655.4" y2="278" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#am)" opacity=".55"/>
+        <line x1="635.4" y1="278" x2="567.0" y2="278" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#am)" opacity=".55"/>
+        <circle cx="857.2" cy="278" r="8" fill="var(--warm)" stroke="var(--warm)" stroke-width="2"/>
+        <text x="857.2" y="300" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">p=0.99</text>
+        <circle cx="644.4" cy="278" r="13" fill="none" stroke="var(--warm)" stroke-width="1.3" stroke-dasharray="2.5 2.5"/>
+        <circle cx="644.4" cy="278" r="8" fill="var(--warm)" stroke="var(--warm)" stroke-width="2"/>
+        <text x="644.4" y="300" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">p=0.98</text>
+        <circle cx="556.0" cy="278" r="8" fill="var(--warm)" stroke="var(--warm)" stroke-width="2"/>
+        <text x="556.0" y="300" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">p=0.93</text>
+        <text x="46" y="330" font-size="12.5" font-weight="600" fill="var(--ink)" font-family="ui-sans-serif,system-ui,sans-serif">C. “Rejection is not a reflection of your worth…”</text>
+        <line x1="150" y1="352" x2="962" y2="352" stroke="var(--rule-faint)" stroke-width="1"/>
+        <line x1="792.2" y1="352" x2="518.6" y2="352" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#am)" opacity=".55"/>
+        <line x1="498.6" y1="352" x2="305.4" y2="352" stroke="var(--ink-soft)" stroke-width="1.2" marker-end="url(#am)" opacity=".55"/>
+        <circle cx="801.2" cy="352" r="8" fill="var(--warm)" stroke="var(--warm)" stroke-width="2"/>
+        <text x="801.2" y="374" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">p=1.00</text>
+        <circle cx="507.6" cy="352" r="13" fill="none" stroke="var(--warm)" stroke-width="1.3" stroke-dasharray="2.5 2.5"/>
+        <circle cx="507.6" cy="352" r="8" fill="var(--ground)" stroke="var(--cool)" stroke-width="2"/>
+        <text x="507.6" y="374" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">p=0.11</text>
+        <circle cx="294.4" cy="352" r="8" fill="var(--ground)" stroke="var(--cool)" stroke-width="2"/>
+        <text x="294.4" y="374" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">p=0.00</text>
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="11" fill="var(--ink-soft)">
+          <circle cx="160" cy="410" r="7" fill="var(--warm)" stroke="var(--warm)" stroke-width="2"/>
+          <text x="174" y="414">p(em dash) above 0.5 at this decision</text>
+          <circle cx="446" cy="410" r="7" fill="var(--ground)" stroke="var(--cool)" stroke-width="2"/>
+          <text x="460" y="414">below 0.5</text>
+          <text x="566" y="414">dashed ring: where the model actually emitted the dash, under the prohibition</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><strong>Read one row at a time, right to left.</strong> The dial
+      is the five-neuron circuit score, and the tick marks are all 108 readings:
+      above the line where the dash carried more than half the probability mass,
+      below where it did not. They separate sharply. <strong>None of the 74
+      readings below 0.55 put p(dash) above 0.5, 14 of the 16 above 0.95 did,
+      and the score separates the two classes at AUC 0.983.</strong> Those cuts
+      were chosen after seeing these readings, so we
+      held them fixed and ran three fresh seeds. On <strong>54 held-out
+      readings the separation reproduces</strong>: none of the 35 below 0.55 put
+      the dash above half the mass, 9 of the 12 above 0.95 did, and the AUC is
+      0.982 against 0.983 in sample. The relationship is threshold-like rather
+      than a threshold, but it is not fitted to noise. Each of the three rows is one prompt
+      where the prohibition failed, read at the same decision point under all
+      three suffixes. Every instruction pushes the context leftward by a similar
+      amount, and what differs is where it started. <strong>A and C are carried
+      across the band by the style redirection and lose the dash. B starts no
+      further right than A but moves less at every step, and even under the
+      style redirection stays at 0.815 with p = 0.93, it defeats both
+      instructions.</strong> The band is not a clean step, and row C shows why: the model emitted a dash
+      there while p(dash) was only 0.107, because generation samples at
+      temperature 0.7. The dashed rings mark the three decisions where a dash
+      was actually written, and every other dot is a probability read from a
+      replayed prefix, not an observed emission. One reading at 0.658 gives 0.72
+      and another at 0.856 gives 0.000, so the score predicts the decision well
+      but not perfectly. Prefixes were generated under the
+      prohibition and replayed under the other suffixes, so this measures the
+      choice given the context, not whether the context would have arisen.</figcaption>
+  </figure>
+
+<p>The tick marks along the top of Figure 15 are the individual decisions,
+sitting above the line where the dash carried more than half the probability
+mass and below it where it did not, and the three rows underneath trace one
+prompt each as the instruction gets stronger. Seen that way the circuit reading
+behaves less like a proportional control than like a dial with a step in it.
+<b>In this sample, none of the 74 readings below 0.55 put the dash above half
+the mass, while 14 of the 16 above 0.95 did.</b> In between there is a band
+where either can happen.</p>
+
+<p>An instruction works as a push of roughly constant size along that dial. The prompts where prohibition fails are the ones whose state
+started furthest to the right, where a normal sized push still leaves them
+above the threshold. Two of our three failures are carried across the band by
+the stronger style instruction. The third, a product slogan already committed
+to a parallel structure, resists both instructions.</p>
+
+<p>Both of the obvious objections to that have now been tested. The cuts were
+chosen after seeing the first 108 readings, so we froze them and ran three fresh
+seeds: across 54 held-out readings none of the 35 below 0.55 put the dash above
+half the mass, and the score separates the classes at AUC 0.982 against 0.983 in
+sample. The cuts were not fitted to noise.</p>
+
+<p>The second objection is sampling. Generation runs at temperature 0.7, so a
+dash in the text is not proof that the instruction failed inside the model: one
+of our cases wrote the mark at p(dash) = 0.107, which is the sampler reaching
+into the tail. Decoding greedily removes the sampler from the question, and
+under the prohibition <b>only 2 of 120 prompts still produce a dash</b>. Both
+sit high on the dial, at 0.871 and 0.777, with p(dash) of 0.99 and 0.80. Every
+dash that survives when the sampler is taken away is one the model actually
+preferred.</p>
+
+
+<p>It also fits where in the network an instruction takes effect, which we can
+measure directly. Activation patching runs the model twice, once with the
+instruction and once without, and copies the internal state from one run into
+the other at a single layer, so the size of the resulting change says how much
+of the instruction's effect had already been decided by that depth. Doing this
+one layer at a time, which is the left panel of Figure 16, shows no measurable
+effect before layer 12, the beginnings of one around 16, and a jump at 20. The five neurons live at layers 30 through
+35. The instruction has already
+won or lost by the time the neurons that write the character are consulted, which
+is why an instruction that fails does not fail at the last moment. It fails
+much earlier, and the five neurons faithfully carry out a decision that was
+made well upstream of them.</p>
+
+<figure>
+<span class="fignum">Figure 16 &middot; Where the instruction takes effect</span>
+    <div class="plate">
+      <svg viewBox="0 0 980 320" role="img"
+           aria-label="Three patching panels. Left: patching the residual stream one layer at a time shows nothing through layer 12, onset at 16, a jump at 20 to minus 4.6 nats, and accumulation to minus 11.2 by layer 34. Middle: patching component outputs shows attention at layer 22 as a lone outlier at minus 3.67 while every other attention layer and the whole MLP path stay under 0.7. Right: the layer 22 effect is heavy tailed, with 46 of 100 contexts moving less than half a nat and 11 moving more than 9.">
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="11.5" font-weight="600" fill="var(--ink)">
+          <text x="46" y="30">A &nbsp;Residual stream, one layer at a time</text>
+          <text x="404" y="30">B &nbsp;Component output</text>
+          <text x="700" y="30">C &nbsp;The L22 effect, per context</text>
+        </g>
+
+        <!-- A -->
+        <line x1="74" y1="60" x2="344" y2="60" stroke="var(--rule-faint)"/>
+        <line x1="74" y1="60" x2="74" y2="264" stroke="var(--ink)" stroke-width="1"/>
+        <line x1="74" y1="264" x2="344" y2="264" stroke="var(--ink)" stroke-width="1"/>
+        <polyline points="74.0,60.0 104.4,60.0 134.8,60.1 165.2,60.5 195.6,63.0 226.0,141.8 256.4,191.6 286.8,232.5 302.0,231.2 317.2,241.8 332.4,256.9" fill="none" stroke="var(--cool)" stroke-width="2"/>
+        <circle cx="74.0" cy="60.0" r="3.2" fill="var(--cool)"/><circle cx="104.4" cy="60.0" r="3.2" fill="var(--cool)"/><circle cx="134.8" cy="60.1" r="3.2" fill="var(--cool)"/><circle cx="165.2" cy="60.5" r="3.2" fill="var(--cool)"/><circle cx="195.6" cy="63.0" r="3.2" fill="var(--cool)"/><circle cx="226.0" cy="141.8" r="3.2" fill="var(--cool)"/><circle cx="256.4" cy="191.6" r="3.2" fill="var(--cool)"/><circle cx="286.8" cy="232.5" r="3.2" fill="var(--cool)"/><circle cx="302.0" cy="231.2" r="3.2" fill="var(--cool)"/><circle cx="317.2" cy="241.8" r="3.2" fill="var(--cool)"/><circle cx="332.4" cy="256.9" r="3.2" fill="var(--cool)"/>
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="10" fill="var(--ink-soft)">
+          <text x="68" y="64" text-anchor="end">0</text>
+          <text x="68" y="148" text-anchor="end">−5</text>
+          <text x="68" y="236" text-anchor="end">−10</text>
+          <text x="74" y="278" text-anchor="middle">L0</text>
+          <text x="196" y="278" text-anchor="middle">L16</text>
+          <text x="256" y="278" text-anchor="middle">L24</text>
+          <text x="332" y="278" text-anchor="middle">L34</text>
+          <text x="173" y="53" font-size="10">nothing before L16</text>
+          <text x="232" y="146" font-size="10" fill="var(--cool)">jump at L20</text>
+        </g>
+        <text x="209" y="300" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">Δ log p(dash), style suffix &nbsp;·&nbsp; control band within 0.16 at every layer</text>
+
+        <!-- B -->
+        <line x1="404" y1="60" x2="660" y2="60" stroke="var(--ink)" stroke-width="1"/>
+        <rect x="414.0" y="60.0" width="5.5" height="5.7" fill="var(--warm)"/><rect x="420.5" y="60.0" width="5.5" height="1.0" fill="var(--cool)" opacity=".65"/><rect x="449.2" y="60.0" width="5.5" height="4.7" fill="var(--warm)"/><rect x="455.7" y="60.0" width="5.5" height="11.4" fill="var(--cool)" opacity=".65"/><rect x="484.4" y="60.0" width="5.5" height="3.1" fill="var(--warm)"/><rect x="490.9" y="60.0" width="5.5" height="30.7" fill="var(--cool)" opacity=".65"/><rect x="519.6" y="60.0" width="5.5" height="190.8" fill="var(--warm)"/><rect x="526.1" y="60.0" width="5.5" height="32.2" fill="var(--cool)" opacity=".65"/><rect x="554.8" y="60.0" width="5.5" height="19.2" fill="var(--warm)"/><rect x="561.3" y="60.0" width="5.5" height="20.8" fill="var(--cool)" opacity=".65"/><rect x="590.0" y="60.0" width="5.5" height="3.1" fill="var(--warm)"/><rect x="596.5" y="60.0" width="5.5" height="5.7" fill="var(--cool)" opacity=".65"/><rect x="625.2" y="60.0" width="5.5" height="1.0" fill="var(--warm)"/><rect x="631.7" y="60.0" width="5.5" height="11.4" fill="var(--cool)" opacity=".65"/><rect x="660.4" y="60.0" width="5.5" height="6.8" fill="var(--warm)"/><rect x="666.9" y="60.0" width="5.5" height="27.6" fill="var(--cool)" opacity=".65"/>
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="10" fill="var(--ink-soft)">
+          <text x="398" y="64" text-anchor="end">0</text>
+          <text x="398" y="164" text-anchor="end">−2</text>
+          <text x="420" y="278" text-anchor="middle">L16</text>
+          <text x="526" y="278" text-anchor="middle">L22</text>
+          <text x="631" y="278" text-anchor="middle">L28</text>
+          <text x="540" y="255" font-size="10.5" fill="var(--warm)">attention −3.67</text>
+        </g>
+        <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5">
+          <rect x="404" y="292" width="9" height="9" fill="var(--warm)"/><text x="418" y="300" fill="var(--ink-soft)">attention</text>
+          <rect x="486" y="292" width="9" height="9" fill="var(--cool)" opacity=".65"/><text x="500" y="300" fill="var(--ink-soft)">MLP</text>
+        </g>
+
+        <!-- C -->
+        <line x1="700" y1="257" x2="936" y2="257" stroke="var(--ink)" stroke-width="1"/>
+        <rect x="704.0" y="214.1" width="28" height="42.9" fill="var(--warm)" opacity="0.8"/><text x="718.0" y="208.1" font-size="10" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">11</text><rect x="742.0" y="221.9" width="28" height="35.1" fill="var(--warm)" opacity="0.8"/><text x="756.0" y="215.9" font-size="10" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">9</text><rect x="780.0" y="214.1" width="28" height="42.9" fill="var(--warm)" opacity="0.8"/><text x="794.0" y="208.1" font-size="10" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">11</text><rect x="818.0" y="206.3" width="28" height="50.7" fill="var(--ink-soft)" opacity="0.45"/><text x="832.0" y="200.3" font-size="10" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">13</text><rect x="856.0" y="218.0" width="28" height="39.0" fill="var(--ink-soft)" opacity="0.45"/><text x="870.0" y="212.0" font-size="10" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">10</text><rect x="894.0" y="77.6" width="28" height="179.4" fill="var(--ink-soft)" opacity="0.45"/><text x="908.0" y="71.6" font-size="10" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">46</text>
+        <text x="718.0" y="274" font-size="9" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif" transform="rotate(-32 718.0 274)">≤−9</text><text x="756.0" y="274" font-size="9" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif" transform="rotate(-32 756.0 274)">−9…−6</text><text x="794.0" y="274" font-size="9" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif" transform="rotate(-32 794.0 274)">−6…−3</text><text x="832.0" y="274" font-size="9" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif" transform="rotate(-32 832.0 274)">−3…−1.5</text><text x="870.0" y="274" font-size="9" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif" transform="rotate(-32 870.0 274)">−1.5…−0.5</text><text x="908.0" y="274" font-size="9" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif" transform="rotate(-32 908.0 274)">|Δ|<0.5</text>
+        <text x="818" y="300" font-size="10.5" text-anchor="middle" fill="var(--ink-soft)" font-family="ui-sans-serif,system-ui,sans-serif">contexts (n=100) &nbsp;·&nbsp; mean −3.26, median −0.89</text>
+      </svg>
+    </div>
+    <figcaption><strong>Control over the punctuation decision is settled well
+      before the layers that write the dash.</strong> (A) Patching the donor's
+      residual stream one layer at a time does nothing through L12, begins at
+      L16, jumps to −4.65 nats at L20 and accumulates to −11.19 by L34, while
+      the length-matched control stays within 0.16 at every layer. The
+      five-neuron circuit lives at L30–L35, so by the time it acts the outcome is
+      largely determined. (B) Patching component outputs instead isolates
+      the <strong>attention sublayer at L22 as a lone outlier at
+      −3.67</strong>, with every other attention layer and the entire MLP path
+      under 0.7. This is the whole sublayer, not a head: patching all 32 heads
+      individually sums to −1.76 against −3.26 for the sublayer at once, so no
+      small set of heads carries it and L22 behaves like an integration site.
+      A component can route an instruction without writing onto the punctuation
+      direction itself, which is how this sits alongside Figure 6. (C) That figure is
+      a mean over a heavy tail: <strong>46 of 100 contexts move less than half a
+      nat</strong> while 11 move more than 9. L22 does almost nothing in most
+      contexts and almost everything in a few, so no summary of it should be
+      reported as a mean alone. Depths are not mediation shares, residual and
+      component patches are non-linear interventions at nearby but different
+      points, so their ratio is not an additive decomposition.</figcaption>
+  </figure>
+
+<h2>What we take from this</h2>
+
+<p><b>Post training turns up abilities it did not build.</b> DeepSeek ships two
+models, a base and a chat version, and the chat one almost never writes an em
+dash. Look inside and the two are the same: both tell a dash moment apart from a
+comma moment just as sharply as each other. The lab did not fail to build the
+machinery. It built it in pretraining, like everyone else, and then its recipe
+never turned it up. Qwen's recipe, starting from a base model that is equally
+quiet, roughly doubles the same reading. If that holds for things more
+consequential than punctuation, the useful question about a post-training recipe
+is less often "what did this create" and more often "what did this amplify".</p>
+
+<p><b>Two models that behave identically can be in very different states.</b>
+We trained two models that never write an em dash at all. Zero, on every test we
+have. Any behavioural evaluation would call them the same model. Inside, one is
+holding the ability roughly twice as ready as the other, and both are quieter
+than the base model they started from, so the training pushed the ability down
+rather than merely failing to raise it. That difference is completely invisible
+from the outside. Anything you would want to know about a capability a model is
+not currently using has to be read off its internals, because the behaviour has
+already bottomed out at nothing.</p>
+
+<p><b>Teaching a habit is cheap. Teaching when to stop is not.</b> A few hundred
+examples were enough to make three different models pick up the em dash, and
+enough to teach them roughly which kinds of writing invite it. What none of them
+learned is where it stops being appropriate. The model Qwen ships uses the mark
+in four of our fifteen categories and in none of the other eleven, a clean edge.
+Our fine tunes have no edge, just a slope, sprinkling the mark everywhere. The
+uncomfortable part is that the one that sprinkles most is also the one with the
+highest overall rate, so the number you would quote to show the training worked
+is the number that hides the fact that it half worked.</p>
+
+<p><b>An instruction is a nudge, not a switch.</b> Telling a model not to use em
+dashes does not flip anything off. It shifts an internal quantity by roughly a
+fixed amount, and whether that shift changes the writing depends entirely on how
+far along that scale the sentence already was. Prompts where the model only
+mildly wanted the mark get pushed clear of it. Prompts where it wanted the mark
+badly get pushed and still want it. That is why a prohibition fails on precisely
+the cases you most wanted it to catch, and it predicts something worth
+remembering: every instruction has a population of situations it simply cannot
+reach, and they are the extreme ones.</p>
+
+<p><b>If you do this kind of analysis, the sign matters more than the
+ranking.</b> Our method scores each neuron by how much it moves and which way it
+pushes. The precise ordering that produces turned out to be a fact about one
+model: it predicts what actually happens when we switch neurons off in Qwen and
+predicts almost nothing in DeepSeek, and giving it more candidates to work with
+does not help. What survives the move between models is the cruder half. Picking
+neurons by direction rather than by how loudly they fire is, on DeepSeek, the
+difference between removing three quarters of the em dashes and removing none at
+all. Treat the direction as the finding. Treat the exact order as something to
+work out again for each new model.</p>
+
+<h2>Related work</h2>
+
+<p>Two papers frame what we did. <a href="#r-arora">Arora and colleagues</a>
+argue that MLP neurons are as sparse and faithful a basis for circuit finding
+as sparse dictionaries, and that attribution should be taken over the input to
+the down projection rather than over MLP outputs. We arrived at the same
+coordinate independently and for a different reason, and their sparsity
+argument is the stronger justification, so anyone citing our neuron choice should
+cite theirs. Their attribution is gradient based on a linearised replacement
+model <a href="#r-jafari">[Jafari et al., 2025]</a>, and is signed by
+construction, so the failure mode that cost us a false start does not arise for
+them. Where we differ is the contrast: their method wants a minimal edit
+counterfactual, and a stylistic habit does not have one, which is what pushed
+us to build the contrast from the model's own generations instead.</p>
+
+<p>On the training side, <a href="#r-bergen">Bergen and colleagues</a> use
+interpretability to characterise what post training data does to a model, which
+is the general form of the question we ask about one habit.
+<a href="#r-zhou">Zhou</a> shows by cross patching that instruction tuning
+changes how upstream state conditions a late readout, which is the pattern our
+layer results reproduce for punctuation specifically.
+<a href="#r-zhang">Zhang and Nanda</a> set out the metric and method choices
+that make activation patching interpretable, and our decision to report free
+generation alongside teacher forced probabilities follows from the same
+concern.</p>
+
+<p>On the phenomenon itself, <a href="#r-juzek">Juzek and Ward</a> trace lexical
+overrepresentation in model output, "delve" being the famous case, and
+<a href="#r-freeburg">Freeburg</a> argues that markdown training shapes prose
+style more broadly. The em dash belongs to that family. What a mechanistic
+account adds is the ability to say where the habit sits, that it predates the
+training that reveals it, and which interventions reach it.</p>
+
+<ul class="refs">
+<li id="r-arora"><b>Arora, Wu, Steinhardt, Schwettmann.</b> Language Model
+  Circuits Are Sparse in the Neuron Basis. ICML 2026. arXiv:2601.22594.</li>
+<li id="r-jafari"><b>Jafari et al.</b> ReLP: gradient attribution on a
+  linearised replacement model. 2025.</li>
+<li id="r-li"><b>Li &amp; Janson.</b> On the out of distribution behaviour of
+  zero ablation. 2024.</li>
+<li id="r-bergen"><b>Bergen, Bhalla, Baskaran et al.</b> Anatomy of
+  Post-Training: Using Interpretability to Characterize Data and Shape the
+  Learning Signal.</li>
+<li id="r-zhou"><b>Zhou.</b> Instruction Tuning Changes How Upstream State
+  Conditions Late Readout: A Cross-Patching Diagnostic.</li>
+<li id="r-zhang"><b>Zhang &amp; Nanda.</b> Towards Best Practices of Activation
+  Patching in Language Models: Metrics and Methods.</li>
+<li id="r-juzek"><b>Juzek &amp; Ward.</b> Why Does ChatGPT "Delve" So Much?
+  Exploring the Sources of Lexical Overrepresentation in Large Language
+  Models.</li>
+<li id="r-freeburg"><b>Freeburg.</b> The Last Fingerprint: How Markdown
+  Training Shapes LLM Prose.</li>
+</ul>
+
+
+</div>
