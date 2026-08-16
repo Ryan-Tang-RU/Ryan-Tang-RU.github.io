@@ -1,0 +1,83 @@
+<title>Ruixiang Tang</title>
+<style>
+
+/* 与 The Em Dash Circuit 同一套 token，保证两篇看起来是一个系列 */
+:root{--bg:#f5f3ee;--panel:#fffdf9;--ink:#20232a;--soft:#5a606c;--faint:#8a8f9a;
+--line:#e5e0d5;--s1:#a8362a;--s2:#03648c;
+--warm:#a8362a;--cool:#136b7c;--accent:#a8362a;
+--warm-wash:#f6e6e3;--cool-wash:#dceaee;--ground:#fffdf9;--ink-soft:#5a606c;
+--rule:#e5e0d5;--rule-faint:#efebe2;--plate:#fffdf9;--sunk:#efece4;
+--sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+--serif:Georgia,'Times New Roman',serif;--mono:ui-monospace,Consolas,monospace}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--bg:#16181c;--panel:#1e2127;--ink:#e9e6df;--soft:#a9aeb8;--faint:#787d87;
+--line:#2c2f37;--s1:#d8635a;--s2:#3e8fd6;
+--warm:#f08a80;--cool:#7fb4f2;--accent:#f08a80;
+--warm-wash:#33201e;--cool-wash:#1a2836;--ground:#1e2127;--ink-soft:#a9aeb8;
+--rule:#2c2f37;--rule-faint:#242830;--plate:#1e2127;--sunk:#20242b}}
+:root[data-theme="dark"]{
+--bg:#16181c;--panel:#1e2127;--ink:#e9e6df;--soft:#a9aeb8;--faint:#787d87;
+--line:#2c2f37;--s1:#d8635a;--s2:#3e8fd6;
+--warm:#f08a80;--cool:#7fb4f2;--accent:#f08a80;
+--warm-wash:#33201e;--cool-wash:#1a2836;--ground:#1e2127;--ink-soft:#a9aeb8;
+--rule:#2c2f37;--rule-faint:#242830;--plate:#1e2127;--sunk:#20242b}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.68}
+.wrap{max-width:820px;margin:0 auto;padding:64px 22px 96px}
+h1{font-family:var(--serif);font-size:34px;margin:0 0 8px}
+.who{color:var(--soft);font-size:16px;margin:0 0 6px}
+.links{font-family:var(--mono);font-size:13px;color:var(--faint);margin:14px 0 0}
+.links a{color:var(--s2);text-decoration:none;border-bottom:1px solid var(--line)}
+.links a:hover{border-bottom-color:currentColor}
+h2{font-family:var(--serif);font-size:20px;margin:52px 0 4px;padding-top:22px;
+   border-top:1px solid var(--line)}
+article{padding:22px 0;border-bottom:1px solid var(--line)}
+article:last-child{border-bottom:none}
+article h3{font-family:var(--serif);font-size:20px;font-weight:600;margin:0 0 8px;line-height:1.32}
+article h3 a{color:var(--ink);text-decoration:none}
+article h3 a:hover{color:var(--s2)}
+.meta{font-family:var(--mono);font-size:12px;color:var(--faint);margin:0 0 10px}
+.tags{font-family:var(--mono);font-size:11.5px;color:var(--accent);
+  letter-spacing:.06em;margin:0 0 12px}
+.abs{font-size:15.5px;color:var(--soft);margin:0 0 12px;line-height:1.66}
+.more a{font-family:var(--mono);font-size:13px;color:var(--s2);text-decoration:none;
+  border-bottom:1px solid var(--line)}
+.more a:hover{border-bottom-color:currentColor}
+.soon{font-family:var(--mono);font-size:12px;color:var(--faint)}
+@media(max-width:600px){h1{font-size:27px}.wrap{padding:44px 18px 72px}}
+</style>
+
+<div class="wrap">
+<h1>Ruixiang (Ryan) Tang</h1>
+<p class="who">Rutgers University. I work on interpretability and on what model
+evaluations actually measure.</p>
+<p class="links"><a href="https://github.com/Ryan-Tang-RU">github</a> &nbsp;·&nbsp;
+<a href="mailto:ruixiang.tang@rutgers.edu">email</a></p>
+
+<h2>Writing</h2>
+
+<article>
+<h3><a href="probe.html">When a Linear Probe Reads Your Data Pipeline: Why a Near-Perfect AUC Can Say Nothing About the Model</a></h3>
+<p class="meta">August 16 2026</p>
+<p class="tags">Interpretability； Linear Probes； Evaluation Pitfalls</p>
+<p class="abs">Can you look inside a language model and read off a concept, such as
+whether it is being truthful, or whether it is cheating on the task it was given?
+A common method says yes. Replicating two recent papers, we find the classifier was
+separating the examples by how they had been collected rather than by the concept it
+was meant to find.</p>
+<p class="more"><a href="probe.html">[Read the blog →]</a></p>
+</article>
+
+<article>
+<h3>Why Language Models Love the Em Dash: How Post-Training Recruits a Sparse Writing Circuit</h3>
+<p class="meta">August 12 2026</p>
+<p class="tags">Mechanistic Interpretability； LLMs Post-Training； Model Behavior</p>
+<p class="abs">Why do some language models overuse the em dash while others almost never
+do? We trace this writing habit to a sparse set of late-layer neurons, study how
+post-training amplifies an internal mechanism already present in the base model, and
+examine why explicit instructions sometimes fail to suppress it.</p>
+<p class="soon">把那篇的 HTML 存成 posts/em-dash.html，再把这行换成链接即可</p>
+</article>
+
+</div>

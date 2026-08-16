@@ -1,0 +1,953 @@
+<title>When a Probe Reads Your Pipeline</title>
+<style>
+/* 与 The Em Dash Circuit 同一套 token，保证两篇看起来是一个系列 */
+:root{--bg:#f5f3ee;--panel:#fffdf9;--ink:#20232a;--soft:#5a606c;--faint:#8a8f9a;
+--line:#e5e0d5;--s1:#a8362a;--s2:#03648c;
+--warm:#a8362a;--cool:#136b7c;--accent:#a8362a;
+--warm-wash:#f6e6e3;--cool-wash:#dceaee;--ground:#fffdf9;--ink-soft:#5a606c;
+--rule:#e5e0d5;--rule-faint:#efebe2;--plate:#fffdf9;--sunk:#efece4;
+--sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+--serif:Georgia,'Times New Roman',serif;--mono:ui-monospace,Consolas,monospace}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--bg:#16181c;--panel:#1e2127;--ink:#e9e6df;--soft:#a9aeb8;--faint:#787d87;
+--line:#2c2f37;--s1:#d8635a;--s2:#3e8fd6;
+--warm:#f08a80;--cool:#7fb4f2;--accent:#f08a80;
+--warm-wash:#33201e;--cool-wash:#1a2836;--ground:#1e2127;--ink-soft:#a9aeb8;
+--rule:#2c2f37;--rule-faint:#242830;--plate:#1e2127;--sunk:#20242b}}
+:root[data-theme="dark"]{
+--bg:#16181c;--panel:#1e2127;--ink:#e9e6df;--soft:#a9aeb8;--faint:#787d87;
+--line:#2c2f37;--s1:#d8635a;--s2:#3e8fd6;
+--warm:#f08a80;--cool:#7fb4f2;--accent:#f08a80;
+--warm-wash:#33201e;--cool-wash:#1a2836;--ground:#1e2127;--ink-soft:#a9aeb8;
+--rule:#2c2f37;--rule-faint:#242830;--plate:#1e2127;--sunk:#20242b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.68}
+.wrap{max-width:940px;margin:0 auto;padding:48px 22px 88px}
+h1{font-family:var(--serif);font-size:32px;line-height:1.18;margin:0 0 10px}
+.sub{color:var(--soft);font-size:16px;margin:0 0 4px;max-width:70ch}
+.byline{font-family:var(--mono);font-size:12.5px;color:var(--faint);
+  margin:20px 0 38px;padding-top:15px;border-top:1px solid var(--line);
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.byline b{font-family:var(--serif);font-size:19px;color:var(--ink);font-weight:600;letter-spacing:.01em}
+h2{font-family:var(--serif);font-size:23px;margin:46px 0 10px;padding-top:20px;
+   border-top:1px solid var(--line)}
+h3{font-family:var(--serif);font-size:19px;font-weight:600;margin:34px 0 8px;line-height:1.3}
+p{font-size:16px;margin:0 0 18px}
+.lede{font-size:19px;line-height:1.55}
+strong{font-weight:640}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 14px}
+code{font-family:var(--mono);font-size:14px;background:var(--line);padding:1px 5px;border-radius:3px}
+a{color:var(--s2);text-decoration:none;border-bottom:1px solid var(--line)}
+a:hover{border-bottom-color:currentColor}
+a:focus-visible{outline:2px solid var(--s2);outline-offset:3px}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;
+  line-height:1.65;margin:20px 0;color:var(--ink)}
+pre .k{color:var(--s2);font-weight:600}
+pre .c{color:var(--faint)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:22px 0 26px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat .v{font-family:var(--mono);font-size:23px;color:var(--ink);line-height:1.2;
+  font-variant-numeric:tabular-nums}
+.stat .l{font-size:12.5px;color:var(--soft);margin-top:4px;line-height:1.45}
+.stat.w .v{color:var(--warm)} .stat.o .v{color:var(--cool)} .stat.a .v{color:var(--s2)}
+.key{background:var(--panel);border-left:3px solid var(--accent);border-radius:6px;
+  padding:14px 18px;margin:20px 0}
+.key .h{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--accent);margin:0 0 6px}
+.key p{margin:0;font-size:15.5px}
+.key p+p{margin-top:10px}
+.caveat{font-size:15.5px;color:var(--soft);background:var(--sunk);border-radius:8px;
+  padding:14px 18px;margin:20px 0;line-height:1.7}
+.caveat strong{color:var(--ink)}
+.pending{font-size:15.5px;color:var(--soft);border:1px dashed var(--line);
+  border-radius:8px;padding:14px 18px;margin:20px 0}
+figure{margin:26px 0;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:14px 16px}
+.plate{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.fignum{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+figcaption{font-size:13px;color:var(--soft);margin-top:10px;padding-top:10px;
+  border-top:1px solid var(--line);line-height:1.6}
+figcaption strong{color:var(--ink);font-weight:620}
+.ex{display:grid;grid-template-columns:minmax(96px,140px) 1fr;gap:0 20px;align-items:baseline;margin:22px 0}
+.ex>div{padding:9px 0;border-bottom:1px solid var(--line)}
+.ex .cond{font-size:13px;font-weight:620}
+.ex .out{font-family:var(--serif);font-size:15px}
+.ex>div:nth-last-child(-n+2){border-bottom:none}
+.tw{overflow-x:auto;margin:22px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--soft);font-weight:400;text-align:left;padding:0 0 8px;border-bottom:1px solid var(--line)}
+td{padding:8px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+td:first-child{padding-right:22px;white-space:normal}
+th.n,td.n{text-align:right;font-variant-numeric:tabular-nums;padding-left:26px}
+td.n{font-family:var(--mono);font-size:13.5px}
+td.hi{color:var(--warm);font-weight:600}
+td.good{color:var(--cool);font-weight:600}
+td.mute{color:var(--faint)}
+td.s{font-family:var(--mono);font-size:13.5px;white-space:normal}
+th.c{text-align:center}
+tr.grp td{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--faint);padding-top:16px;white-space:normal;border-bottom:1px solid var(--line)}
+tr.rule td{border-top:1px solid var(--line)}
+tr:last-child td{border-bottom:none}
+ol{margin:18px 0 26px;padding-left:24px}
+ol li{margin:0 0 9px;padding-left:4px}
+ol li::marker{color:var(--accent);font-family:var(--mono);font-size:13px}
+ul.refs{list-style:none;padding:0;margin:22px 0 0;font-size:14px}
+ul.refs li{padding:9px 0;border-bottom:1px solid var(--line);color:var(--soft);line-height:1.6}
+ul.refs li:last-child{border-bottom:none}
+ul.refs li b{color:var(--ink);font-weight:620}
+.end{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+  font-size:13px;color:var(--faint)}
+@media(max-width:600px){h1{font-size:27px}h2{font-size:20px}h3{font-size:17px}.wrap{padding:36px 18px 72px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<div class="wrap">
+
+<p class="eyebrow">Interpretability &middot; Replication notes</p>
+<h1>When a Linear Probe Reads Your Data Pipeline: Why a Near-Perfect AUC Can Say Nothing About the Model</h1>
+<p class="sub">Can you look inside a language model and read off a concept, such as whether it is being truthful, or whether it is cheating on the task it was given? A common method says yes: record what happens inside the network while the model works, fit a small classifier on that recording, and treat the direction it learns as the concept. Two recent papers do exactly this and report it working almost perfectly. Reproducing both, we found the classifier was separating the examples by how they had been collected rather than by the concept it was meant to find. This post shows how that happens, what the numbers become once the collection is fixed, and a check that catches it in five minutes.</p>
+
+<p class="byline"><b>Ruixiang (Ryan) Tang</b> &nbsp;&middot;&nbsp; Rutgers University &nbsp;&middot;&nbsp; August 2026</p>
+
+<p class="lede">A linear probe is a classifier trained on a language model's internal activations, and it has become the standard way to ask whether a concept or a state is represented inside the model. People use it to flag a hallucination before the model finishes speaking, to catch deception, and to supply a penalty term that steers a model during reinforcement learning.</p>
+
+<p>The recipe is short enough to state in four steps, and Figure 1 walks through them. You collect examples where the model was truthful and examples where it was not. You run each one through the model and record the internal state at one chosen layer and one chosen token position, which for the 7B model used here is a vector of 4096 values. You fit a logistic regression on those vectors, and its weights define a direction in activation space. A new example gets projected onto that direction and comes out as one number.</p>
+
+<p>The model itself is never updated. <strong>The only thing being fitted is that direction, and the only thing it ever sees is the recorded vector.</strong> That matters for everything below, because a direction will pick up whatever separates the two clouds of vectors, and there is usually more than one thing separating them.</p>
+
+<figure>
+<span class="fignum">Figure 1 &middot; How a linear probe is trained</span>
+<div class="plate">
+<svg viewBox="0 0 760 330" role="img" aria-label="Pipeline diagram in four stages. Examples where the model was truthful and examples where it was not are run through the language model. At one chosen layer and one chosen token position, the residual stream vector is recorded, giving a few thousand numbers per example. Those vectors are labelled and fed to a logistic regression, which finds a direction separating the two clouds. A new example is scored by projecting its activation onto that direction.">
+<defs><marker id="p0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--faint)"/></marker></defs>
+
+<text x="20" y="16" font-size="10.5" fill="var(--faint)" font-family="var(--mono)" letter-spacing=".08em">1 &nbsp;LABELLED EXAMPLES</text>
+<rect x="20" y="30" width="150" height="46" rx="5" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width="1.1"/>
+<text x="30" y="48" font-size="11" fill="var(--ink)">Q: Connecticut capital?</text>
+<text x="30" y="64" font-size="11" fill="var(--ink)">A: &hellip; is <tspan font-weight="700">Hartford</tspan>.</text>
+<text x="176" y="53" font-size="10.5" fill="var(--cool)" font-weight="600">true</text>
+
+<rect x="20" y="92" width="150" height="46" rx="5" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width="1.1"/>
+<text x="30" y="110" font-size="11" fill="var(--ink)">Q: who wrote Ulysses?</text>
+<text x="30" y="126" font-size="11" fill="var(--ink)">A: &hellip; was <tspan font-weight="700">Orwell</tspan>.</text>
+<text x="176" y="115" font-size="10.5" fill="var(--warm)" font-weight="600">false</text>
+
+<text x="20" y="164" font-size="10.5" fill="var(--faint)">a few hundred of each</text>
+
+<path d="M206,84 L246,84" fill="none" stroke="var(--faint)" stroke-width="1.3" marker-end="url(#p0)"/>
+
+<text x="256" y="16" font-size="10.5" fill="var(--faint)" font-family="var(--mono)" letter-spacing=".08em">2 &nbsp;RUN THE MODEL, RECORD ONE VECTOR</text>
+<rect x="256" y="30" width="168" height="130" rx="5" fill="var(--panel)" stroke="var(--line)"/>
+<rect x="268" y="42" width="144" height="15" rx="2" fill="var(--line)"/>
+<rect x="268" y="61" width="144" height="15" rx="2" fill="var(--line)"/>
+<rect x="268" y="80" width="144" height="15" rx="2" fill="var(--s2)" opacity=".26" stroke="var(--s2)" stroke-width="1.1"/>
+<text x="406" y="92" font-size="9.5" fill="var(--s2)" text-anchor="end" font-family="var(--mono)">layer L</text>
+<rect x="268" y="99" width="144" height="15" rx="2" fill="var(--line)"/>
+<rect x="268" y="118" width="144" height="15" rx="2" fill="var(--line)"/>
+<text x="340" y="151" font-size="10.5" text-anchor="middle" fill="var(--faint)">the language model, frozen</text>
+
+<g font-family="var(--mono)" font-size="10.5">
+<text x="268" y="180" fill="var(--faint)">the</text><text x="292" y="180" fill="var(--faint)">capital</text><text x="336" y="180" fill="var(--faint)">is</text>
+<rect x="350" y="169" width="62" height="15" rx="2" fill="var(--s2)" opacity=".2"/>
+<text x="356" y="180" fill="var(--ink)" font-weight="700">Hartford</text>
+</g>
+<text x="268" y="197" font-size="10.5" fill="var(--faint)">one chosen token position</text>
+
+<path d="M424,95 L462,95" fill="none" stroke="var(--faint)" stroke-width="1.3" marker-end="url(#p0)"/>
+<g>
+<rect x="470" y="44" width="26" height="9" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="470" y="55" width="26" height="9" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="470" y="66" width="26" height="9" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="470" y="77" width="26" height="9" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="470" y="88" width="26" height="9" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<rect x="470" y="99" width="26" height="9" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width=".7"/>
+<text x="483" y="123" font-size="10" text-anchor="middle" fill="var(--faint)" font-family="var(--mono)">4096</text>
+<text x="483" y="136" font-size="10" text-anchor="middle" fill="var(--faint)">values</text>
+</g>
+
+<path d="M508,95 L546,95" fill="none" stroke="var(--faint)" stroke-width="1.3" marker-end="url(#p0)"/>
+
+<text x="556" y="16" font-size="10.5" fill="var(--faint)" font-family="var(--mono)" letter-spacing=".08em">3 &nbsp;FIT A LOGISTIC REGRESSION</text>
+<rect x="556" y="30" width="184" height="130" rx="5" fill="var(--panel)" stroke="var(--line)"/>
+<circle cx="596" cy="62" r="3.4" fill="var(--cool)" opacity=".75"/><circle cx="614" cy="52" r="3.4" fill="var(--cool)" opacity=".75"/>
+<circle cx="608" cy="76" r="3.4" fill="var(--cool)" opacity=".75"/><circle cx="628" cy="66" r="3.4" fill="var(--cool)" opacity=".75"/>
+<circle cx="586" cy="80" r="3.4" fill="var(--cool)" opacity=".75"/><circle cx="622" cy="86" r="3.4" fill="var(--cool)" opacity=".75"/>
+<circle cx="640" cy="56" r="3.4" fill="var(--cool)" opacity=".75"/><circle cx="600" cy="46" r="3.4" fill="var(--cool)" opacity=".75"/>
+<circle cx="672" cy="118" r="3.4" fill="var(--warm)" opacity=".75"/><circle cx="690" cy="106" r="3.4" fill="var(--warm)" opacity=".75"/>
+<circle cx="656" cy="126" r="3.4" fill="var(--warm)" opacity=".75"/><circle cx="700" cy="128" r="3.4" fill="var(--warm)" opacity=".75"/>
+<circle cx="682" cy="134" r="3.4" fill="var(--warm)" opacity=".75"/><circle cx="712" cy="114" r="3.4" fill="var(--warm)" opacity=".75"/>
+<circle cx="664" cy="102" r="3.4" fill="var(--warm)" opacity=".75"/><circle cx="702" cy="92" r="3.4" fill="var(--warm)" opacity=".75"/>
+<line x1="576" y1="130" x2="722" y2="52" stroke="var(--s2)" stroke-width="2"/>
+<line x1="640" y1="105" x2="668" y2="58" stroke="var(--s2)" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#p0)"/>
+<text x="676" y="46" font-size="10.5" fill="var(--s2)" font-weight="600">the probe</text>
+<text x="648" y="176" font-size="10.5" text-anchor="middle" fill="var(--faint)">a direction in activation space</text>
+
+<line x1="20" y1="228" x2="740" y2="228" stroke="var(--line)"/>
+<text x="20" y="250" font-size="10.5" fill="var(--faint)" font-family="var(--mono)" letter-spacing=".08em">4 &nbsp;SCORE A NEW EXAMPLE</text>
+<text x="20" y="274" font-size="12" fill="var(--ink)">run the model &#8594; take the same layer and position &#8594; project onto the direction &#8594; one number</text>
+<text x="20" y="298" font-size="12" fill="var(--soft)">Reported as AUC: the chance that a random true example scores above a random false one.</text>
+<text x="20" y="318" font-size="11.5" fill="var(--soft)">0.5 is chance. 1.0 is perfect.</text>
+</svg>
+</div>
+<figcaption>The model is never updated. The only thing being fitted is the direction in step 3, and the only thing it ever sees is the vector recorded in step 2. <strong>Everything that separates the two clouds is available to it, whether or not that thing has anything to do with truthfulness.</strong></figcaption>
+</figure>
+
+<p>The reported number is almost always an AUC, the probability that a random truthful example scores above a random untruthful one. Chance is 0.5 and perfect is 1.0. A paper reporting 0.98 invites a natural reading: <strong>the truth is written down somewhere inside the network, and this direction finds it.</strong></p>
+
+<p>An AUC of 0.98 can also come from somewhere else. This post walks through two papers where it did. Both are careful pieces of work that run more ablations than most, both release their code and their trained checkpoints, and in both the headline number is reachable by a classifier that never runs the model at all.</p>
+
+<p><strong>Neither case is carelessness, and this is genuinely hard to catch.</strong> In both papers the problem lives in a few lines of data preparation, several steps removed from the number being reported, and nothing in the papers' own results would flag it. The probe behaves exactly as a working probe would. We went looking only because we had been caught by the same shape of problem in our own experiments first, and the check that finds it takes five minutes once you know to run it.</p>
+
+
+<h2>Case 1 (ICLR 2025): How the answer was found depended on whether it was right</h2>
+
+<p>The first paper is <b>LLMs Know More Than They Show: On the Intrinsic Representation of LLM Hallucinations</b>, published at ICLR 2025 <a href="#r-orgad">[1]</a>. We picked its math split, where the reported numbers are strongest, and our question is narrower than whether the conclusion holds. It is how much of the high score comes from the step that locates the exact answer inside a response.</p>
+
+<p>The goal is error detection. A model answers a question, and a probe reading its internal state should tell you whether that answer is wrong, ideally before anyone has to check it. The setting is a set of question answering tasks, including TriviaQA, Winobias and a math dataset assembled from GSM8K and MultiArith. Each answer is graded automatically against a gold answer, which gives every example a binary label. The model is Mistral-7B-Instruct, among others.</p>
+
+<p>The paper's contribution is about <strong>where in the response you should read</strong>. Rather than probing the final token of a response, as earlier work did, it locates the exact answer inside the response and probes there, and reports a large gain from doing so. Its headline claim is that truthfulness information concentrates on specific tokens. The paper also reports, honestly, that a probe trained on one dataset does not transfer to another, and concludes that truthfulness is multifaceted rather than universal. Most work in this area does not report a negative result of that kind.</p>
+
+<h3>Two ways to find the answer, and the label chooses between them</h3>
+
+<p>There are two ways to locate the span in the released code, and which one runs depends on whether the answer was correct. A correct answer is located by searching the response text for the gold number. An incorrect answer is located by prompting a second model to read the response and pull the answer out. The label is the third argument to the function, and the first line branches on it.</p>
+
+<pre><span class="k">def</span> extract_exact_answer(model, tokenizer, correctness, ...):
+    <span class="k">if</span> correctness == 1:                      <span class="c"># the label is read here</span>
+        j = model_answer.lower().find(str(round(correct_answer)))
+        exact_answer = model_answer[j : j + len(...)]
+    <span class="k">else</span>:
+        exact_answer = LLM(<span class="c">"extract the short answer from this response"</span>)</pre>
+
+<p>Nothing about the responses differs by design. The two branches receive the same kind of text and are asked to do the same job. What differs is what they return. A string search can only return the gold answer string itself, which on a math dataset is a bare number. A model asked for a short answer returns what a person would write, which carries units and context along with the digits. Figure 2 shows the two paths and what comes out of each.</p>
+
+<figure>
+<span class="fignum">Figure 2 &middot; Two paths through the extractor</span>
+<div class="plate">
+<svg viewBox="0 0 760 268" role="img" aria-label="Flow diagram. One model response enters and splits into two paths depending on whether the answer was correct. Correct answers go through a string search and come out as a bare number averaging 1.78 characters. Incorrect answers go through a second model and come out as a phrase averaging 24.93 characters. The probe reads the last token of whatever comes out.">
+<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--soft)"/></marker></defs>
+<rect x="20" y="106" width="128" height="52" rx="6" fill="var(--panel)" stroke="var(--line)"/>
+<text x="84" y="130" font-size="12.5" text-anchor="middle" fill="var(--ink)">model response</text>
+<text x="84" y="147" font-size="10.5" text-anchor="middle" fill="var(--faint)">a paragraph of working</text>
+<path d="M148,120 L200,72" fill="none" stroke="var(--soft)" stroke-width="1.4" marker-end="url(#a1)"/>
+<path d="M148,144 L200,192" fill="none" stroke="var(--soft)" stroke-width="1.4" marker-end="url(#a1)"/>
+<text x="152" y="56" font-size="11" fill="var(--cool)" font-weight="600">correct</text>
+<text x="152" y="216" font-size="11" fill="var(--warm)" font-weight="600">incorrect</text>
+<rect x="208" y="36" width="212" height="56" rx="6" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width="1.2"/>
+<text x="314" y="58" font-size="12" text-anchor="middle" fill="var(--ink)">search for the gold answer</text>
+<text x="314" y="76" font-size="11" text-anchor="middle" fill="var(--soft)" font-family="var(--mono)">.find("9")</text>
+<rect x="208" y="172" width="212" height="56" rx="6" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width="1.2"/>
+<text x="314" y="194" font-size="12" text-anchor="middle" fill="var(--ink)">ask a model to pull it out</text>
+<text x="314" y="212" font-size="11" text-anchor="middle" fill="var(--soft)">"extract the short answer"</text>
+<path d="M420,64 L466,64" fill="none" stroke="var(--soft)" stroke-width="1.4" marker-end="url(#a1)"/>
+<path d="M420,200 L466,200" fill="none" stroke="var(--soft)" stroke-width="1.4" marker-end="url(#a1)"/>
+<text x="474" y="52" font-size="15" fill="var(--ink)" font-family="var(--mono)">9</text>
+<text x="474" y="74" font-size="15" fill="var(--ink)" font-family="var(--mono)">30</text>
+<text x="520" y="52" font-size="11" fill="var(--cool)">1.78 characters on average</text>
+<text x="474" y="190" font-size="13" fill="var(--ink)" font-family="var(--mono)">8 cans of paint</text>
+<text x="474" y="212" font-size="13" fill="var(--ink)" font-family="var(--mono)">15 meters</text>
+<text x="474" y="232" font-size="11" fill="var(--warm)">24.93 characters on average</text>
+<line x1="20" y1="252" x2="740" y2="252" stroke="var(--line)"/>
+<text x="20" y="18" font-size="11" fill="var(--s2)" font-family="var(--mono)">the probe reads the last token of whatever comes out</text>
+</svg>
+</div>
+<figcaption>Which path runs is decided by whether the answer was correct. The correct branch returns the gold answer string itself. The incorrect branch returns whatever a second model writes, which carries units the way a person would write them.</figcaption>
+</figure>
+
+<div class="tw"><table>
+<thead><tr><th>What the extractor returned</th><th class="n">characters</th></tr></thead>
+<tbody>
+<tr class="grp"><td colspan="2">answer was correct, so a string search returned the gold number</td></tr>
+<tr><td class="s">9</td><td class="n">1</td></tr>
+<tr><td class="s">4</td><td class="n">1</td></tr>
+<tr><td class="s">30</td><td class="n">2</td></tr>
+<tr class="grp"><td colspan="2">answer was incorrect, so a second model was asked for it</td></tr>
+<tr><td class="s">8 cans of paint</td><td class="n">15</td></tr>
+<tr><td class="s">15 meters</td><td class="n">9</td></tr>
+<tr><td class="s">James enjoys 30 hours of the 130 hours of gameplay</td><td class="n">50</td></tr>
+</tbody></table></div>
+
+<p>The probe reads the model's internal state at the last token of whichever string came out. Both classes are full of digits, so this is not a distinction between numbers and words. It is a distinction between a bare number and a number with something after it, and it exists because of which code path ran.</p>
+
+<h3>A classifier that never runs the model</h3>
+
+<p>We built a control that never looks at any internal state. It sees only the extracted string and four properties of it: how many characters it has, how many tokens, whether it is entirely numeric, and whether its last character is a digit. Those go into a logistic regression with five-fold cross-validation. We generated the data by following the original repository exactly, using its prompts, its correctness function and its post-processing, running Mistral-7B-Instruct over 2600 math questions. The model gets 43.9% of them right, which gives 1142 correct and 1458 incorrect examples.</p>
+
+<div class="tw"><table>
+<thead><tr><th>Feature of the extracted string</th><th class="n">correct</th><th class="n">incorrect</th><th class="n">AUC alone</th></tr></thead>
+<tbody>
+<tr><td>entirely numeric</td><td class="n">100%</td><td class="n">5.3%</td><td class="n hi">0.973</td></tr>
+<tr><td>last character is a digit</td><td class="n">100%</td><td class="n">30.2%</td><td class="n">0.849</td></tr>
+<tr><td>character count</td><td class="n">1.78</td><td class="n">24.93</td><td class="n hi">0.980</td></tr>
+<tr><td>token count</td><td class="n">2.78</td><td class="n">9.92</td><td class="n">0.937</td></tr>
+<tr class="rule"><td><strong>all five together</strong></td><td class="n mute">not applicable</td><td class="n mute">not applicable</td><td class="n hi"><strong>0.985</strong></td></tr>
+</tbody></table></div>
+
+<p>We then trained the probe the way the paper does, sweeping every layer with the same cross-validation. Layer 15 is best at AUC 0.978, which reproduces the reported result. Put next to the control, a probe reading the model's own activations does not beat a classifier that only sees a string.</p>
+
+<div class="grid">
+<div class="stat w"><div class="v">0.985</div><div class="l">string only, never runs the model</div></div>
+<div class="stat a"><div class="v">0.978</div><div class="l">probe on activations, best of 32 layers</div></div>
+</div>
+
+<div class="key">
+<p class="h">What this does and does not say</p>
+<p>On this benchmark the probe's discriminative power does not exceed what the extraction step already leaks. That is narrower than saying the probe learned nothing. It says this number cannot separate a probe that reads truthfulness from a probe that reads which branch produced the string.</p>
+</div>
+
+<h3>Controlling for one feature is not enough</h3>
+
+<p>A natural response to that table is to hold the obvious feature fixed and see what is left. We kept only the examples whose extracted string ends in a digit, which is 1583 of them, and recomputed the AUC inside that subset. The probe stays at 0.933, so the digit property is not the whole story.</p>
+
+<p>What it is instead is one of several. Inside that subset the correct answers still run to a median of 2 characters against 6 for the incorrect ones, so once the digit property is held fixed, <strong>length carries the signal instead</strong>. The string-only classifier inside the same subset reaches 0.951, again above the probe. Every level of conditioning we tried leaves the string-only classifier at or above the probe.</p>
+
+<p><strong>This is the reason to report a no-model baseline rather than to check the one feature you happened to think of.</strong> Nobody enumerates every way two pipelines can differ. A classifier will find them without being told what to look for.</p>
+
+<h3>Running the probe on every word of the response</h3>
+
+<p>The probe was trained at one position and, in the paper, evaluated only there. We took the trained probe and read every token of every response with it instead. Across 7877 tokens, the probe's score predicts whether a token is a digit at AUC 0.944, with digit tokens averaging +4.02 and non-digit tokens &minus;1.03. Applying a probe at positions it was never trained on is cheap and it shows what the direction responds to.</p>
+
+<h3>What the score becomes once the leak is closed</h3>
+
+<p>What the number should be takes one change to find out. Extraction stops reading the label and every example goes through the same path, the one that prompts a model for a short answer. The responses are unchanged. The labels are unchanged, since they come from the full response and never depended on extraction. Prompts, post-processing and probe training are unchanged. After that change the two classes produce strings that look alike.</p>
+
+<div class="tw"><table>
+<thead>
+<tr><th rowspan="2">Extracted string</th><th class="n c" colspan="2">original extraction</th><th class="n c" colspan="2">fixed extraction</th></tr>
+<tr><th class="n">correct</th><th class="n">incorrect</th><th class="n">correct</th><th class="n">incorrect</th></tr>
+</thead>
+<tbody>
+<tr><td>character count</td><td class="n hi">1.78</td><td class="n hi">24.93</td><td class="n good">18.67</td><td class="n good">23.07</td></tr>
+<tr><td>entirely numeric</td><td class="n hi">100%</td><td class="n hi">5.3%</td><td class="n good">3.3%</td><td class="n good">5.5%</td></tr>
+<tr><td>last character is a digit</td><td class="n hi">100%</td><td class="n hi">30.2%</td><td class="n good">18.5%</td><td class="n good">30.6%</td></tr>
+</tbody></table></div>
+
+<p>The length gap falls from 14x to 1.2x, and the string-only baseline falls with it, from 0.985 to 0.662. What remains at 0.662 is probably real rather than an artifact, because wrong answers do tend to come with longer and more hedged phrasing. The probe, retrained at the new position, lands at 0.745. Figure 3 places all four numbers on one axis.</p>
+
+<figure>
+<span class="fignum">Figure 3 &middot; Four numbers, before and after the fix</span>
+<div class="plate">
+<svg viewBox="0 0 760 240" role="img" aria-label="Dot plot on an AUC axis from 0.5 to 1.0. With the original extraction the string-only classifier reaches 0.985 and the probe 0.978, so the probe is slightly lower. With the label-independent extraction the string-only classifier falls to 0.662 and the probe to 0.745, so the probe is higher by 0.083.">
+<line x1="150" y1="196" x2="716" y2="196" stroke="var(--ink)"/>
+<line x1="150" y1="48" x2="150" y2="196" stroke="var(--line)" stroke-dasharray="3 4"/>
+<text x="150" y="214" font-size="10.5" text-anchor="middle" fill="var(--faint)" font-family="var(--mono)">0.5</text>
+<text x="150" y="230" font-size="10.5" text-anchor="middle" fill="var(--faint)">chance</text>
+<text x="433" y="214" font-size="10.5" text-anchor="middle" fill="var(--faint)" font-family="var(--mono)">0.75</text>
+<text x="716" y="214" font-size="10.5" text-anchor="middle" fill="var(--faint)" font-family="var(--mono)">1.0</text>
+<text x="142" y="82" font-size="12.5" text-anchor="end" fill="var(--ink)">original extraction</text>
+<text x="142" y="98" font-size="10.5" text-anchor="end" fill="var(--faint)">reads the label</text>
+<line x1="150" y1="88" x2="699" y2="88" stroke="var(--rule-faint)" stroke-width="6"/>
+<circle cx="699" cy="88" r="7" fill="var(--warm)"/>
+<circle cx="691" cy="88" r="7" fill="none" stroke="var(--s2)" stroke-width="2.2"/>
+<text x="678" y="68" font-size="11.5" text-anchor="end" fill="var(--warm)" font-family="var(--mono)">0.985 string only</text>
+<text x="678" y="115" font-size="11.5" text-anchor="end" fill="var(--s2)" font-family="var(--mono)">0.978 probe</text>
+<text x="142" y="154" font-size="12.5" text-anchor="end" fill="var(--ink)">fixed extraction</text>
+<text x="142" y="170" font-size="10.5" text-anchor="end" fill="var(--faint)">label-independent</text>
+<line x1="150" y1="160" x2="428" y2="160" stroke="var(--rule-faint)" stroke-width="6"/>
+<circle cx="333" cy="160" r="7" fill="var(--warm)"/>
+<circle cx="428" cy="160" r="7" fill="none" stroke="var(--s2)" stroke-width="2.2"/>
+<text x="333" y="142" font-size="11.5" text-anchor="middle" fill="var(--warm)" font-family="var(--mono)">0.662</text>
+<text x="440" y="164" font-size="11.5" fill="var(--s2)" font-family="var(--mono)">0.745</text>
+<path d="M340,172 L421,172" stroke="var(--s2)" stroke-width="1"/>
+<text x="380" y="188" font-size="10.5" text-anchor="middle" fill="var(--s2)">+0.083</text>
+<circle cx="156" cy="20" r="6" fill="var(--warm)"/><text x="168" y="24" font-size="11.5" fill="var(--soft)">string only, no activations</text>
+<circle cx="368" cy="20" r="6" fill="none" stroke="var(--s2)" stroke-width="2.2"/><text x="380" y="24" font-size="11.5" fill="var(--soft)">probe on activations, best layer</text>
+</svg>
+</div>
+<figcaption>Filled dots are the classifier that never sees the model. Open circles are the probe. The standard error on an AUC at this sample size is about 0.012.</figcaption>
+</figure>
+
+<div class="key">
+<p class="h">The corrected result supports the paper</p>
+<p>Two things hold at once. A large part of the reported 0.978 came from the extraction step, and the honest number on this benchmark is closer to 0.745. But the probe now beats the string-only control by 0.083, where before it did not beat it at all. The model's internals do carry truthfulness information beyond surface features, and that signal survives once the leak is removed. The claim stands and the number needs replacing.</p>
+</div>
+
+<p class="caveat"><strong>A point against us.</strong> Only 1528 of the 2600 examples survive the fix, because the extracted string sometimes cannot be located in the original response after the second model paraphrases it, and those examples have to be dropped. The attrition is uneven: 52% of what remains is correct, against 43.9% before. Incorrect examples are dropped more often, which pushes the post-fix number in the optimistic direction.</p>
+
+<h3>Does the paper's other claim survive the fix</h3>
+
+<p>The paper's other headline is that truthfulness information concentrates on the exact-answer tokens rather than being spread across the response. Under the mechanism above, that pattern is also what a label-dependent selection would produce on its own. The last token of a response is chosen without reference to the label, while the exact-answer position is chosen by it, so a position that scores unusually well is exactly what you would expect either way. The experiment that separates the two explanations is to ask whether the position advantage survives the fixed extraction. We trained probes at four positions to find out.</p>
+
+<div class="tw"><table>
+<thead><tr><th>Position probed</th><th>Chosen by</th><th class="n">best layer</th><th class="n">AUC</th></tr></thead>
+<tbody>
+<tr><td>exact answer, original extraction</td><td>the label</td><td class="n">30</td><td class="n hi">0.971</td></tr>
+<tr><td>exact answer, fixed extraction</td><td>not the label</td><td class="n">22</td><td class="n">0.727</td></tr>
+<tr><td>last token of the response</td><td>not the label</td><td class="n">30</td><td class="n">0.732</td></tr>
+<tr class="rule"><td>last token of the question</td><td>not the label, and before the model answers</td><td class="n">12</td><td class="n">0.705</td></tr>
+</tbody></table></div>
+
+<p>All four probes are trained on the same 1523 examples, so the columns are directly comparable. The exact-answer position beats the end of the response by 0.239 under the original extraction and by &minus;0.005 under the fixed one. <strong>On this dataset the concentration disappears as soon as the position is chosen without reference to the label.</strong></p>
+
+<p>Probing the final token of the <em>question</em>, before the model has written a single word of its answer, already reaches 0.705. Whatever the probe reads there cannot be about this particular answer, because the answer does not exist yet. <strong>Much of what looks like a model knowing it is about to be wrong is the difficulty of the question being readable from the question.</strong> Against that floor, reading the model's own answer buys 0.022.</p>
+
+<p class="caveat">This is one dataset and one model. The paper reports the concentration effect across several datasets, and we tested the math split, where its numbers are strongest. The four positions also require every example to be locatable at all four, which is why this table uses 1523 examples rather than the full 2600.</p>
+
+
+<h2>Case 2 (ICML 2026): The cheating solutions were much shorter than the honest ones</h2>
+
+<p>The second paper is <b>The Obfuscation Atlas: Mapping Where Honesty Emerges in RLVR with Deception Probes</b>, published at ICML 2026 <a href="#r-atlas">[2]</a>. Its question is what happens when you train a model against a probe rather than only measuring with one. The setting is called MBPP-Honeypot. A model receives a programming problem and is shown one test case, with two more hidden from it. It can solve the problem properly, or it can read the visible test, hardcode the expected output, and pass the only check it can see. A probe trained on activations is supposed to detect that hardcoding. The probe's score then enters the reinforcement learning objective as a penalty, so the policy is pushed away from whatever the probe fires on. The paper maps what comes out across a grid of two coefficients: how hard the probe penalty pushes, and how tightly a KL term holds the model near where it started.</p>
+
+<p>The outcome the paper is looking for is obfuscation. A model might become genuinely honest, or it might keep hardcoding while learning to make the probe stop firing, and telling those apart is the point of the study. The authors released 488 trained checkpoints spanning that grid, each labelled with which outcome it produced.</p>
+
+<p>This paper runs seven appendices of ablations, covering activation extraction methods, three different probe datasets, continual retraining, threshold sensitivity, extreme penalty coefficients and 500-step stability. <strong>Its core results replicate for us.</strong> After 120 steps the hardcoding rate goes from 0% to 94% and the model writes things like <code>def add(a,b): return 3</code>, and the probe penalty works, with a coefficient of 10 bringing the share of fully solved problems back from 1.0% to 36.8%.</p>
+
+<h3>Counting characters gets you to 0.950</h3>
+
+<p>The probe is evaluated on a fixed set built from two columns of the dataset, the <code>hardcode</code> column against the <code>code</code> column. Before touching the model at all, we computed plain text features on that set: how many characters each solution has, how many lines, whether it contains a loop or a conditional, and whether it returns a bare literal.</p>
+
+<div class="tw"><table>
+<thead><tr><th>Feature</th><th class="n">AUC</th></tr></thead>
+<tbody>
+<tr><td>character count</td><td class="n hi"><strong>0.950</strong></td></tr>
+<tr><td>line count</td><td class="n">0.896</td></tr>
+<tr><td>contains for or while</td><td class="n">0.765</td></tr>
+<tr><td>contains if</td><td class="n">0.731</td></tr>
+<tr><td>returns a literal</td><td class="n">0.729</td></tr>
+<tr class="rule"><td><strong>all five together</strong></td><td class="n hi"><strong>0.969</strong></td></tr>
+</tbody></table></div>
+
+<p>Hardcoded solutions run to a median of 48 characters against 141 for the real ones, and the hardcoded version is the shorter of the pair 97.7% of the time. Character count is the strongest surface feature in both cases in this post, even though the two settings have nothing else in common.</p>
+
+<h3>The probe is tested on the same text it was trained on</h3>
+
+<p>Reading the config shows why the number stays where it is. The probe's training data inherits directly from the task data, so it trains on a distribution where character count alone gives 0.950, and it is then evaluated on that same distribution. The train and test halves are different rows of the same two columns.</p>
+
+<pre><span class="k">class</span> MBPPProbeConfig(MBPPTaskConfig):
+    max_train_examples = 400
+<span class="c"># inherited:</span>
+    dataset_name = <span class="c">"taufeeque/mbpp-hardcode"</span>
+    positive_completion_column = <span class="c">"hardcode"</span>
+    negative_completion_column = <span class="c">"code"</span></pre>
+
+<p>The paper reports that this probe still reaches AUC 1.000 after reinforcement learning, and reads that as evidence that hardcoding remains linearly represented even in a model trained to hide it. The evaluation text is fixed, though, and nothing the model does can change those character counts. A probe holding any length-correlated component keeps scoring 1.000 indefinitely, whatever happened to the representation.</p>
+
+<h3>What happens when the probe becomes part of the reward</h3>
+
+<p>Because the probe is wired into the reward here rather than only reporting a number, the causal claim is open to the same question. If penalising the probe suppresses hardcoding, is that because the probe detects deception, or because it detects short code? We replaced the probe score with a function that counts characters and never looks at activations, centring it at 95 characters, between the two class medians of 48 and 141, which puts its AUC near 0.95 and matches the measured character-count AUC.</p>
+
+<pre>score = 1 / (1 + exp((code_length &minus; 95) / 25))</pre>
+
+<div class="tw"><table>
+<thead><tr><th>Penalty</th><th class="n">problems solved completely, final</th></tr></thead>
+<tbody>
+<tr><td>none</td><td class="n mute">0.8%</td></tr>
+<tr><td>real probe, coefficient 1</td><td class="n mute">0.8%</td></tr>
+<tr><td>real probe, coefficient 3</td><td class="n mute">1.0%</td></tr>
+<tr><td>real probe, coefficient 10</td><td class="n">36.8%</td></tr>
+<tr class="rule"><td>character count, coefficient 0.3</td><td class="n mute">1.4%</td></tr>
+<tr><td><strong>character count, coefficient 1.0</strong></td><td class="n good"><strong>59.1%</strong></td></tr>
+</tbody></table></div>
+
+<p>A surface feature that never touches activations preserves capability better than the real probe does, and the two behave alike in shape as well. Each has a threshold below which nothing happens and above which the effect appears in full. The real probe does nothing at coefficient 3 and works at 10, and the character-count version does nothing at 0.3 and works at 1.0. This chain of evidence cannot separate a probe that detects deception from a probe that detects short code.</p>
+
+<h3>Did the model learn to hide, or did it just fall apart</h3>
+
+<p>The paper's central phenomenon is obfuscation, where a model keeps hardcoding while its probe score falls, which reads as the model learning to hide. The authors released 488 trained checkpoints, each carrying their own policy label and their own reported metrics, so this claim can be examined without running anything. Figure 4 plots the 386 with complete metrics, capability on one axis and how far the probe score moved on the other.</p>
+
+<figure>
+<span class="fignum">Figure 4 &middot; 386 released checkpoints</span>
+<div class="plate">
+<svg viewBox="0 0 760 310" role="img" aria-label="Scatter plot. The horizontal axis is the share of problems a checkpoint solves completely. The vertical axis is the log ratio of the probe score after training to before. Green points, which the authors labelled honest, cluster at upper right with high capability and an unchanged probe score. Orange points, labelled obfuscated, cluster at lower left with near-zero capability and a probe score about four times lower. The middle is nearly empty.">
+<line x1="64" y1="108.7" x2="716" y2="108.7" stroke="var(--line)" stroke-dasharray="3 4"/>
+<text x="712" y="103" font-size="10.5" text-anchor="end" fill="var(--faint)" font-family="var(--mono)">probe score unchanged</text>
+<circle cx="567.7" cy="110.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="478.0" cy="106.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="557.1" cy="109.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="570.9" cy="109.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="229.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="424.2" cy="107.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="463.4" cy="114.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="475.6" cy="122.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="471.5" cy="106.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="300.4" cy="150.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="422.6" cy="109.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="239.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="463.4" cy="110.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="72.2" cy="149.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="520.4" cy="112.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="84.4" cy="159.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="328.9" cy="144.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="84.4" cy="157.0" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="559.5" cy="109.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="642.6" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="494.3" cy="109.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="481.3" cy="111.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="575.8" cy="110.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="487.8" cy="111.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="587.2" cy="108.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="603.5" cy="104.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="551.4" cy="118.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="350.9" cy="131.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="394.1" cy="148.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="502.5" cy="114.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="626.4" cy="110.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="469.9" cy="115.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="584.0" cy="112.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="445.4" cy="139.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="603.5" cy="112.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="494.3" cy="107.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="481.3" cy="112.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="473.1" cy="118.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="380.2" cy="152.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="163.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="593.8" cy="109.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="601.9" cy="108.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="567.7" cy="109.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="461.7" cy="146.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="536.7" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="551.4" cy="109.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="520.4" cy="118.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="149.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="475.6" cy="140.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="579.1" cy="109.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="559.5" cy="114.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="157.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="486.2" cy="114.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="173.0" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="641.0" cy="110.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="614.1" cy="109.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="513.9" cy="140.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="610.1" cy="111.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="546.5" cy="146.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="204.2" cy="178.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="437.3" cy="112.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="437.3" cy="109.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="367.2" cy="188.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="219.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="394.1" cy="109.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="318.3" cy="135.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="203.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="398.1" cy="170.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="426.7" cy="109.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="600.3" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="381.8" cy="147.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="402.2" cy="109.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="406.3" cy="110.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="86.8" cy="151.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="424.2" cy="108.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="119.4" cy="145.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="577.4" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="562.8" cy="109.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="432.4" cy="109.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="553.0" cy="109.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="153.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="445.4" cy="149.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="132.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="68.1" cy="204.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="357.4" cy="140.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="81.9" cy="137.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="95.0" cy="156.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="557.1" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="616.6" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="410.4" cy="139.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="306.9" cy="109.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="636.1" cy="110.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="385.9" cy="121.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="597.8" cy="109.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="147.1" cy="121.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="68.1" cy="142.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="570.9" cy="108.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="228.6" cy="153.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="68.1" cy="139.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="543.2" cy="120.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="475.6" cy="131.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="475.6" cy="121.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="414.4" cy="129.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="144.0" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="84.4" cy="154.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="72.2" cy="152.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="512.2" cy="108.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="548.9" cy="109.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="540.8" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="172.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="456.8" cy="129.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="108.8" cy="133.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="528.5" cy="119.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="106.4" cy="175.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="606.0" cy="110.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="592.1" cy="109.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="95.0" cy="178.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="78.7" cy="155.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="103.1" cy="146.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="68.1" cy="152.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="581.5" cy="110.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="76.2" cy="170.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="589.7" cy="107.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="68.1" cy="150.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="610.1" cy="108.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="443.0" cy="130.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="424.2" cy="109.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="512.2" cy="112.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="495.9" cy="122.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="203.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="567.7" cy="106.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="73.8" cy="199.0" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="522.0" cy="114.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="573.4" cy="106.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="589.7" cy="111.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="72.2" cy="200.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="595.4" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="497.6" cy="128.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="577.4" cy="108.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="535.1" cy="109.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="559.5" cy="113.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="158.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="76.2" cy="158.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="424.2" cy="108.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="135.7" cy="138.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="293.8" cy="146.0" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="500.0" cy="113.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="512.2" cy="111.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="505.7" cy="111.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="657.3" cy="109.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="654.9" cy="109.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="600.3" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="269.4" cy="141.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="608.4" cy="111.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="628.0" cy="113.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="510.6" cy="117.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="465.0" cy="146.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="512.2" cy="101.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="508.2" cy="117.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="562.8" cy="114.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="516.3" cy="113.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="600.3" cy="110.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="422.6" cy="153.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="652.4" cy="115.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="611.7" cy="109.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="610.1" cy="108.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="95.0" cy="162.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="448.7" cy="154.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="570.9" cy="104.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="597.8" cy="112.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="610.1" cy="111.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="495.9" cy="117.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="559.5" cy="109.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="76.2" cy="168.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="141.4" cy="142.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="575.8" cy="123.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="624.7" cy="108.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="593.8" cy="111.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="227.0" cy="151.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="456.8" cy="133.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="630.4" cy="110.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="673.6" cy="109.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="180.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="667.1" cy="109.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="171.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="269.4" cy="126.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="172.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="469.9" cy="109.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="92.5" cy="184.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="636.1" cy="113.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="130.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="429.1" cy="108.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="422.6" cy="109.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="577.4" cy="111.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="196.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="421.0" cy="149.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="183.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="584.0" cy="116.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="72.2" cy="208.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="72.2" cy="199.0" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="72.2" cy="219.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="165.9" cy="136.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="459.3" cy="109.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="465.0" cy="107.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="471.5" cy="126.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="156.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="142.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="589.7" cy="109.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="280.0" cy="137.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="585.6" cy="108.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="76.2" cy="178.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="119.4" cy="156.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="430.8" cy="109.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="461.7" cy="110.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="587.2" cy="108.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="222.9" cy="129.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="130.8" cy="150.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="137.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="600.3" cy="108.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="119.4" cy="181.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="114.5" cy="157.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="78.7" cy="138.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="92.5" cy="157.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="634.5" cy="110.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="626.4" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="46.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="345.2" cy="108.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="114.5" cy="146.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="483.7" cy="108.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="326.4" cy="117.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="73.8" cy="154.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="167.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="577.4" cy="109.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="573.4" cy="109.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="565.2" cy="109.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="448.7" cy="141.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="451.1" cy="139.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="520.4" cy="132.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="308.5" cy="135.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="133.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="634.5" cy="108.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="243.3" cy="135.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="616.6" cy="108.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="150.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="73.8" cy="165.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="78.7" cy="154.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="461.7" cy="124.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="157.7" cy="153.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="600.3" cy="108.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="161.8" cy="172.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="157.7" cy="126.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="119.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="579.1" cy="109.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="456.8" cy="130.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="486.2" cy="109.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="426.7" cy="107.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="421.0" cy="108.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="569.3" cy="107.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="575.8" cy="111.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="100.7" cy="179.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="147.1" cy="186.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="160.2" cy="158.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="575.8" cy="109.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="589.7" cy="111.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="478.0" cy="109.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="80.3" cy="153.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="626.4" cy="108.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="502.5" cy="115.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="88.5" cy="147.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="92.5" cy="147.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="478.0" cy="111.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="471.5" cy="105.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="456.8" cy="128.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="624.7" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="146.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="153.7" cy="180.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="479.6" cy="113.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="585.6" cy="111.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="548.9" cy="113.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="636.1" cy="109.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="543.2" cy="109.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="302.0" cy="133.0" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="638.6" cy="110.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="644.3" cy="109.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="641.0" cy="114.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="654.9" cy="115.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="398.1" cy="142.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="469.9" cy="115.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="479.6" cy="108.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="500.0" cy="113.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="422.6" cy="143.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="465.0" cy="113.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="426.7" cy="156.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="504.1" cy="115.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="601.9" cy="112.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="535.1" cy="111.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="72.2" cy="130.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="532.6" cy="110.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="451.1" cy="139.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="606.0" cy="109.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="78.7" cy="165.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="447.1" cy="119.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="553.0" cy="137.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="78.7" cy="163.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="636.1" cy="112.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="587.2" cy="109.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="642.6" cy="109.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="587.2" cy="113.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="634.5" cy="109.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="530.2" cy="115.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="528.5" cy="114.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="349.2" cy="131.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="544.9" cy="117.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="76.2" cy="151.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="233.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="399.8" cy="118.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="455.2" cy="112.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="416.1" cy="109.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="218.8" cy="189.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="430.8" cy="110.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="422.6" cy="109.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="478.0" cy="117.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="72.2" cy="214.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="394.1" cy="153.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="177.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="225.0" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="106.4" cy="136.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="406.3" cy="110.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="438.9" cy="108.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="581.5" cy="108.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="573.4" cy="109.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="119.4" cy="124.0" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="434.8" cy="109.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="557.1" cy="109.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="72.2" cy="198.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="577.4" cy="110.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="81.9" cy="153.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="241.7" cy="141.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="528.5" cy="119.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="153.7" cy="136.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="78.7" cy="162.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="416.1" cy="108.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="170.0" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="396.5" cy="128.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="148.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="608.4" cy="108.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="139.0" cy="145.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="155.3" cy="144.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="68.1" cy="42.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="632.9" cy="109.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="459.3" cy="108.9" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="634.5" cy="108.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="76.2" cy="141.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="153.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="84.4" cy="162.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="163.3" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="548.9" cy="120.3" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="567.7" cy="108.7" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="570.9" cy="108.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="538.3" cy="110.1" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="543.2" cy="109.0" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="70.5" cy="123.6" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="134.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="430.8" cy="124.6" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="72.2" cy="152.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="385.9" cy="140.8" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="611.7" cy="108.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="618.2" cy="108.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="73.8" cy="157.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="72.2" cy="144.1" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="96.6" cy="164.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="163.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="100.7" cy="154.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="187.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="70.5" cy="163.9" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="127.6" cy="147.8" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="628.0" cy="109.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="611.7" cy="108.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="186.2" cy="127.4" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="624.7" cy="109.5" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="135.7" cy="153.5" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="73.8" cy="240.2" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="589.7" cy="111.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="530.2" cy="120.4" r="2.6" fill="var(--cool)" opacity=".42"/>
+<circle cx="81.9" cy="146.7" r="2.6" fill="var(--warm)" opacity=".42"/>
+<circle cx="616.6" cy="109.2" r="2.6" fill="var(--cool)" opacity=".42"/>
+<line x1="64" y1="248" x2="716" y2="248" stroke="var(--ink)" stroke-width="1"/>
+<line x1="64" y1="36" x2="64" y2="248" stroke="var(--ink)" stroke-width="1"/>
+<text x="64" y="266" font-size="10.5" text-anchor="middle" fill="var(--faint)" font-family="var(--mono)">0</text>
+<text x="227" y="266" font-size="10.5" text-anchor="middle" fill="var(--faint)" font-family="var(--mono)">20</text>
+<text x="390" y="266" font-size="10.5" text-anchor="middle" fill="var(--faint)" font-family="var(--mono)">40</text>
+<text x="553" y="266" font-size="10.5" text-anchor="middle" fill="var(--faint)" font-family="var(--mono)">60</text>
+<text x="716" y="266" font-size="10.5" text-anchor="middle" fill="var(--faint)" font-family="var(--mono)">80%</text>
+<text x="390" y="286" font-size="11.5" text-anchor="middle" fill="var(--soft)">problems solved completely</text>
+<text x="58" y="41" font-size="10.5" text-anchor="end" fill="var(--faint)" font-family="var(--mono)">+2</text>
+<text x="58" y="112" font-size="10.5" text-anchor="end" fill="var(--faint)" font-family="var(--mono)">0</text>
+<text x="58" y="188" font-size="10.5" text-anchor="end" fill="var(--faint)" font-family="var(--mono)">&#8722;2</text>
+<text x="58" y="252" font-size="10.5" text-anchor="end" fill="var(--faint)" font-family="var(--mono)">&#8722;4</text>
+<text x="18" y="142" font-size="11.5" text-anchor="middle" fill="var(--soft)" transform="rotate(-90 18 142)">log(probe score after / before)</text>
+<circle cx="150" cy="20" r="4" fill="var(--cool)" opacity=".8"/><text x="162" y="24" font-size="11.5" fill="var(--soft)">labelled honest, 245</text>
+<circle cx="330" cy="20" r="4" fill="var(--warm)" opacity=".8"/><text x="342" y="24" font-size="11.5" fill="var(--soft)">labelled obfuscated, 141</text>
+</svg>
+</div>
+<figcaption>Each point is one released checkpoint. A vertical value of &#8722;1.5 means the probe score fell to about a quarter of what it was. <strong>The two clusters sit at opposite corners and the middle is nearly empty.</strong> The checkpoints whose probe score fell furthest are the ones that stopped solving problems.</figcaption>
+</figure>
+
+<p>The obfuscated-policy label appears only at small KL coefficients. The KL coefficient controls how far training is allowed to move a model from its starting point, and among the 112 checkpoints at coefficient 0.1 and the 87 at coefficient 1 there is not a single one. That is also the range where our own runs stay intact instead of collapsing into a model that does nothing but hardcode. Working out the correlation between the two axes under successively tighter controls gives the following.</p>
+
+<div class="tw"><table>
+<thead><tr><th>Controlling for</th><th class="n">median correlation</th></tr></thead>
+<tbody>
+<tr><td>nothing</td><td class="n">+0.556</td></tr>
+<tr><td>probe type and base model</td><td class="n hi"><strong>+0.813</strong></td></tr>
+<tr><td>and KL coefficient</td><td class="n hi"><strong>+0.393</strong></td></tr>
+</tbody></table></div>
+
+<p>The last row compares checkpoints that share every hyperparameter and differ only in random seed, which rules out the possibility that both quantities are simply being driven by the KL coefficient. The correlation there is still 0.393, positive in 29 of 40 groups, sign test p = 0.006.</p>
+
+<div class="key">
+<p class="h">What the released checkpoints show</p>
+<p>On this data, a model that learned to hide its representation while behaving the same way cannot be told apart from a model whose output collapsed outside the range the probe was trained on. This is correlational rather than causal, and counterexamples exist: 4 of the 53 obfuscated Llama-3-8B checkpoints still solve more than 10% of problems. Capable obfuscation happens, it is just rare.</p>
+</div>
+
+
+<h2>Does switching the neurons off actually change anything</h2>
+
+<p>A probe reports a correlation, and the stronger question is whether cutting the relevant neurons changes behaviour. We score each neuron by a signed quantity: how far its activation differs between the two classes, multiplied by how well the direction it writes into the residual stream aligns with the hardcoding direction. We then clamp the selected neurons to their dataset mean and watch what the model does. The test model hardcodes 25% of the time with its capability intact, and each condition runs over 200 problems with 4 random seeds and a paired test.</p>
+
+<div class="tw"><table>
+<thead><tr><th>Selection method</th><th class="n">hardcodes removed</th><th class="n">added back</th><th class="n">p</th></tr></thead>
+<tbody>
+<tr><td><strong>signed contribution</strong></td><td class="n good"><strong>61</strong></td><td class="n">24</td><td class="n good"><strong>0.0001</strong></td></tr>
+<tr><td>gradient attribution</td><td class="n good">75</td><td class="n">30</td><td class="n good">&lt;0.0001</td></tr>
+<tr><td>activation difference alone</td><td class="n mute">43</td><td class="n mute">39</td><td class="n mute">0.74</td></tr>
+<tr><td>random</td><td class="n mute">29</td><td class="n mute">46</td><td class="n mute">0.06 (reversed)</td></tr>
+</tbody></table></div>
+
+<p>Same count of neurons, same intervention, only the selection differs, which is what makes the comparison informative. Hardcoding falls 17.9% in relative terms against 7.1% for problem-solving ability, so it falls about 2.5 times faster than capability and this is not general damage. On the checkpoints trained to evade the probe, however, the same method leaves a relative drop of only about 3.8%, and gradient attribution reverses sign there, with clamping producing more hardcoding rather than less. Causal intervention holds up better than a correlational probe under adversarial training, and not well enough to use as a detector.</p>
+
+<p>Ranking neurons by how far their activation moves, without the sign, picks the wrong ones, and the failure looks like success. That ranking reaches AUC 0.9995 on the original contrast, which would pass any check based on separability, but clamping the neurons it selects changes code length rather than hardcoding.</p>
+
+
+<h2>What to check before you trust a probe</h2>
+
+<div class="key">
+<p class="h">The check worth running first</p>
+<p><strong>Report a no-model baseline.</strong> Find the strongest feature computable on your evaluation set without running the model, and report its AUC next to the probe's. If the two are close, the probe's number is not evidence that the concept is encoded internally.</p>
+</div>
+
+<p>Case 2 gives 0.950 from character count alone and case 1 gives 0.985 from four properties of a string. The same check catches both, and since it never runs the model it takes minutes. What follows is the rest of what we would want to see in a probe result, roughly in order of how much it buys.</p>
+
+<h3>Make both groups of examples the same way</h3>
+
+<p>Treat the two labels as two arms of an experiment and hold everything except the label as equal as you can. The failure in case 1 is that one arm came from a string search and the other from a model. If two classes went through different code paths at any point, list every surface property that could differ between those paths: length, character class, syntax, casing, and any fixed fallback string such as <code>NO ANSWER</code>. A probe will find whichever of them separates the classes. Holding one such property fixed is usually not enough, as the 0.933 inside the digit-only subset shows, because length was waiting behind it.</p>
+
+<h3>Try the probe somewhere it was never trained</h3>
+
+<p>Any data that fits the input format will do. Slide it along a full response, apply it to a different dataset, feed it text from another task. This is how case 1 opened up. The probe had been trained at one token position and only ever evaluated there, and reading every token of a response with it showed the direction lining up with whether a token is a digit at AUC 0.944. A probe that has never been applied outside its training position can hide a great deal, and the test costs one forward pass.</p>
+
+<h3>Make sure your test set can change when the model changes</h3>
+
+<p>In case 2 the probe was evaluated on a fixed pair of dataset columns, before and after reinforcement learning, and kept a perfect score throughout. Those columns cannot change no matter what happens to the model, so a probe holding any length-correlated component keeps scoring 1.000 whatever the representation did. If you want a probe score to say something about a model that changed, evaluate it on text that model produced.</p>
+
+<h3>Try it on messier data before you believe it</h3>
+
+<p>A benchmark built alongside the experiment tends to be cleaner than anything the probe will meet in use, and the two cases here both show how much structure a purpose-built contrast can carry. Adding a second, more varied set costs real effort, and it is what turns a number into evidence that the probe is usable.</p>
+
+<h3>See whether switching the mechanism off changes behaviour</h3>
+
+<p>A probe reports a correlation, and clamping the neurons it points at while watching behaviour move is a stronger claim, with the section on switching neurons off giving both what that buys and where it stops. Two details from those experiments carry over. Rank neurons by a signed quantity rather than by how far their activation moves, because an unsigned ranking mixes neurons that promote the behaviour with neurons that suppress it and clamping both at once cancels out. And clamp to the dataset mean of the model you are testing rather than the model it started from, since a drifted model sits further from the original mean and takes a larger perturbation for the same nominal intervention.</p>
+
+<h3>Swapping in a hand-made feature does not fix the problem</h3>
+
+<p>Replacing a probe with an explicit surface feature does not solve the underlying problem, and we can report what happens when you try. The character-count penalty from case 2 suppresses hardcoding well at coefficient 1.0, but at coefficient 4 the model found a way around it. It began writing <code>```codeblock</code> instead of <code>```python</code>, which makes the code extractor fail. The extractor falls back to treating the whole response as code, a whole response is long, the length penalty goes to nearly zero, and the score lands on exactly 0. Hardcoding scores &minus;2.6 and an honest attempt that fails its tests scores &minus;0.55, so zero was the best outcome available and the model took it. Anything legible enough to optimise against is legible enough to route around, which is the same reason a static evaluation set cannot tell you much.</p>
+
+
+<h2>What it comes down to</h2>
+
+<p>Two papers, two fields, two different surface features, one shape. The two classes were produced by two different procedures, and the probe learned the procedure. A linear probe is very sensitive, which is what makes it useful and also what makes this failure mode easy to walk into. It will find whatever separates the two groups, and what separates two groups is almost never one thing. The cheap defence is to give it a control, and to ask first how well you can do without the model at all.</p>
+
+
+<h2>References</h2>
+
+<ul class="refs">
+<li id="r-orgad"><b>[1] Orgad, Toker, Gekhman, Reichart, Szpektor, Kotek, Belinkov.</b> LLMs Know More Than They Show: On the Intrinsic Representation of LLM Hallucinations. ICLR 2025. <a href="https://arxiv.org/abs/2410.02707">arXiv:2410.02707</a>. Code at <a href="https://github.com/technion-cs-nlp/LLMsKnow"><code>technion-cs-nlp/LLMsKnow</code></a>.</li>
+<li id="r-atlas"><b>[2] The Obfuscation Atlas:</b> Mapping Where Honesty Emerges in RLVR with Deception Probes. ICML 2026. <a href="https://arxiv.org/abs/2602.15515">arXiv:2602.15515</a>. Code at <a href="https://github.com/AlignmentResearch/obfuscation-atlas"><code>AlignmentResearch/obfuscation-atlas</code></a>, with 488 checkpoints released on the Hugging Face Hub.</li>
+<li id="r-herring"><b>[3] Herring, Naviasky, Malhotra.</b> Contrastive Neuron Attribution. <a href="https://arxiv.org/abs/2605.12290">arXiv:2605.12290</a>. The signed contribution score used in the neuron section comes from here.</li>
+<li id="r-arora"><b>[4] Arora, Wu, Steinhardt, Schwettmann.</b> Language Model Circuits Are Sparse in the Neuron Basis. ICML 2026. <a href="https://arxiv.org/abs/2601.22594">arXiv:2601.22594</a>. Argues for attributing over the input to the down projection, which is the coordinate the neuron section works in.</li>
+<li id="r-jafari"><b>[5] Jafari et al.</b> ReLP: gradient attribution on a linearised replacement model. 2025. The gradient attribution baseline in the neuron section.</li>
+<li id="r-li"><b>[6] Li &amp; Janson.</b> On the out of distribution behaviour of zero ablation. 2024. Why we clamp neurons to a dataset mean rather than to zero.</li>
+<li id="r-mbpp"><b>[7] Dataset.</b> <a href="https://huggingface.co/datasets/taufeeque/mbpp-hardcode"><code>taufeeque/mbpp-hardcode</code></a>, the paired hardcoded and genuine solutions used throughout case 2.</li>
+</ul>
+
+<p class="end">Code and data are being cleaned up and will be linked here. Every number above comes either from our own replication or from metadata the two papers' authors published.</p>
+
+</div>
