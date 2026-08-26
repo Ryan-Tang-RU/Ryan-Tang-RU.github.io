@@ -1,0 +1,23 @@
+# Posts live as standalone .html files in the repo root (emdash.html, probe.html).
+# Use a relative url for those; use a full URL for anything hosted elsewhere.
+
+- title: "When a Linear Probe Reads Your Data Pipeline: Why a Near-Perfect AUC Can Say Nothing About the Model"
+  date: August 16, 2026
+  tags: [Interpretability, Linear Probes, Evaluation Pitfalls]
+  url: probe.html
+  summary: >
+    A linear probe is the standard tool for asking whether a concept or a state is represented
+    inside a language model. Replicating two papers from top conferences, we find a flaw that is
+    easy to walk into. When the two groups of examples are assembled by different procedures, the
+    probe can learn the procedure instead of the concept, and report a near-perfect score that
+    says nothing about what is inside the model.
+
+- title: "Why Language Models Love the Em Dash: How Post-Training Recruits a Sparse Writing Circuit"
+  date: August 12, 2026
+  tags: [Mechanistic Interpretability, LLMs Post-Training, Model Behavior]
+  url: emdash.html
+  summary: >
+    Why do some language models overuse the em dash while others almost never do? We trace this
+    writing habit to a sparse set of late-layer neurons, study how post-training amplifies an
+    internal mechanism already present in the base model, and examine why explicit instructions
+    sometimes fail to suppress it.

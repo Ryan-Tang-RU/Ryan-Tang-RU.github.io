@@ -1,4 +1,16 @@
-<title>When a Probe Reads Your Pipeline</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>When a Linear Probe Reads Your Data Pipeline · Ruixiang Tang</title>
+<meta name="description" content="Replicating two recent papers, we find a near-perfect probe was separating examples by how they had been collected rather than by the concept it was meant to find.">
+<meta property="og:title" content="When a Linear Probe Reads Your Data Pipeline">
+<meta property="og:description" content="Replicating two recent papers, we find a near-perfect probe was separating examples by how they had been collected rather than by the concept it was meant to find.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.ruixiangtang.net/probe.html">
+<link rel="canonical" href="https://www.ruixiangtang.net/probe.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <style>
 /* 与 The Em Dash Circuit 同一套 token，保证两篇看起来是一个系列 */
 :root{--bg:#f5f3ee;--panel:#fffdf9;--ink:#20232a;--soft:#5a606c;--faint:#8a8f9a;
@@ -105,8 +117,15 @@ ul.refs li b{color:var(--ink);font-weight:620}
   font-size:13px;color:var(--faint)}
 @media(max-width:600px){h1{font-size:27px}h2{font-size:20px}h3{font-size:17px}.wrap{padding:36px 18px 72px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.postnav{font-family:var(--mono);font-size:13px;margin:0 0 28px}
+.postnav a{color:var(--s2);text-decoration:none;border-bottom:1px solid var(--line)}
+.postnav a:hover{border-bottom-color:currentColor}
 </style>
+</head>
+<body>
 <div class="wrap">
+<p class="postnav"><a href="blog.html">&larr; Ruixiang Tang &middot; Blog</a></p>
 
 <p class="eyebrow">Interpretability &middot; Replication notes</p>
 <h1>When a Linear Probe Reads Your Data Pipeline: Why a Near-Perfect AUC Can Say Nothing About the Model</h1>
@@ -951,3 +970,5 @@ ul.refs li b{color:var(--ink);font-weight:620}
 <p class="end">Code and data are being cleaned up and will be linked here. Every number above comes either from our own replication or from metadata the two papers' authors published.</p>
 
 </div>
+</body>
+</html>

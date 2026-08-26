@@ -1,0 +1,254 @@
+- date: 8/2026
+  tag: paper
+  text: >
+    One paper accepted to EMNLP 2026. We studied proactive safety auditing for multi-turn LLM
+    agents, estimating risk from partial trajectories before unsafe behavior surfaces in the outcome.
+- date: 7/2026
+  tag: paper
+  text: >
+    Two papers accepted to COLM 2026. We studied reward hacking in large language models and
+    grounded consistency in video multimodal large language models.
+- date: 6/2026
+  tag: paper
+  text: >
+    Three papers accepted to ECCV 2026. We explored personalization, counting mechanisms, and
+    post-hallucination reasoning in large vision-language models.
+- date: 6/2026
+  tag: talk
+  text: >
+    I am pleased to be invited to give a talk at IBM on agent safety and early failure detection
+    [<a href="https://drive.google.com/file/d/1AJMKi4lfvNfUNWYMDDl4BszrTcMKb_cY/view?usp=sharing">Slides</a>].
+- date: 5/2026
+  tag: award
+  text: >
+    We are honored to receive an AI Pilot Award from NIDDK through the PanKbase program. We thank
+    the program leadership, and look forward to contributing to this important diabetes research
+    community resource.
+- date: 5/2026
+  tag: award
+  text: >
+    Our ICME paper "Shifting Uncertainty to Critical Moments: Towards Reliable Uncertainty
+    Quantification for VLA Models" has been selected as a Best Paper Award candidate.
+- date: 4/2026
+  tag: paper
+  text: >
+    Two papers accepted to ICML 2026. We explored the actionable mechanistic interpretation of
+    massive values in LLMs and proposed generalizable implicit In-Context Learning via attention routing.
+- date: 4/2026
+  tag: group
+  text: >
+    This summer, Boxuan and Yihao will be research interns at AMD, Zeru at NVIDIA, and Yufei at
+    Genentech. Congratulations to all!
+- date: 4/2026
+  tag: paper
+  text: >
+    One paper accepted by ACL 2026. We develop a case-augmented alignment approach that improves
+    LLM safety and reduces over-refusal compared to rule-based methods.
+- date: 3/2026
+  tag: award
+  text: >
+    We received an AMD University Program AI and HPC Cluster Allocation Award to support our
+    research on AI agents and memory systems. Thanks to AMD for their support!
+- date: 2/2026
+  tag: paper
+  text: >
+    One paper has been accepted at ICME 2026. We developed a framework to accurately predict the
+    uncertainty of VLA models.
+- date: 2/2026
+  tag: paper
+  text: >
+    One paper has been accepted to CVPR 2026 Findings. We evaluate and enhance LLMs' counterfactual
+    reasoning ability for video understanding tasks.
+- date: 1/2026
+  tag: award
+  text: >
+    Our interdisciplinary project "AI-Geoscience Collaborations for a Changing Arctic" has been
+    funded by the Rutgers SAS Research in Academic Themes. We look forward to advancing foundational
+    results at the AI and Earth systems interface.
+- date: 1/2026
+  tag: paper
+  text: >
+    One paper accepted by ICLR 2026. We design a memory efficient LLM fine tuning method via
+    instance-aware token ditching.
+- date: 1/2026
+  tag: paper
+  text: >
+    One paper accepted by EACL 2026. We provide FaithLM, an intervention-based framework that
+    evaluates and improves LLM explanation faithfulness.
+- date: 12/2025
+  tag: service
+  text: >
+    I'm happy to serve as organizer for the ICME 2026 Special Session on
+    <a href="https://2026.ieeeicme.org/special-sessions/#1764947165949-93c633d7-5140">Trustworthy and
+    Secure Vision-Language-Action Models: Foundations, Methods, and Evaluation</a>. Submissions are
+    warmly welcome.
+- date: 11/2025
+  tag: paper
+  text: >
+    Three papers accepted to AAAI 2026, two orals and one poster. Our work advances multimodal
+    reasoning, improves reasoning efficiency, and explores counterfactual reasoning in LLMs.
+- date: 10/2025
+  tag: award
+  text: >
+    Congratulations to Zeru Shi for being selected for a Rutgers Climate and Energy Institute
+    (RCEI) Fellowship!
+- date: 10/2025
+  tag: paper
+  text: >
+    One paper accepted by AACL 2025. We provide a dataset, taxonomy, and baselines for analysis of
+    rational persuasion and manipulation.
+- date: 8/2025
+  tag: paper
+  text: >
+    Three papers, one main and two findings, accepted by EMNLP 2025. We explored multimodal
+    in-context learning, LoRA security, and an LLM agent for text style transfer.
+- date: 7/2025
+  tag: paper
+  text: >
+    One paper accepted by Bioinformatics Advances. We explored an LLM-based framework that improves
+    rare disease gene prioritization through phenotype-driven classification.
+- date: 7/2025
+  tag: paper
+  text: >
+    One paper accepted by COLM 2025. We explored replacing multimodal examples with learnable
+    vectors to improve in-context learning in Large Vision-Language Models.
+- date: 6/2025
+  tag: paper
+  text: >
+    Two papers accepted by ICCV 2025. We explored the robustness of Vision-Language-Action
+    model-based robotics, and addressed hallucination in Large Vision-Language Models.
+- date: 5/2025
+  tag: service
+  text: >
+    Invited to serve as an Associate Editor for
+    <a href="https://www.sciencedirect.com/journal/smart-health/publish/guide-for-authors">Smart Health</a>.
+- date: 5/2025
+  tag: award
+  text: >
+    Congratulations to Leroy Souz for being named a Paul Robeson Centennial Scholar and for reaching
+    the semifinals of the <a href="https://rbpc.rice.edu/">Rice Business Plan Competition</a>.
+- date: 5/2025
+  tag: paper
+  text: >
+    Two papers accepted by ACL 2025 Main. We explored using explainability to detect backdoors in
+    LLMs and disentangle reasoning from memory in LLMs.
+- date: 5/2025
+  tag: paper
+  text: >
+    One paper accepted by ICML 2025. We show that massive Q/K values are key to contextual
+    understanding in LLMs.
+- date: 4/2025
+  tag: press
+  text: >
+    Our paper "Harnessing the Power of LLMs in Practice: A Survey on ChatGPT and Beyond" is now the
+    all-time most-read article of ACM Transactions on Knowledge Discovery from Data (TKDD)!
+- date: 2/2025
+  tag: award
+  text: >
+    Received $2,000 in API credit from OpenAI to support our research on detecting and mitigating
+    hallucination in VLMs.
+- date: 2/2025
+  tag: paper
+  text: >
+    One paper accepted by SIGKDD Explorations. We proposed to mitigate shortcuts in natural language
+    understanding tasks.
+- date: 1/2025
+  tag: paper
+  text: >
+    One paper accepted by ICLR 2025. We proposed MRT to efficiently edit multimodal representations.
+- date: 1/2025
+  tag: service
+  text: >
+    Our tutorial "Understanding Large-Scale Machine Learning Robustness under Paradigm Shift" is
+    accepted by SDM 2025. See you in Virginia!
+- date: 9/2024
+  tag: paper
+  text: >
+    Three papers have been accepted for EMNLP 2024, focusing on LLM intellectual property
+    protection, bias mitigation, and building trustworthy agents.
+- date: 7/2024
+  tag: paper
+  text: >
+    Our paper "Mitigating Relational Bias on Knowledge Graphs" has been accepted by TKDD.
+- date: 4/2024
+  tag: award
+  text: >
+    Our paper
+    <a href="https://cacm.acm.org/research/the-science-of-detecting-llm-generated-text/">The Science
+    of Detecting LLM-Generated Text</a> has been accepted as a cover paper in the April 2024 issue of
+    Communications of the ACM.
+- date: 4/2024
+  tag: award
+  text: >
+    Our research on AI for watermarking has been awarded the annual Hershel M. Rich Invention Award.
+    Congratulations to the team!
+- date: 3/2024
+  tag: paper
+  text: >
+    One paper has been accepted by NAACL 2024. We proposed a key prompt protection mechanism to
+    safeguard large language models.
+- date: 2/2024
+  tag: paper
+  text: >
+    One paper has been accepted by the Journal of Biomedical Informatics. We proposed a soft prompt
+    calibration method to mitigate the variance of large language model output in radiology report
+    summarization.
+- date: 1/2024
+  tag: paper
+  text: >
+    Our paper "Harnessing the Power of LLMs in Practice: A Survey on ChatGPT and Beyond" has been
+    accepted by TKDD.
+- date: 10/2023
+  tag: award
+  text: >
+    Our paper on using LLMs for patient-trial matching was selected as the AMIA 2023 Best Student
+    Paper and KDDM Student Innovation Award.
+- date: 10/2023
+  tag: award
+  text: >
+    Our paper on
+    <a href="https://www.researchgate.net/profile/Ruixiang-Tang/publication/369755614_DiscoverPath_A_Knowledge_Refinement_and_Retrieval_System_for_Interdisciplinarity_on_Biomedical_Research">knowledge
+    refinement and retrieval systems for interdisciplinarity in biomedical research</a> has been
+    selected as CIKM 2023 Best Demo Paper Honorable Mention.
+- date: 10/2023
+  tag: paper
+  text: >
+    One paper has been accepted by EMNLP 2023. We introduce a membership inference attack aimed at
+    Large Language Models to analyze associated privacy risks.
+- date: 9/2023
+  tag: paper
+  text: >
+    Two papers have been accepted by NeurIPS 2023. We proposed a honeypot mechanism to defend against
+    backdoor attacks in language models.
+- date: 8/2023
+  tag: paper
+  text: >
+    One paper has been accepted by ECML-PKDD 2023. We proposed a serial key protection mechanism for
+    safeguarding DNN models.
+- date: 8/2023
+  tag: paper
+  text: >
+    Two papers have been accepted by CIKM 2023. We proposed a transferable watermark for defending
+    against model extraction attacks.
+- date: 7/2023
+  tag: paper
+  text: >
+    Three papers have been accepted by the
+    <a href="https://amia.org/education-events/amia-2023-annual-symposium">AMIA 2023 Annual
+    Symposium</a>. We investigated methods for harnessing the capabilities of LLMs in healthcare
+    tasks such as Named Entity Recognition, Relation Extraction, and Patient-Trial Matching.
+- date: 5/2023
+  tag: paper
+  text: >
+    One paper has been accepted by ACL 2023. We reveal that LLMs are lazy learners that tend to
+    exploit shortcuts in prompts for downstream tasks.
+- date: 4/2023
+  tag: paper
+  text: >
+    One paper has been accepted by SIGKDD Exploration 2023. We proposed a clean-label backdoor-based
+    watermarking framework for safeguarding training datasets.
+- date: 3/2023
+  tag: paper
+  text: >
+    One paper has been accepted by ICHI 2023. We proposed a deep ensemble framework for improving
+    phenotype prediction from multi-modal data.

@@ -1,0 +1,22 @@
+# Courses shown on teaching.html. `page` links to a course page built from _data/courses.yml.
+courses:
+  - term: Spring 2026
+    code: "01:198:439"
+    title: Introduction to Data Science
+    page: spring-2025-introduction-to-data-science
+  - term: Fall 2025
+    code: "16:198:550"
+    title: Massive Data Mining
+    page: fall-2025-massive-data-mining
+  - term: Spring 2025
+    code: "01:198:439"
+    title: Introduction to Data Science
+    page: spring-2025-introduction-to-data-science
+  - term: Fall 2024
+    code: "16:198:598:02"
+    title: Trustworthy AI Foundations
+    page: fall-2024-trustworthy-ai
+
+reading_group:
+  title: Trustworthy AI Reading Group
+  page: trustworthy-ai-reading-group
