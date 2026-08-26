@@ -175,13 +175,16 @@ def page(filename, title, body, description="", base="", banner=""):
 # ---------------------------------------------------------------- home
 
 def build_home():
-    portrait = ""
-    if os.path.exists(ROOT / site["photo"]):
-        w, h = image_size(ROOT / site["photo"])
-        portrait = (
-            f'<img class="ident__portrait" src="{site["photo"]}" '
-            f'alt="Portrait of {site["name_full"]}" width="{w}" height="{h}">'
-        )
+    def ident_img(key, cls, alt):
+        path = site.get(key)
+        if not path or not os.path.exists(ROOT / path):
+            return ""
+        w, h = image_size(ROOT / path)
+        return f'<img class="{cls}" src="{path}" alt="{alt}" width="{w}" height="{h}">'
+
+    # the original set the portrait and the lab logo side by side, right of the text
+    portrait = ident_img("photo", "ident__portrait", f'Portrait of {site["name_full"]}')
+    lab_logo = ident_img("logo", "ident__logo", f'{site["banner"]} logo')
     ident_lines = "".join(f"<p>{p}</p>" for p in site["identity"])
     social = "".join(
         f'<li><a href="{l["url"]}" title="{l["label"]}" aria-label="{l["label"]}">'
@@ -222,6 +225,7 @@ def build_home():
     <ul class="social">{social}</ul>
   </div>
   {portrait}
+  {lab_logo}
 </div>
 <hr class="rule">
 
