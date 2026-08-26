@@ -206,7 +206,7 @@ def build_home():
         if img and os.path.exists(ROOT / "assets/img" / img):
             w, h = image_size(ROOT / "assets/img" / img, (320, 200))
             shot = (f'<img src="assets/img/{img}" alt="" width="{w}" height="{h}" loading="lazy">')
-        label = "" if shot else item["title"]
+        label = item.get("caption") or ("" if shot else item["title"])
         press += f'<li><a href="{item["url"]}">{shot}{label}</a></li>'
 
     svc = ""
@@ -240,7 +240,11 @@ def build_home():
 <h2 class="h-page">Services</h2>
 {svc}"""
 
-    banner = f'<div class="banner"><h1>{site["banner"]}</h1></div>'
+    shot = site.get("banner_image")
+    style = ""
+    if shot and os.path.exists(ROOT / shot):
+        style = f' style="background-image:url({shot})"'
+    banner = f'<div class="banner"{style}><h1>{site["banner"]}</h1></div>'
     page("index.html", f"{site['name']}", body,
          f"{site['name_full']}, Department of Computer Science, Rutgers-New Brunswick. "
          "Trustworthy and Reliable AI Lab (TRAIL).", banner=banner)

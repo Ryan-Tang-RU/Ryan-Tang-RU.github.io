@@ -57,6 +57,15 @@ Trip photos are 1280px wide and 16:9, which is the ratio the gallery renders at;
 so the width and height attributes are rewritten. `build.py` only renders a gallery for photos that
 actually exist, so deleting a file leaves no broken image.
 
+The news rail on the home page carries the press thumbnails (`press-amd.png`, `press-rcei.png`,
+`press-cacm.jpg`, `press-devdiscourse.png`, `press-video.jpg`, `press-rice.jpg`,
+`press-trojannet.jpg`). Each is listed against its link in `_data/site.yml`; an entry whose image
+file is missing falls back to a text link, so nothing breaks if you remove one.
+
+The header band has no photo. Drop one at `assets/img/banner.jpg` and it is used behind the title
+with a dark scrim over it; without one the band is a Rutgers scarlet gradient. The original band's
+photo lives on Google's CDN and could not be copied across.
+
 The TRAIL logo files (`trail-mark.svg`, `trail-logo.svg`, `favicon.svg`) are already in place.
 
 ## Publishing

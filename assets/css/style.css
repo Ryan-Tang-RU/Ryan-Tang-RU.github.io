@@ -80,13 +80,24 @@ main { display: block; }
 /* ---------------------------------------------------------------- banner */
 
 .banner {
-  background: var(--banner);
+  /* Rutgers scarlet, used until a photo is dropped at assets/img/banner.jpg */
+  background: linear-gradient(115deg, #8c0022 0%, #cc0033 45%, #2b2f33 100%);
+  background-size: cover; background-position: center;
   padding: 74px var(--gutter);
   text-align: center;
+  position: relative;
+}
+/* a photo background gets a scrim so the white title keeps its contrast */
+.banner[style] { background-color: var(--banner); }
+.banner[style]::before {
+  content: ""; position: absolute; inset: 0;
+  background: rgba(0, 0, 0, .42);
 }
 .banner h1 {
+  position: relative;
   margin: 0 auto; max-width: var(--shell);
   color: #fff; font-size: 48px; line-height: 1.38; font-weight: 700;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .35);
 }
 
 /* ---------------------------------------------------------------- headings */
@@ -150,7 +161,7 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
 .press { list-style: none; margin: 0; padding: 0; font-size: 14px; line-height: 1.5; }
 .press li { margin: 0 0 16px; }
 .press a { color: var(--link); display: block; }
-.press img { width: 100%; height: auto; display: block; }
+.press img { width: 100%; height: auto; display: block; margin: 0 0 4px; }
 
 .svc-label { font-weight: 700; margin: 14px 0 4px; }
 

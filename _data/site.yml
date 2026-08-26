@@ -8,6 +8,9 @@ department: Department of Computer Science
 institution: Rutgers-New Brunswick
 photo: assets/img/profile.jpg
 banner: Trustworthy and Reliable AI Lab (TRAIL Lab)
+# Drop a photo at assets/img/banner.jpg and the header band uses it behind the
+# title; without one the band falls back to the Rutgers scarlet gradient.
+banner_image: assets/img/banner.jpg
 identity:
 - Department of Computer Science
 - Rutgers-New Brunswick
@@ -66,22 +69,24 @@ press:
   # `image` is used when assets/img/<file> exists; otherwise the title renders as a text link.
 - title: Rutgers CS research team awarded AMD AI and HPC cluster compute resources
   url: https://www.cs.rutgers.edu/news-events/news/news-item/rutgers-computer-science-research-team-awarded-amd-ai-hpc-cluster-compute-resources
-  image: press-amd.jpg
+  image: press-amd.png
 - title: Rutgers Climate and Energy Fellowships
   url: https://rcei.rutgers.edu/rutgers-climate-and-energy-fellowships/
-  image: press-rcei.jpg
+  image: press-rcei.png
 - title: The Science of Detecting LLM-Generated Text
   url: https://cacm.acm.org/research/the-science-of-detecting-llm-generated-text/
   image: press-cacm.jpg
 - title: How large vision-language models are changing IP protection
   url: https://www.devdiscourse.com/article/technology/3276999-ai-vs-copyright-how-large-vision-language-models-are-changing-ip-protection
-  image: press-devdiscourse.jpg
+  image: press-devdiscourse.png
 - title: Interview on watermarking and model protection
   url: https://www.youtube.com/watch?v=bGlBDnexK-s&t=2s
   image: press-video.jpg
 - title: Rice CS, Xia Ben Hu investigates LLMs and likely applications
   url: https://csweb.rice.edu/news/rice-cs-xia-ben-hu-investigates-llms-and-likely-applications
   image: press-rice.jpg
+  caption: csweb.rice.edu/news/rice-cs-xia-ben-hu-investigates-llms-and-likely-applications
 - title: TrojanNet - a simple yet effective attack on machine learning models
   url: https://portswigger.net/daily-swig/trojannet-a-simple-yet-effective-attack-on-machine-learning-models
   image: press-trojannet.jpg
+  caption: TrojanNet - a simple yet effective attack on machine learning models
