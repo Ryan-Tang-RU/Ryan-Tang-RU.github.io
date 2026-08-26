@@ -62,9 +62,10 @@ The news rail on the home page carries the press thumbnails (`press-amd.png`, `p
 `press-trojannet.jpg`). Each is listed against its link in `_data/site.yml`; an entry whose image
 file is missing falls back to a text link, so nothing breaks if you remove one.
 
-The header band has no photo. Drop one at `assets/img/banner.jpg` and it is used behind the title
-with a dark scrim over it; without one the band is a Rutgers scarlet gradient. The original band's
-photo lives on Google's CDN and could not be copied across.
+The header band uses `assets/img/banner.jpg` — New Brunswick seen across the Raritan, cropped 3:1
+and biased upward (`background-position: center 24%`) so the skyline, not the water, fills the band.
+A 34% scrim keeps the white title readable over it. Swap the file to change the photo; delete it and
+the band falls back to a Rutgers scarlet gradient.
 
 The TRAIL logo files (`trail-mark.svg`, `trail-logo.svg`, `favicon.svg`) are already in place.
 
