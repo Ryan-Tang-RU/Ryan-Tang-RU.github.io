@@ -1,0 +1,310 @@
+# One entry per paper. Fields: title, url (optional), authors, venue, note (optional).
+# Author names are matched against site.name and rendered in bold automatically.
+
+- section: Preprints
+  items:
+    - title: "MemEye: A Visual-Centric Evaluation Framework for Multimodal Agent Memory"
+      url: https://arxiv.org/pdf/2605.15128
+      authors: Minghao Guo, Qingyue Jiao, Zeru Shi, Yihao Quan, Boxuan Zhang, Danrui Li, Liwei Che, Wujiang Xu, Shilong Liu, Zirui Liu, Mubbasir Kapadia, Vladimir Pavlovic, Jiang Liu, Mengdi Wang, Yiyu Shi, Dimitris N. Metaxas, Ruixiang Tang
+      venue: arXiv preprint
+    - title: "AgentForesight: Online Auditing for Early Failure Prediction in Multi-Agent Systems"
+      url: https://arxiv.org/pdf/2605.08715
+      authors: Boxuan Zhang, Jianing Zhu, Zeru Shi, Dongfang Liu, Ruixiang Tang
+      venue: arXiv preprint
+    - title: "Micro-Defects Expose Macro-Fakes: Detecting AI-Generated Images via Local Distributional Shifts"
+      url: https://arxiv.org/abs/2605.09296
+      authors: Boxuan Zhang, Jianing Zhu, Jiang Liu, Zhangyang Wang, Ruixiang Tang
+      venue: arXiv preprint
+    - title: Enhancing Multi-modal Reasoning via Self-Revisiting Image Evidence
+      url: https://arxiv.org/pdf/2603.14117
+      authors: Zeru Shi, Kai Mei, Yihao Quan, Dimitris N. Metaxas, Ruixiang Tang
+      venue: arXiv preprint
+    - title: "Meaningless Tokens, Meaningful Gains: How Activation Shifts Enhance LLM Reasoning"
+      url: https://arxiv.org/abs/2510.01032
+      authors: Zeru Shi, Yingjia Wan, Zhenting Wang, Qifan Wang, Fan Yang, Elisa Kreiss, Ruixiang Tang
+      venue: arXiv preprint
+    - title: "Where Fake Citations Are Made: Tracing Field-Level Hallucination to Specific Neurons in LLMs"
+      url: https://arxiv.org/abs/2604.18880
+      authors: Yuefei Chen, Yihao Quan, Ruixiang Tang
+      venue: arXiv preprint
+    - title: "Q-Bridge: Code Translation for Quantum Machine Learning via LLMs"
+      url: https://arxiv.org/pdf/2603.27836v1
+      authors: Runjia Zeng, Priyabrata Senapati, Ruixiang Tang, Dongfang Liu, Qiang Guan
+      venue: arXiv preprint
+    - title: "TRACES: Proactive Safety Auditing for Multi-Turn LLM Agents via Trajectory-State Modeling"
+      authors: Jiaqian Li, Yanshu Li, Boxuan Zhang, Ruixiang Tang, Kuan-Hao Huang
+      venue: arXiv preprint
+    - title: "Sweeping Promptable Spoofs under the DirtyRAG: A Practical, Query-Blind RAG Attack Done Right"
+      authors: Shaochen Zhong, Jiamu Zhang, Hoang Anh Duy Le, Wenya Xie, Yifan Lu, Xintong Sun, Mohsen Hariri, Hongyi Liu, Guanchu Wang, Zhaozhuo Xu, Zirui Liu, Shuai Xu, Ning Xie, Li Li, Rui Chen, Ruixiang Tang, Xia Hu, Vipin Chaudhary
+      venue: arXiv preprint
+    - title: Data Augmentation for High-Fidelity Generation of CAR-T Immunological Synapse Images
+      url: https://www.researchgate.net/publication/398536751_Data_Augmentation_for_High-Fidelity_Generation_of_CAR-T_Immunological_Synapse_Images
+      authors: Xiang Zhang, Boxuan Zhang, Alireza Naghizadeh, Mohab Mohamed, Ruixiang Tang, Dimitris Metaxas, Dongfang Liu
+      venue: ResearchGate preprint
+    - title: What Shapes a Creative Machine Mind? Comprehensively Benchmarking Creativity in Foundation Models
+      authors: Zicong He, Boxuan Zhang, Weihao Liu, Ruixiang Tang, Lu Cheng
+      venue: arXiv preprint
+
+- section: "2026"
+  items:
+    - title: Reinforcing Consistency in Video MLLMs with Structured Rewards
+      url: https://arxiv.org/pdf/2604.01460
+      authors: Yihao Quan, Zeru Shi, Jinman Zhao, Ruixiang Tang
+      venue: Conference on Language Modeling, COLM 2026
+    - title: "From Rebound to Remedy: Understanding and Mitigating Reward Hacking via Representation Engineering"
+      url: https://arxiv.org/abs/2604.01476
+      authors: Rui Wu, Ruixiang Tang
+      venue: Conference on Language Modeling, COLM 2026
+    - title: Personalize Your Large Vision-Language Models With In-context Prompt Tuning
+      url: https://arxiv.org/abs/2605.31513
+      authors: Yanshu Li, Jiaqian Li, Kuai Yu, Xi Xiao, Dongfang Liu, Tianyang Wang, Ruixiang Tang
+      venue: European Conference on Computer Vision, ECCV 2026
+    - title: "HIVE: Understanding Post Hallucination Reasoning in Vision Language Models"
+      authors: Feng He, Zhenting Wang, Qifan Wang, Qiang Guan, Dongfang Liu, Ruixiang Tang, Qiankun Li
+      venue: European Conference on Computer Vision, ECCV 2026
+    - title: "Counting Circuits: Mechanistic Interpretability of Visual Reasoning in Large Vision-Language Models"
+      url: https://arxiv.org/html/2603.18523v1
+      authors: Liwei Che*, Zhiyu Xue*, Yihao Quan*, Benlin Liu, Zeru Shi, Ruixiang Tang, Ranjay Krishna, Vladimir Pavlovic
+      venue: European Conference on Computer Vision, ECCV 2026
+    - title: "A Single Layer to Explain Them All: Understanding Massive Activations in Large Language Models"
+      url: http://arxiv.org/abs/2605.08504
+      authors: Zeru Shi, Zhenting Wang, Fan Yang, Qifan Wang, Ruixiang Tang
+      venue: International Conference on Machine Learning, ICML 2026
+    - title: Towards Generalizable Implicit In-Context Learning with Attention Routing
+      url: https://arxiv.org/abs/2509.22854
+      authors: Jiaqian Li*, Yanshu Li*, Ligong Han, Ruixiang Tang, Wenya Wang
+      venue: International Conference on Machine Learning, ICML 2026
+    - title: "Reasoning over Precedents Alongside Statutes: Case-Augmented Deliberative Alignment for LLM Safety"
+      url: https://arxiv.org/abs/2601.08000
+      authors: Can Jin*, Rui Wu*, Tong Che*, Qixin Zhang, Hongwu Peng, Jiahui Zhao, Zhenting Wang, Wenqi Wei, Ligong Han, Zhao Zhang, Yuan Cao, Ruixiang Tang, Dimitris N. Metaxas
+      venue: Association for Computational Linguistics, ACL Main 2026
+    - title: "Read the Scene, Not the Script: Outcome-Aware Safety for LLMs"
+      url: https://www.arxiv.org/abs/2510.04320
+      authors: Rui Wu, Yihao Quan, Zeru Shi, Zhenting Wang, Yanshu Li, Ruixiang Tang
+      venue: ICLR AIWILD Workshop
+      note: Spotlight
+    - title: "Shifting Uncertainty to Critical Moments: Towards Reliable Uncertainty Quantification for VLA Models"
+      url: https://arxiv.org/pdf/2603.18342
+      authors: Yanchuan Tang*, Taowen Wang*, Yuefei Chen, Boxuan Zhang, Qiang Guan, Ruixiang Tang
+      venue: IEEE International Conference on Multimedia and Expo, ICME 2026
+      note: Best Paper Candidate
+    - title: "CounterVQA: Evaluating and Improving Counterfactual Reasoning in Vision-Language Models for Video Understanding"
+      url: https://arxiv.org/abs/2511.19923
+      authors: Yuefei Chen, Jiang Liu, Xiaodong Lin, Ruixiang Tang
+      venue: Conference on Computer Vision and Pattern Recognition, CVPR Findings 2026
+    - title: "CAMA: Enhancing Multimodal In-Context Learning with Context-Aware Modulated Attention"
+      url: https://arxiv.org/abs/2505.17097
+      authors: Yanshu Li, Jianjiang Yang, Ziteng Yang, Bozheng Li, Hongyang He, Zhengtao Yao, Ligong Han, Yingjie Victor Chen, Songlin Fei, Dongfang Liu, Ruixiang Tang
+      venue: AAAI Conference on Artificial Intelligence, AAAI 2026
+      note: Oral
+    - title: "CounterBench: Evaluating and Improving Counterfactual Reasoning in Large Language Models"
+      url: https://arxiv.org/abs/2502.11008
+      authors: Yuefei Chen, Jing Ma, Vivek Singh, Ruixiang Tang
+      venue: AAAI Conference on Artificial Intelligence, AAAI 2026
+    - title: "CATP: Contextually Adaptive Token Pruning for Efficient and Enhanced Multimodal In-Context Learning"
+      url: https://arxiv.org/abs/2508.07871
+      authors: Yanshu Li, Jianjiang Yang, Zhennan Shen, Ligong Han, Haoyan Xu, Ruixiang Tang
+      venue: AAAI Conference on Artificial Intelligence, AAAI 2026
+      note: Oral
+    - title: "TokenSeek: Memory Efficient Fine Tuning via Instance-Aware Token Ditching"
+      url: https://arxiv.org/abs/2601.19739
+      authors: Runjia Zeng, Qifan Wang, Qiang Guan, Ruixiang Tang, Lifu Huang, Zhenting Wang, Xueling Zhang, Cheng Han, Dongfang Liu
+      venue: International Conference on Learning Representations, ICLR 2026
+    - title: "From Plausible to Faithful: Optimizing the Faithfulness of LLM Explanations"
+      authors: Yu-Neng Chuang*, Guanchu Wang*, Chia-Yuan Chang, Ruixiang Tang, Shaochen Zhong, Fan Yang, Andrew Wen, Mengnan Du, Xuanting Cai, Vladimir Braverman, Xia Hu
+      venue: European Chapter of the Association for Computational Linguistics, EACL 2026
+
+- section: "2025"
+  items:
+    - title: "TACO: Enhancing Multimodal In-context Learning via Task Mapping-Guided Sequence Configuration"
+      url: https://arxiv.org/abs/2505.17098
+      authors: Yanshu Li, Tian Yun, Jianjiang Yang, Pinyuan Feng, Jinfa Huang, Ruixiang Tang
+      venue: Empirical Methods in Natural Language Processing, EMNLP Main 2025
+    - title: LoRA-as-an-Attack! Piercing LLM Safety Under the Share-and-Play Scenario
+      authors: Hongyi Liu, Zirui Liu, Ruixiang Tang, Jiayi Yuan, Shaochen Zhong, Yu-Neng Chuang, Li Li, Rui Chen, Xia Hu
+      venue: Empirical Methods in Natural Language Processing, EMNLP Findings 2025
+    - title: A Decoupled Multi-Agent Framework for Complex Text Style Transfer
+      authors: Lingxi Zhang, Yu-Neng Chuang, Guanchu Wang, Ruixiang Tang, Xuanting Cai, Rajesh Shenoy, Xia Hu
+      venue: Empirical Methods in Natural Language Processing, EMNLP Findings 2025
+    - title: Exploring the Adversarial Vulnerabilities of Vision-Language-Action Models in Robotics
+      url: https://arxiv.org/pdf/2411.13587
+      authors: Taowen Wang, Dongfang Liu, James Chenhao Liang, Wenhao Yang, Qifan Wang, Cheng Han, Jiebo Luo, Ruixiang Tang
+      venue: International Conference on Computer Vision, ICCV 2025
+    - title: "EAZY: Eliminating Hallucinations in LVLMs by Zeroing out Hallucinatory Image Tokens"
+      url: https://arxiv.org/pdf/2503.07772
+      authors: Liwei Che, Tony Qingze Liu, Jing Jia, Weiyi Qin, Ruixiang Tang, Vladimir Pavlovic
+      venue: International Conference on Computer Vision, ICCV 2025
+    - title: "When Backdoors Speak: Understanding LLM Backdoor Attacks Through Model-Generated Explanations"
+      url: https://arxiv.org/abs/2411.12701
+      authors: Huaizhi Ge, Yiming Li, Qifan Wang, Yongfeng Zhang, Ruixiang Tang
+      venue: Association for Computational Linguistics, ACL Main 2025
+    - title: Disentangling Memory and Reasoning Ability in Large Language Models
+      url: https://arxiv.org/abs/2411.13504
+      authors: Mingyu Jin, Weidi Luo, Sitao Cheng, Xinyi Wang, Wenyue Hua, Ruixiang Tang, William Yang Wang, Yongfeng Zhang
+      venue: Association for Computational Linguistics, ACL Main 2025
+    - title: "SafePersuasion: A Dataset, Taxonomy, and Baselines for Analysis of Rational Persuasion and Manipulation"
+      authors: Haein Kong, A M Muntasir Rahman, Ruixiang Tang, Vivek Singh
+      venue: Asia-Pacific Chapter of the Association for Computational Linguistics, AACL Findings 2025
+    - title: Survey and Improvement Strategies for Gene Prioritization with Large Language Models
+      url: https://arxiv.org/abs/2501.18794
+      authors: Matthew Neeley*, Guantong Qi*, Guanchu Wang*, Ruixiang Tang, Dongxue Mao, Chaozhong Liu, Sasidhar Pasupuleti, Bo Yuan, Fan Xia, Pengfei Liu, Zhandong Liu, Xia Hu
+      venue: Bioinformatics Advances
+    - title: Uncertainty Quantification for Multiple-Choice Questions is Just One-Token Deep
+      url: https://dl.acm.org/doi/abs/10.1145/3746252.3760887
+      authors: Qingcheng Zeng, Mingyu Jin, Qinkai Yu, Zhenting Wang, Wenyue Hua, Zihao Zhou, Guangyan Sun, Yanda Meng, Shiqing Ma, Qifan Wang, Felix Juefei-Xu, Kaize Ding, Fan Yang, Ruixiang Tang, Yongfeng Zhang
+      venue: Conference on Information and Knowledge Management, CIKM 2025
+    - title: "M2IV: Towards Efficient and Fine-grained Multimodal In-Context Learning in Large Vision-Language Models"
+      url: https://arxiv.org/pdf/2504.04633
+      authors: Yanshu Li, Hongyang He, Yi Cao, Qisen Cheng, Xiang Fu, Ruixiang Tang
+      venue: Conference on Language Modeling, COLM 2025
+    - title: Massive Values in Self-Attention Modules are the Key to Contextual Knowledge Understanding
+      url: https://arxiv.org/abs/2502.01563
+      authors: Mingyu Jin, Kai Mei, Wujiang Xu, Mingjie Sun, Ruixiang Tang, Mengnan Du, Zirui Liu, Yongfeng Zhang
+      venue: International Conference on Machine Learning, ICML 2025
+    - title: "Re-Imagining Multimodal Instruction Tuning: A Representation View"
+      url: https://openreview.net/forum?id=zxg6601zoc
+      authors: Yiyang Liu, James Chenhao Liang, Ruixiang Tang, Yugyung Lee, Majid Rabbani, Sohail Dianat, Raghuveer Rao, Lifu Huang, Dongfang Liu, Qifan Wang, Cheng Han
+      venue: International Conference on Learning Representations, ICLR 2025
+    - title: "DBR: Divergence-Based Regularization for Debiasing Natural Language Understanding Models"
+      url: https://arxiv.org/abs/2502.18353
+      authors: Zihao Li, Ruixiang Tang, Lu Cheng, Shuaiqiang Wang, Dawei Yin, Mengnan Du
+      venue: SIGKDD Explorations 2025
+
+- section: "2024"
+  items:
+    - title: "SPeC: A Soft Prompt-Based Calibration on Mitigating Performance Variability in Clinical Notes Summarization"
+      url: https://arxiv.org/abs/2303.13035
+      authors: Yu-Neng Chuang, Ruixiang Tang, Xiaoqian Jiang, Xia Hu
+      venue: Journal of Biomedical Informatics, JBI 2024
+    - title: "Taylor Unswift: Secured Weight Release for Large Language Models via Taylor Expansion"
+      url: https://arxiv.org/abs/2410.05331
+      authors: Guanchu Wang*, Yu-Neng Chuang*, Ruixiang Tang, Shaochen Zhong, Jiayi Yuan, Hongye Jin, Zirui Liu, Vipin Chaudhary, Shuai Xu, James Caverlee, Xia Hu
+      venue: Empirical Methods in Natural Language Processing, EMNLP 2024
+    - title: "Navigating the Shortcut Maze: A Comprehensive Analysis of Shortcut Learning in Text Classification by Language Models"
+      url: https://arxiv.org/abs/2409.17455
+      authors: Yuqing Zhou, Ruixiang Tang, Ziyu Yao, Ziwei Zhu
+      venue: Findings of Empirical Methods in Natural Language Processing, EMNLP 2024
+    - title: "TrustAgent: Towards Safe and Trustworthy LLM-based Agents through Agent Constitution"
+      url: https://arxiv.org/abs/2402.01586
+      authors: Wenyue Hua, Xianjun Yang, Mingyu Jin, Wei Cheng, Ruixiang Tang, Yongfeng Zhang
+      venue: Findings of Empirical Methods in Natural Language Processing, EMNLP 2024
+    - title: "Fair-RGNN: Mitigating Relational Bias on Knowledge Graphs"
+      url: https://dl.acm.org/doi/10.1145/3681792
+      authors: Yu-Neng Chuang, Kwei-Herng Lai, Ruixiang Tang, Mengnan Du, Chia-Yuan Chang, Na Zou, Xia Hu
+      venue: Transactions on Knowledge Discovery from Data, TKDD 2024
+    - title: "Secure Your Model: An Effective Key Prompt Protection Mechanism for Large Language Models"
+      authors: Ruixiang Tang*, Yu-Neng Chuang*, Xuanting Cai, Mengnan Du, Xia Hu
+      venue: Findings of NAACL 2024
+    - title: "Harnessing the Power of LLMs in Practice: A Survey on ChatGPT and Beyond"
+      url: https://arxiv.org/abs/2304.13712
+      authors: Jinfeng Yang*, Hongye Jin*, Ruixiang Tang*, Xiaotian Han*, Qizhang Feng*, Haoming Jiang, Xia Hu
+      venue: Transactions on Knowledge Discovery from Data, TKDD 2024
+      note: All-time most-read TKDD article
+
+- section: "2023"
+  items:
+    - title: "Assessing Privacy Risks in Language Models: A Case Study on Summarization Tasks"
+      url: https://arxiv.org/abs/2310.13291
+      authors: Ruixiang Tang, Gord Lueck, Rodolfo Quispe, Huseyin A. Inan, Janardhan Kulkarni, Xia Hu
+      venue: Findings of Empirical Methods in Natural Language Processing, EMNLP 2023
+    - title: "Setting the Trap: Capturing and Defeating Backdoor Threats in Pretrained Language Models through Honeypots"
+      url: https://arxiv.org/pdf/2310.18633.pdf
+      authors: Ruixiang Tang*, Jiayi Yuan*, Yiming Li, Zirui Liu, Rui Chen, Xia Hu
+      venue: Conference on Neural Information Processing Systems, NeurIPS 2023
+    - title: Does Synthetic Data of LLMs Help Clinical Text Mining?
+      url: https://arxiv.org/abs/2303.04360
+      authors: Ruixiang Tang*, Xiaotian Han*, Xiaoqian Jiang, Xia Hu
+      venue: AMIA 2023 Annual Symposium
+    - title: "LLM for Healthcare Data Augmentation: An Example on Patient-Trial Matching"
+      url: https://arxiv.org/abs/2303.16756
+      authors: Jiayi Yuan, Ruixiang Tang, Xiaoqian Jiang, Xia Hu
+      venue: AMIA 2023 Annual Symposium
+      note: Best Student Paper
+    - title: Winner-Take-All Column Row Sampling for Memory Efficient Adaptation of Language Model
+      authors: Zirui Liu*, Guanchu Wang*, Shaochen Zhong, Zhaozhuo Xu, Daochen Zha, Ruixiang Tang, Zhimeng Jiang, Kaixiong Zhou, Vipin Chaudhary, Shuai Xu, Xia Hu
+      venue: Conference on Neural Information Processing Systems, NeurIPS 2023
+    - title: The Science of Detecting LLM-Generated Text
+      url: https://arxiv.org/abs/2303.07205
+      authors: Ruixiang Tang, Yu-Neng Chuang, Xia Hu
+      venue: Communications of the ACM, 2023
+      note: Cover paper
+    - title: "Large Language Models Can be Lazy Learners: Analyze Shortcuts in In-Context Learning"
+      url: https://aclanthology.org/2023.findings-acl.284/
+      authors: Ruixiang Tang, Dehan Kong, Longtao Huang, Hui Xue
+      venue: Findings of the Association for Computational Linguistics, ACL 2023
+    - title: "Exposing Model Theft: A Robust and Transferable Watermark for Thwarting Model Extraction Attacks"
+      authors: Ruixiang Tang*, Hongye Jin*, Curtis Wigington, Mengnan Du, Rajiv Jain, Xia Hu
+      venue: Conference on Information and Knowledge Management, CIKM 2023, short paper
+    - title: "DiscoverPath: A Knowledge Refinement and Retrieval System for Interdisciplinarity on Biomedical Research"
+      url: https://www.researchgate.net/profile/Ruixiang-Tang/publication/369755614_DiscoverPath_A_Knowledge_Refinement_and_Retrieval_System_for_Interdisciplinarity_on_Biomedical_Research
+      authors: Yu-Neng Chuang, Guanchu Wang, Chia-Yuan Chang, Kwei-Herng Lai, Ruixiang Tang, Fan Yang, Alfredo Costilla Reyes, Kaixiong Zhou, Xiaoqian Jiang, Xia Hu
+      venue: Conference on Information and Knowledge Management, CIKM 2023, demo paper
+      note: Best Demo Paper Honorable Mention
+    - title: "PheME: A Deep Ensemble Framework for Improving Phenotype Prediction from Multi-modal Data"
+      url: https://arxiv.org/abs/2303.10794
+      authors: Shenghan Zhang*, Haoxuan Li*, Ruixiang Tang*, Sirui Ding*, Laila Rasmy, Degui Zhi, Na Zou, Xia Hu
+      venue: IEEE International Conference on Healthcare Informatics, ICHI 2023
+    - title: "Deep Serial Number: Computational Watermark for DNN Intellectual Property Protection"
+      url: https://arxiv.org/abs/2011.08960
+      authors: Ruixiang Tang, Mengnan Du, Xia Hu
+      venue: ECML PKDD 2023
+    - title: Local Contrastive Learning for Medical Image Recognition
+      url: https://arxiv.org/abs/2303.14153
+      authors: Syed A. Rizvi, Ruixiang Tang, Xiaoqian Jiang, Xiaotian Ma, Xia Hu
+      venue: AMIA 2023 Annual Symposium
+    - title: "Did You Train on My Dataset? Towards Public Dataset Protection with Clean-Label Backdoor Watermarking"
+      url: https://arxiv.org/abs/2303.11470
+      authors: Ruixiang Tang, Qizhang Feng, Ninghao Liu, Fan Yang, Xia Hu
+      venue: SIGKDD Explorations, 2023
+
+- section: "2022 and earlier"
+  items:
+    - title: Fairly Predicting Graft Failure in Liver Transplant for Organ Assigning
+      url: https://arxiv.org/abs/2302.09400
+      authors: Sirui Ding, Ruixiang Tang, Daochen Zha, Na Zou, Kai Zhang, Xiaoqian Jiang, Xia Hu
+      venue: AMIA 2022 Annual Symposium
+      note: Best Student Paper Finalist
+    - title: Towards Debiasing DNN Models From Spurious Feature Influence
+      url: https://ojs.aaai.org/index.php/AAAI/article/view/21185
+      authors: Mengnan Du, Ruixiang Tang, Weijie Fu, Xia Hu
+      venue: AAAI 2022
+    - title: Defense Against Explanation Manipulation
+      url: https://arxiv.org/abs/2111.04303
+      authors: Ruixiang Tang*, Ninghao Liu*, Fan Yang, Na Zou, Xia Hu
+      venue: Frontiers in Big Data, 2021
+    - title: Mitigating Gender Bias in Captioning Systems
+      url: https://dl.acm.org/doi/abs/10.1145/3442381.3449950
+      authors: Ruixiang Tang, Mengnan Du, Yuening Li, Zirui Liu, Na Zou, Xia Hu
+      venue: The Web Conference, WWW 2021
+    - title: Fairness via Representation Neutralization
+      url: https://arxiv.org/abs/2106.12674
+      authors: Mengnan Du, Subhabrata Mukherjee, Guanchu Wang, Ruixiang Tang, Ahmed Awadallah, Xia Hu
+      venue: Conference on Neural Information Processing Systems, NeurIPS 2021
+    - title: "DEGREE: Decomposition Based Explanation for Graph Neural Networks"
+      url: https://openreview.net/forum?id=Ve0Wth3ptT_
+      authors: Qizhang Feng, Ninghao Liu, Fan Yang, Ruixiang Tang, Mengnan Du, Xia Hu
+      venue: International Conference on Learning Representations, ICLR 2021
+    - title: Understanding Social Biases Behind Location Names in Contextual Word Embedding Models
+      url: https://ieeexplore.ieee.org/document/9526857
+      authors: Fangsheng Wu, Mengnan Du, Chao Fan, Ruixiang Tang, Yang Yang, Ali Mostafavi, Xia Hu
+      venue: IEEE Transactions on Computational Social Systems, 2021
+    - title: An Embarrassingly Simple Approach for Trojan Attack in Deep Neural Networks
+      url: https://arxiv.org/abs/2006.08131
+      authors: Ruixiang Tang, Mengnan Du, Ninghao Liu, Fan Yang, Xia Hu
+      venue: ACM SIGKDD Conference on Knowledge Discovery and Data Mining, KDD 2020
+    - title: Breast Mass Detection in Mammograms via Blending Adversarial Learning
+      url: https://link.springer.com/chapter/10.1007/978-3-030-32778-1_6
+      authors: Chunze Lin, Ruixiang Tang, Darryl D. Lin, Langechuan Liu, Jiwen Lu, Yunqiang Chen, Dashan Gao, Jie Zhou
+      venue: International Workshop on Simulation and Synthesis in Medical Imaging, 2020
+    - title: Deep Feature Disentanglement Learning for Bone Suppression in Chest Radiographs
+      url: https://ieeexplore.ieee.org/document/9098399
+      authors: Chunze Lin, Ruixiang Tang, Darryl D. Lin, Langechuan Liu, Jiwen Lu, Yunqiang Chen, Dashan Gao, Jie Zhou
+      venue: IEEE International Symposium on Biomedical Imaging, ISBI 2020
+    - title: Classification of Chest CT Using Case-level Weak Supervision
+      url: https://www.spiedigitallibrary.org/conference-proceedings-of-spie/10950/1095017/Classification-of-chest-CT-using-case-level-weak-supervision/10.1117/12.2513576.short
+      authors: Ruixiang Tang, F. I. Tushar, S. Han, R. Hou, G. D. Rubin, J. Y. Lo
+      venue: "SPIE Medical Imaging: Computer-Aided Diagnosis, 2019"
+    - title: Multi-organ Segmentation for Patient-specific Image Quality and Dose Metrology
+      url: https://www.spiedigitallibrary.org/conference-proceedings-of-spie/10948/2512883/Multi-organ-segmentation-in-clinical-computed-tomography-for-patient-specific/10.1117/12.2512883.short
+      authors: Wanyi Fu, Shobhit Sharma, Taylor Smith, Rui Hou, Ehsan Abadi, Vignesh Selvakumaran, Ruixiang Tang, Joseph Y. Lo, W. Paul Segars, Anuj J. Kapadia, Justin B. Solomon, Geoffrey D. Rubin, Ehsan Samei
+      venue: "SPIE Medical Imaging: Physics of Medical Imaging, 2019"

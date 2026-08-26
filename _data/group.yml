@@ -1,0 +1,50 @@
+# Group roster. Add a person under the right section; url and detail are optional.
+sections:
+  - section: PhD Students
+    items:
+      - name: Boxuan Zhang
+        url: https://zbox1005.github.io/
+        detail: Fall 2025 to present
+      - name: Yihao Quan
+        url: https://itsqyh.github.io/
+        detail: Fall 2025 to present
+      - name: Zeru Shi
+        url: https://darkbluee77.github.io/
+        detail: Fall 2025 to present
+      - name: Yuefei Chen
+        url: https://azhenhetu.github.io/
+        detail: Spring 2025 to present, co-advised with Dr. <a href="https://www.business.rutgers.edu/faculty/xiaodong-lin">Xiaodong Lin</a>
+      - name: Qiyuan Shi
+        detail: Fall 2026 to present
+  - section: Master Students
+    items:
+      - name: Yanshu Li
+        url: https://kaamava.github.io/
+        detail: Spring 2025 to present, will join UT Austin as a PhD student in 2026
+  - section: Undergraduate Students
+    items:
+      - name: Rui Wu
+        url: https://ruiwu.top/
+        detail: Fall 2024 to present
+      - name: Yanchuan Tang
+        url: https://www.linkedin.com/in/yctangcse/
+        detail: Spring 2025 to present, will join Harvard as a Master student in 2026
+  - section: Alumni
+    items:
+      - name: Taowen Wang
+        url: https://www.linkedin.com/in/taowen-wang-442655329/
+        detail: Master student, Fall 2024 to Spring 2025. Now a CS PhD student at the University of Hong Kong
+      - name: Huaizhi Ge
+        url: https://www.linkedin.com/in/huaizhi-ge-616b5a218/
+        detail: Master student, Fall 2024 to Spring 2025. Now a CS PhD student at Stevens Institute of Technology
+      - name: Weidi Luo
+        url: https://eddyluo.com/
+        detail: Undergraduate student, Fall 2024 to Spring 2025. Now a CS PhD student at the University of Georgia
+      - name: Qipan Xu
+        url: https://scholar.google.com/citations?user=gLlCn4sAAAAJ&hl=en
+        detail: Master student, Fall 2024 to Spring 2025. Now a CS PhD student at the University of Tennessee
+
+joining: >
+  I am always looking for motivated students interested in trustworthy and reliable AI. If our work
+  matches your interests, please send me an email with your CV and a short note on what you would
+  like to work on.

@@ -1,0 +1,38 @@
+about:
+  - >
+    My name in Chinese is 唐瑞祥, and I was raised in Hunan Province, an area famous for its spicy
+    culinary tradition known as <a href="https://en.wikipedia.org/wiki/Hunan_cuisine">湘菜</a>. I have
+    been playing the violin for seven years. While I am not a professional, it has opened the door to
+    the world of music for me.
+  - >
+    During my undergraduate years, I served as the president of the Cycling Club at Tsinghua
+    University. We held weekly cycling training sessions on the outskirts of Beijing, and organized
+    annual long-distance trips to destinations such as Qinghai Lake.
+  - >
+    I am also an outdoor enthusiast with a particular passion for hiking. One of my hobbies is
+    collecting stamps from National Parks. To date, I have visited national parks in Louisiana,
+    Colorado, Utah, Washington, North Carolina, and Florida.
+
+# Drop the photos into assets/img/ using these file names, then they appear automatically.
+# Delete a photos list to hide the gallery for that trip.
+trips:
+  - place: Mexico
+    year: "2019"
+    body: I traveled to Mexico and was captivated by the enigmatic allure of Maya culture.
+    photos: [mexico-1.jpg, mexico-2.jpg, mexico-3.jpg]
+  - place: North Carolina
+    year: "2020"
+    body: I traveled to North Carolina and visited Great Smoky Mountains.
+    photos: [nc-1.jpg, nc-2.jpg, nc-3.jpg]
+  - place: Colorado
+    year: "2022"
+    body: >
+      I embarked on an adventure to Colorado with my family, where we explored three of the state's
+      national parks. We plan to return again in the winter.
+    photos: [colorado-1.jpg, colorado-2.jpg, colorado-3.jpg]
+  - place: Utah
+    year: "2023"
+    body: >
+      I journeyed to Utah with my family and had the privilege of exploring all five national parks
+      in the state. Bryce Canyon stood out as my favorite.
+    photos: [utah-1.jpg, utah-2.jpg, utah-3.jpg]

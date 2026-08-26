@@ -1,0 +1,94 @@
+name: Ruixiang Tang
+name_short: Ruixiang (Ryan) Tang
+role: Tenure-Track Assistant Professor
+department: Department of Computer Science
+institution: Rutgers University, New Brunswick
+lab: Trustworthy and Reliable AI Lab (TRAIL)
+address: 110 Frelinghuysen Rd, Hill Center 416, Piscataway, NJ 08854
+email: ruixiang.tang@rutgers.edu
+domain: www.ruixiangtang.net
+photo: assets/img/profile.jpg
+
+links:
+  - label: Google Scholar
+    url: https://scholar.google.com/citations?view_op=list_works&hl=en&user=xZk3FfsAAAAJ&pagesize=80
+  - label: CV
+    url: https://drive.google.com/file/d/1-L5kbMN4E_xFNTx6HLmRKawEIDfcn3se/view?usp=sharing
+  - label: GitHub
+    url: https://github.com/Tang-Lab-Rutgers
+  - label: LinkedIn
+    url: https://www.linkedin.com/in/ruixiang-ryan-tang-91660717b/
+
+nav:
+  - {label: Home, href: index.html}
+  - {label: Publications, href: publications.html}
+  - {label: Blog, href: blog.html}
+  - {label: Group, href: group.html}
+  - {label: Teaching, href: teaching.html}
+  - {label: Awards, href: awards.html}
+  - {label: Misc, href: misc.html}
+
+bio:
+  - >
+    I am a Tenure-Track Assistant Professor in the Department of Computer Science at
+    Rutgers University, New Brunswick. I received my Ph.D. in Computer Science from Rice
+    University, where I was advised by Dr. <a href="https://cs.rice.edu/~xh37/index.html">Xia Hu</a>.
+    I began my undergraduate studies in Biology at Tsinghua University, conducting research
+    under the guidance of Dr. <a href="https://scholar.google.com/citations?user=RmC4ZtQAAAAJ&amp;hl=en">Xu Tan</a>,
+    and later transferred to the Department of Automation, completing my B.S. under the
+    supervision of Dr. <a href="https://scholar.google.com/citations?user=TN8uDQoAAAAJ&amp;hl=en">Jiwen Lu</a>.
+  - >
+    My group, the Trustworthy and Reliable AI Lab (TRAIL), works on Trustworthy AI, with the
+    goal of infusing trust throughout the AI lifecycle. We pursue this goal by formalizing
+    trustworthiness objectives such as robustness, interpretability, and safety, and by
+    developing principled algorithms with measurable guarantees and transparent failure modes.
+    I also collaborate closely with biologists and health informaticians to translate
+    trustworthy learning methods to high-impact problems in biology and medicine.
+  - >
+    Large Foundation Models introduce new and complex trustworthiness challenges. Our long-term
+    objective is to develop learning algorithms that improve reasoning reliability under
+    distribution shift and adversarial manipulation, supported by theoretical frameworks that
+    connect representation, optimization, and uncertainty to trust outcomes. By advancing the
+    underlying reasoning mechanisms, we aim to make these models more reliable, transparent,
+    and resistant to misuse.
+
+research:
+  - title: Operational Interpretability
+    body: Turning mechanistic insight into practical tools that monitor, audit, and steer model behavior once deployed.
+  - title: Agent Safety and Control
+    body: Keeping autonomous and multiagent systems reliable through continuous auditing, early failure prediction, and corrective intervention.
+  - title: Perception Reliability
+    body: Making multimodal perception systems robust to uncertainty, distribution shift, and adversarial inputs.
+  - title: AI for Biomedicine
+    body: Translating trustworthy learning into high-impact problems across biology and medicine with clinical and biological collaborators.
+
+services:
+  Program committees:
+    - Area Chair, Association for Computational Linguistics (ACL)
+    - Senior PC, ACM International Conference on Information and Knowledge Management (CIKM)
+    - Senior PC, Association for the Advancement of Artificial Intelligence (AAAI)
+  Editorial board:
+    - Associate Editor, Smart Health
+    - Guest Editor, Pattern Recognition
+  Recognition:
+    - Top Reviewer, <a href="https://nips.cc/Conferences/2023/ProgramCommittee#top-reivewers">NeurIPS 2023</a>
+
+press:
+  - title: Rutgers CS research team awarded AMD AI and HPC cluster compute resources
+    url: https://www.cs.rutgers.edu/news-events/news/news-item/rutgers-computer-science-research-team-awarded-amd-ai-hpc-cluster-compute-resources
+    source: Rutgers Computer Science
+  - title: The Science of Detecting LLM-Generated Text
+    url: https://cacm.acm.org/research/the-science-of-detecting-llm-generated-text/
+    source: Communications of the ACM, cover paper
+  - title: How large vision-language models are changing IP protection
+    url: https://www.devdiscourse.com/article/technology/3276999-ai-vs-copyright-how-large-vision-language-models-are-changing-ip-protection
+    source: Devdiscourse
+  - title: Rice CS, Xia Ben Hu investigates LLMs and likely applications
+    url: https://csweb.rice.edu/news/rice-cs-xia-ben-hu-investigates-llms-and-likely-applications
+    source: Rice Computer Science
+  - title: TrojanNet, a simple yet effective attack on machine learning models
+    url: https://portswigger.net/daily-swig/trojannet-a-simple-yet-effective-attack-on-machine-learning-models
+    source: The Daily Swig
+  - title: Rutgers Climate and Energy Fellowships
+    url: https://rcei.rutgers.edu/rutgers-climate-and-energy-fellowships/
+    source: Rutgers Climate and Energy Institute

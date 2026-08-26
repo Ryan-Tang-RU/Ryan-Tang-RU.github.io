@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog · Ruixiang Tang</title>
+<meta name="description" content="Ruixiang Tang, Tenure-Track Assistant Professor, Rutgers University, New Brunswick.">
+<meta property="og:title" content="Blog · Ruixiang Tang">
+<meta property="og:description" content="Ruixiang Tang, Tenure-Track Assistant Professor, Rutgers University, New Brunswick.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.ruixiangtang.net/blog.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+<aside class="rail">
+  <a class="rail__mark" href="index.html" aria-label="Home">
+    <img src="assets/img/trail-mark.svg" alt="TRAIL Lab shield" width="120" height="150">
+  </a>
+  <p class="rail__name">Ruixiang Tang</p>
+  <p class="rail__zh">唐瑞祥</p>
+  
+  <p class="rail__meta">
+    <strong>Tenure-Track Assistant Professor</strong><br>
+    Department of Computer Science<br>
+    Rutgers University, New Brunswick<br>
+    110 Frelinghuysen Rd, Hill Center 416, Piscataway, NJ 08854<br>
+    <a href="mailto:ruixiang.tang@rutgers.edu">ruixiang.tang@rutgers.edu</a>
+  </p>
+  <div class="rail__links"><a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=xZk3FfsAAAAJ&pagesize=80">Google Scholar</a><a href="https://drive.google.com/file/d/1-L5kbMN4E_xFNTx6HLmRKawEIDfcn3se/view?usp=sharing">CV</a><a href="https://github.com/Tang-Lab-Rutgers">GitHub</a><a href="https://www.linkedin.com/in/ruixiang-ryan-tang-91660717b/">LinkedIn</a></div>
+  <nav class="site" aria-label="Sections"><ul><li><a href="index.html">Home</a></li><li><a href="publications.html">Publications</a></li><li><a href="blog.html" aria-current="page">Blog</a></li><li><a href="group.html">Group</a></li><li><a href="teaching.html">Teaching</a></li><li><a href="awards.html">Awards</a></li><li><a href="misc.html">Misc</a></li></ul></nav>
+</aside>
+<main id="main">
+<h1>Blog</h1>
+<p>Notes on things we ran into while doing the work: mechanisms we did not expect, evaluations that
+looked better than they were, and results that needed a second look.</p>
+<ul class="posts"><li class="post">
+  <h3><a href="probe.html">When a Linear Probe Reads Your Data Pipeline: Why a Near-Perfect AUC Can Say Nothing About the Model</a></h3>
+  <p class="post__meta"><span>August 16, 2026</span><span>Interpretability</span><span>Linear Probes</span><span>Evaluation Pitfalls</span></p>
+  <p>Can you look inside a language model and read off a concept, such as whether it is being truthful, or whether it is cheating on the task it was given? A common method says yes. Replicating two recent papers, we find the classifier was separating the examples by how they had been collected rather than by the concept it was meant to find.</p>
+  <p class="go"><a href="probe.html">Read the post</a></p>
+</li><li class="post">
+  <h3><a href="emdash.html">Why Language Models Love the Em Dash: How Post-Training Recruits a Sparse Writing Circuit</a></h3>
+  <p class="post__meta"><span>August 12, 2026</span><span>Mechanistic Interpretability</span><span>LLM Post-Training</span><span>Model Behavior</span></p>
+  <p>Why do some language models overuse the em dash while others almost never do? We trace this writing habit to a sparse set of late-layer neurons, study how post-training amplifies an internal mechanism already present in the base model, and examine why explicit instructions sometimes fail to suppress it.</p>
+  <p class="go"><a href="emdash.html">Read the post</a></p>
+</li></ul>
+</main>
+</div>
+<footer class="page">
+  Ruixiang Tang · Trustworthy and Reliable AI Lab (TRAIL) · Rutgers University, New Brunswick
+</footer>
+</body>
+</html>

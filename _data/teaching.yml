@@ -1,0 +1,24 @@
+courses:
+  - term: Spring 2026
+    code: "01:198:439"
+    title: Introduction to Data Science
+    url: ""
+  - term: Fall 2025
+    code: "16:198:550"
+    title: Massive Data Mining
+    url: ""
+  - term: Spring 2025
+    code: "01:198:439"
+    title: Introduction to Data Science
+    url: ""
+  - term: Fall 2024
+    code: "16:198:598:02"
+    title: Trustworthy AI Foundations
+    url: ""
+
+reading_group:
+  title: Trustworthy AI Reading Group
+  body: >
+    A weekly meeting where the group discusses recent work on interpretability, safety, and
+    reliability of foundation models. Open to Rutgers students. Email me for the schedule.
+  url: ""
