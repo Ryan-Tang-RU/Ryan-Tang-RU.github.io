@@ -1,4 +1,16 @@
-<title>The Em Dash Circuit</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why Language Models Love the Em Dash · Ruixiang Tang</title>
+<meta name="description" content="Why do some language models overuse the em dash while others almost never do? We trace this writing habit to a sparse set of late-layer neurons and study how post-training amplifies a mechanism already present in the base model.">
+<meta property="og:title" content="Why Language Models Love the Em Dash">
+<meta property="og:description" content="Why do some language models overuse the em dash while others almost never do? We trace this writing habit to a sparse set of late-layer neurons and study how post-training amplifies a mechanism already present in the base model.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.ruixiangtang.net/emdash.html">
+<link rel="canonical" href="https://www.ruixiangtang.net/emdash.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <style>
 :root{--bg:#f5f3ee;--panel:#fffdf9;--ink:#20232a;--soft:#5a606c;--faint:#8a8f9a;--line:#e5e0d5;--s1:#a8362a;--s2:#03648c;--onwarm:#08405c;--onwarm-mute:#3c4049;
 --warm:#a8362a;--cool:#136b7c;--accent:#a8362a;
@@ -106,8 +118,15 @@ a:hover{border-bottom-color:var(--cool)}
 ol.road{margin:18px 0 26px;padding-left:24px}
 ol.road li{margin:0 0 9px;font-size:16px;line-height:1.6;padding-left:4px}
 ol.road li::marker{color:var(--accent);font-family:var(--mono);font-size:13px}
+
+.postnav{font-family:var(--mono);font-size:13px;margin:0 0 28px}
+.postnav a{color:var(--s2);text-decoration:none;border-bottom:1px solid var(--line)}
+.postnav a:hover{border-bottom-color:currentColor}
 </style>
+</head>
+<body>
 <div class="wrap">
+<p class="postnav"><a href="blog.html">&larr; Ruixiang Tang &middot; Blog</a></p>
 <p class="eyebrow">Mechanistic interpretability</p>
 <h1>Why Language Models Love the Em Dash: How Post-Training Recruits a Sparse Writing Circuit</h1>
 <p class="sub">Five neurons out of 442,368 account for 89% of the habit. Pretraining
@@ -2101,3 +2120,5 @@ training that reveals it, and which interventions reach it.</p>
 
 
 </div>
+</body>
+</html>
