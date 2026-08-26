@@ -92,7 +92,8 @@ a:focus-visible, button:focus-visible {
 .rail__links a:hover { background: var(--mist); border-color: var(--circuit); color: var(--ink); }
 
 .rail__portrait {
-  width: 100%; max-width: 12rem; border-radius: 3px; display: block; margin-bottom: 1.4rem;
+  width: 100%; max-width: 12rem; height: auto; border-radius: 3px; display: block;
+  margin-bottom: 1.4rem;
   background: var(--mist);
 }
 

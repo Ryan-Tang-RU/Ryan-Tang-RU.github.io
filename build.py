@@ -37,6 +37,43 @@ FONTS = (
 )
 
 
+def image_size(path, default=(400, 500)):
+    """Intrinsic pixel size of a JPEG or PNG, read from its header.
+
+    Used only for the portrait's width/height attributes, which reserve the right
+    box while the image loads. Stdlib only, so build.py still needs just pyyaml.
+    """
+    try:
+        with open(path, "rb") as f:
+            head = f.read(24)
+            if head[:8] == b"\x89PNG\r\n\x1a\n":
+                return int.from_bytes(head[16:20], "big"), int.from_bytes(head[20:24], "big")
+            if head[:2] != b"\xff\xd8":
+                return default
+            f.seek(2)
+            while True:
+                b = f.read(1)
+                while b and b != b"\xff":
+                    b = f.read(1)
+                marker = f.read(1)
+                while marker == b"\xff":
+                    marker = f.read(1)
+                if not marker:
+                    return default
+                # SOF0..SOF15, skipping the non-frame markers in that range
+                if marker[0] in range(0xC0, 0xD0) and marker[0] not in (0xC4, 0xC8, 0xCC):
+                    f.read(3)
+                    h = int.from_bytes(f.read(2), "big")
+                    w = int.from_bytes(f.read(2), "big")
+                    return w, h
+                size = int.from_bytes(f.read(2), "big")
+                if size < 2:
+                    return default
+                f.seek(size - 2, 1)
+    except (OSError, ValueError):
+        return default
+
+
 def rail(active):
     links = "".join(
         f'<a href="{l["url"]}">{l["label"]}</a>' for l in site["links"]
@@ -51,9 +88,10 @@ def rail(active):
     )
     portrait = ""
     if os.path.exists(ROOT / site["photo"]):
+        pw, ph = image_size(ROOT / site["photo"])
         portrait = (
             f'<img class="rail__portrait" src="{site["photo"]}" '
-            f'alt="Portrait of {site["name"]}" width="400" height="500">'
+            f'alt="Portrait of {site["name"]}" width="{pw}" height="{ph}">'
         )
     return f"""<aside class="rail">
   <a class="rail__mark" href="index.html" aria-label="Home">
