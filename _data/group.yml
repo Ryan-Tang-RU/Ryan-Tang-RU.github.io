@@ -1,45 +1,21 @@
-# Group roster. Add a person under the right section; url and detail are optional.
-sections:
-  - section: PhD Students
-    items:
-      - name: Boxuan Zhang
-        url: https://zbox1005.github.io/
-        detail: Fall 2025 to present
-      - name: Yihao Quan
-        url: https://itsqyh.github.io/
-        detail: Fall 2025 to present
-      - name: Zeru Shi
-        url: https://darkbluee77.github.io/
-        detail: Fall 2025 to present
-      - name: Yuefei Chen
-        url: https://azhenhetu.github.io/
-        detail: Spring 2025 to present, co-advised with Dr. <a href="https://www.business.rutgers.edu/faculty/xiaodong-lin">Xiaodong Lin</a>
-      - name: Qiyuan Shi
-        detail: Fall 2026 to present
-  - section: Master Students
-    items:
-      - name: Yanshu Li
-        url: https://kaamava.github.io/
-        detail: Spring 2025 to present, will join UT Austin as a PhD student in 2026
-  - section: Undergraduate Students
-    items:
-      - name: Rui Wu
-        url: https://ruiwu.top/
-        detail: Fall 2024 to present
-      - name: Yanchuan Tang
-        url: https://www.linkedin.com/in/yctangcse/
-        detail: Spring 2025 to present, will join Harvard as a Master student in 2026
-  - section: Alumni
-    items:
-      - name: Taowen Wang
-        url: https://www.linkedin.com/in/taowen-wang-442655329/
-        detail: Master student, Fall 2024 to Spring 2025. Now a CS PhD student at the University of Hong Kong
-      - name: Huaizhi Ge
-        url: https://www.linkedin.com/in/huaizhi-ge-616b5a218/
-        detail: Master student, Fall 2024 to Spring 2025. Now a CS PhD student at Stevens Institute of Technology
-      - name: Weidi Luo
-        url: https://eddyluo.com/
-        detail: Undergraduate student, Fall 2024 to Spring 2025. Now a CS PhD student at the University of Georgia
-      - name: Qipan Xu
-        url: https://scholar.google.com/citations?user=gLlCn4sAAAAJ&hl=en
-        detail: Master student, Fall 2024 to Spring 2025. Now a CS PhD student at the University of Tennessee
+# Group roster, ported from the Google Sites original; each entry is one line of inline HTML.
+- section: PhD Students
+  items:
+  - <a href="https://zbox1005.github.io/"><b>Boxuan Zhang</b></a><b>, 2025 Fall -</b>
+  - <a href="https://itsqyh.github.io/"><b>Yihao Quan</b></a><b>, 2025 Fall -</b>
+  - <a href="https://darkbluee77.github.io/"><b>Zeru Shi</b></a><b>, 2025 Fall -</b>
+  - <a href="https://azhenhetu.github.io/"><b>Yuefei Chen</b></a><b>, Co-advised with Dr. </b><a href="https://www.business.rutgers.edu/faculty/xiaodong-lin"><b>Xiaodong Lin</b></a><b>, Spring 2025 -</b>
+  - <b>Qiyuan Shi, 2026 Fall -</b>
+- section: Master Students
+  items:
+  - <a href="https://kaamava.github.io/"><b>Yanshu Li</b></a><b>, 2025 Spring - </b>(will join UT Austin as a PhD student in 2026)
+- section: Undergraduate Students
+  items:
+  - <a href="https://ruiwu.top/"><b>Rui Wu</b></a><b>, 2024 Fall -</b>
+  - <a href="https://www.linkedin.com/in/yctangcse/"><b>Yanchuan Tang</b></a><b>, 2025 Spring - </b>(will join Harvard as a Master student in 2026)
+- section: Alumni
+  items:
+  - <a href="https://www.linkedin.com/in/taowen-wang-442655329/"><b>Taowen Wang</b></a><b> (2024 Fall - 2025 Spring), Master Student, Now CS PhD at the University of Hong Kong</b>
+  - <a href="https://www.linkedin.com/in/huaizhi-ge-616b5a218/"><b>Huaizhi Ge</b></a><b> (2024 Fall - 2025 Spring), Master Student, Now CS PhD at Stevens Institute of Technology</b>
+  - <a href="https://eddyluo.com/"><b>Weidi Luo</b></a><b> (2024 Fall - 2025 Spring), Undergraduate Student, Now CS PhD at University of Georgia</b>
+  - <a href="https://scholar.google.com/citations?user=gLlCn4sAAAAJ&amp;hl=en"><b>Qipan Xu</b></a><b> (2024 Fall - 2025 Spring), Master Student, Now CS PhD at the University of Tennessee</b>

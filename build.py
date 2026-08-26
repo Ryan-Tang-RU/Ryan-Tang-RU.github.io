@@ -4,6 +4,10 @@
 Usage:  python build.py
 Then open index.html in a browser, or run:  python -m http.server
 Commit the generated .html files; GitHub Pages serves them as-is, no build step needed.
+
+Page structure, headings and wording follow the Google Sites site this one was
+migrated from. Strings in _data/ may contain inline <b>, <i> and <a>; they are
+written into the page as-is, so keep them valid HTML.
 """
 
 import html
@@ -25,65 +29,79 @@ news = load("news")
 pubs = load("publications")
 group = load("group")
 teaching = load("teaching")
+courses = load("courses")
 awards = load("awards")
 blog = load("blog")
 misc = load("misc")
-courses = load("courses")
 
 FONTS = (
     '<link rel="preconnect" href="https://fonts.googleapis.com">'
     '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
-    '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&'
-    'family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap" rel="stylesheet">'
+    '<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700'
+    '&display=swap" rel="stylesheet">'
 )
 
 
 def image_size(path, default=(400, 500)):
-    """Intrinsic pixel size of a JPEG or PNG, read from its header.
-
-    Used only for the portrait's width/height attributes, which reserve the right
-    box while the image loads. Stdlib only, so build.py still needs just pyyaml.
-    """
+    """Read width and height out of a JPEG or PNG header, so <img> can carry them."""
     try:
         with open(path, "rb") as f:
-            head = f.read(24)
-            if head[:8] == b"\x89PNG\r\n\x1a\n":
-                return int.from_bytes(head[16:20], "big"), int.from_bytes(head[20:24], "big")
-            if head[:2] != b"\xff\xd8":
-                return default
-            f.seek(2)
-            while True:
-                b = f.read(1)
-                while b and b != b"\xff":
+            head = f.read(2)
+            if head == b"\xff\xd8":                       # JPEG
+                f.seek(2)
+                while True:
                     b = f.read(1)
-                marker = f.read(1)
-                while marker == b"\xff":
+                    while b and b != b"\xff":
+                        b = f.read(1)
                     marker = f.read(1)
-                if not marker:
-                    return default
-                # SOF0..SOF15, skipping the non-frame markers in that range
-                if marker[0] in range(0xC0, 0xD0) and marker[0] not in (0xC4, 0xC8, 0xCC):
-                    f.read(3)
-                    h = int.from_bytes(f.read(2), "big")
-                    w = int.from_bytes(f.read(2), "big")
-                    return w, h
-                size = int.from_bytes(f.read(2), "big")
-                if size < 2:
-                    return default
-                f.seek(size - 2, 1)
-    except (OSError, ValueError):
-        return default
+                    while marker == b"\xff":
+                        marker = f.read(1)
+                    if not marker:
+                        return default
+                    if marker[0] in range(0xC0, 0xCF) and marker[0] not in (0xC4, 0xC8, 0xCC):
+                        f.read(3)
+                        h = int.from_bytes(f.read(2), "big")
+                        w = int.from_bytes(f.read(2), "big")
+                        return w, h
+                    seg = int.from_bytes(f.read(2), "big")
+                    f.seek(seg - 2, 1)
+            f.seek(0)
+            if f.read(8) == b"\x89PNG\r\n\x1a\n":          # PNG
+                f.seek(16)
+                return int.from_bytes(f.read(4), "big"), int.from_bytes(f.read(4), "big")
+    except OSError:
+        pass
+    return default
 
 
 def rel(url, base):
-    """Prefix a site-relative URL so it resolves from a page nested in a subdirectory."""
+    """Prefix a site-relative URL so it resolves from a page in a subdirectory."""
     if not base or url.startswith(("http://", "https://", "mailto:", "#", "/")):
         return url
     return base + url
 
 
+# Circular social buttons, in the style the Google Sites original used. The
+# originals were hosted images; these are inline so the page needs no CDN.
+ICONS = {
+    "LinkedIn": '<path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.31-.03-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/>',
+    "Google Scholar": '<path d="M12 3 1 9l11 6 9-4.91V17h2V9zM5 13.18v4L12 21l7-3.82v-4L12 17z"/>',
+    "CV": '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm0 2 4.5 4.5H14zM8 13h8v1.6H8zm0 3.2h8v1.6H8zM8 9.8h4v1.6H8z"/>',
+    "GitHub": '<path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .26.18.58.69.48A10 10 0 0 0 12 2z"/>',
+}
+
+
+def social_icon(label):
+    path = ICONS.get(label)
+    if not path:
+        return label
+    return (f'<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" '
+            f'focusable="false" fill="currentColor">{path}</svg>')
+
+
+# ---------------------------------------------------------------- chrome
+
 def masthead(active, base=""):
-    """Top bar: brand on the left, section nav on the right, on every page."""
     nav = "".join(
         '<li><a href="{href}"{cur}>{label}</a></li>'.format(
             href=rel(n["href"], base),
@@ -94,61 +112,30 @@ def masthead(active, base=""):
     )
     return f"""<header class="masthead">
   <div class="masthead__in">
-    <a class="brand" href="{rel("index.html", base)}" aria-label="Home">
-      <img src="{rel("assets/img/trail-mark.svg", base)}" alt="TRAIL Lab shield" width="120" height="150">
-      <span class="brand__txt">
-        <span class="brand__name">{site['name']}</span>
-        <span class="brand__zh">唐瑞祥</span>
-      </span>
+    <a class="brand" href="{rel('index.html', base)}">
+      <img src="{rel('assets/img/trail-mark.svg', base)}" alt="" width="32" height="40">
+      {site['name']}
     </a>
     <nav class="site" aria-label="Sections"><ul>{nav}</ul></nav>
   </div>
 </header>"""
 
 
-def identity():
-    """Portrait and contact details. Only the home page carries this."""
-    portrait = ""
-    if os.path.exists(ROOT / site["photo"]):
-        pw, ph = image_size(ROOT / site["photo"])
-        portrait = (
-            f'<img class="ident__portrait" src="{site["photo"]}" '
-            f'alt="Portrait of {site["name"]}" width="{pw}" height="{ph}">'
-        )
-    links = "".join(f'<a href="{l["url"]}">{l["label"]}</a>' for l in site["links"])
-    return f"""<div class="ident">
-  {portrait}
-  <div class="ident__body">
-    <p class="ident__role"><strong>{site['role']}</strong><br>
-      {site['department']}<br>
-      {site['institution']}<br>
-      {site['address']}<br>
-      <a href="mailto:{site['email']}">{site['email']}</a></p>
-    <div class="ident__links">{links}</div>
-  </div>
-</div>"""
-
-
 def site_footer(base=""):
-    """The contact block the left rail used to carry, on every page."""
-    links = "".join(
+    links = " · ".join(
         f'<a href="{rel(l["url"], base)}">{l["label"]}</a>' for l in site["links"]
     )
     return f"""<footer class="page">
-  <div class="foot">
-    <p class="foot__who"><strong>{site['name']}</strong><br>
-      {site['role']}, {site['department']}<br>
-      {site['institution']}<br>
-      {site['address']}<br>
-      <a href="mailto:{site['email']}">{site['email']}</a></p>
-    <div class="foot__links">{links}</div>
+  <div class="band">
+    <p>{site['name_full']} · {site['department']}, {site['institution']}
+       · <a href="mailto:{site['email']}">{site['email']}</a></p>
+    <p>{links}</p>
   </div>
-  <p class="foot__legal">{site['name']} · {site['lab']} · {site['institution']}</p>
 </footer>"""
 
 
-def page(filename, title, body, description="", base=""):
-    desc = description or f"{site['name']}, {site['role']}, {site['institution']}."
+def page(filename, title, body, description="", base="", banner=""):
+    desc = description or f"{site['name_full']}, {site['department']}, {site['institution']}."
     canon = "" if filename == "index.html" else filename
     if canon.endswith("/index.html"):
         canon = canon[: -len("index.html")]
@@ -164,18 +151,17 @@ def page(filename, title, body, description="", base=""):
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://{site['domain']}/{canon}">
 <link rel="canonical" href="https://{site['domain']}/{canon}">
-<link rel="icon" href="{rel("assets/img/favicon.svg", base)}" type="image/svg+xml">
+<link rel="icon" href="{rel('assets/img/favicon.svg', base)}" type="image/svg+xml">
 {FONTS}
-<link rel="stylesheet" href="{rel("assets/css/style.css", base)}">
+<link rel="stylesheet" href="{rel('assets/css/style.css', base)}">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 {masthead(filename, base)}
-<div class="wrap">
-<main id="main">
+{banner}
+<main id="main" class="band">
 {body}
 </main>
-</div>
 {site_footer(base)}
 </body>
 </html>
@@ -186,78 +172,78 @@ def page(filename, title, body, description="", base=""):
     print("wrote", filename)
 
 
-def bold_me(authors):
-    """Render the site owner's name in bold inside an author string."""
-    out = html.escape(authors)
-    for form in (site["name"], site["name"] + "*"):
-        out = out.replace(form, f'<span class="me">{form}</span>')
-    return out
-
-
 # ---------------------------------------------------------------- home
 
 def build_home():
-    bio = "".join(f"<p>{p.strip()}</p>" for p in site["bio"])
-    areas = "".join(
-        f'<div class="area"><h3>{a["title"]}</h3><p>{a["body"]}</p></div>'
-        for a in site["research"]
-    )
-
-    def item(n):
-        tag = f'<span class="tag">{n["tag"]}</span>' if n.get("tag") else ""
-        return f'<li><span class="when">{n["date"]}</span> {tag}{n["text"].strip()}</li>'
-
-    head, rest = news[:8], news[8:]
-    news_html = f'<ul class="trail">{"".join(item(n) for n in head)}</ul>'
-    if rest:
-        news_html += (
-            f'<div id="news-rest"><ul class="trail">{"".join(item(n) for n in rest)}</ul></div>'
-            f'<p class="more"><button class="toggle" id="news-toggle" aria-expanded="false" '
-            f'aria-controls="news-rest">Show all {len(news)} updates</button></p>'
+    portrait = ""
+    if os.path.exists(ROOT / site["photo"]):
+        w, h = image_size(ROOT / site["photo"])
+        portrait = (
+            f'<img class="ident__portrait" src="{site["photo"]}" '
+            f'alt="Portrait of {site["name_full"]}" width="{w}" height="{h}">'
         )
-
-    services = ""
-    for heading, entries in site["services"].items():
-        rows = "".join(f"<li>{e}</li>" for e in entries)
-        services += f'<h3>{heading}</h3><ul class="people">{rows}</ul>'
-
-    press = "".join(
-        f'<li><a href="{p["url"]}">{p["title"]}</a><span class="src">{p["source"]}</span></li>'
-        for p in site["press"]
+    ident_lines = "".join(f"<p>{p}</p>" for p in site["identity"])
+    social = "".join(
+        f'<li><a href="{l["url"]}" title="{l["label"]}" aria-label="{l["label"]}">'
+        f'{social_icon(l["label"])}</a></li>'
+        for l in site["links"]
+    )
+    bio = "".join(f"<p>{p}</p>" for p in site["bio"])
+    areas = "".join(
+        f'<div><h3>{a["title"]}</h3><p>{a["body"]}</p></div>' for a in site["research"]
     )
 
-    script = """
-<script>
-(function () {
-  var btn = document.getElementById('news-toggle');
-  var box = document.getElementById('news-rest');
-  if (!btn || !box) return;
-  btn.addEventListener('click', function () {
-    var open = box.classList.toggle('open');
-    btn.setAttribute('aria-expanded', String(open));
-    btn.textContent = open ? 'Show fewer updates' : 'Show all NEWSCOUNT updates';
-  });
-})();
-</script>""".replace("NEWSCOUNT", str(len(news)))
+    items = ""
+    for n in news:
+        tag = f'<span class="tag">[{n["tag"]}]</span>' if n.get("tag") else ""
+        when = f'<span class="when">{n["date"]}:</span> ' if n.get("date") else ""
+        items += f"<li>{tag}{when}{n['text']}</li>"
 
-    body = f"""{identity()}
-<p class="eyebrow">{site['lab']}</p>
-<h1>Infusing trust throughout the AI lifecycle</h1>
-<div class="lede">{bio}</div>
+    press = ""
+    for item in site["press"]:
+        img = item.get("image")
+        shot = ""
+        if img and os.path.exists(ROOT / "assets/img" / img):
+            w, h = image_size(ROOT / "assets/img" / img, (320, 200))
+            shot = (f'<img src="assets/img/{img}" alt="" width="{w}" height="{h}" loading="lazy">')
+        label = "" if shot else item["title"]
+        press += f'<li><a href="{item["url"]}">{shot}{label}</a></li>'
 
-<h2>Research</h2>
-<div class="areas">{areas}</div>
+    svc = ""
+    for g in site["services"]:
+        if g.get("label"):
+            svc += f'<p class="svc-label">{g["label"]}</p>'
+        svc += '<ul class="gs">' + "".join(f"<li>{i}</li>" for i in g["items"]) + "</ul>"
 
-<h2>News</h2>
-{news_html}
+    body = f"""<div class="ident">
+  <div class="ident__body">
+    <h1 class="h-item">{site['name_full']}</h1>
+    {ident_lines}
+    <ul class="social">{social}</ul>
+  </div>
+  {portrait}
+</div>
+<hr class="rule">
 
-<h2>Service</h2>
-{services}
+<h2 class="h-sec">About Our Lab</h2>
+{bio}
 
-<h2>In the press</h2>
-<ul class="press">{press}</ul>
-{script}"""
-    page("index.html", f"{site['name']}", body)
+<h2 class="h-sec">Research Overview</h2>
+<div class="areas"><div class="areas__in">{areas}</div></div>
+
+<h2 class="h-sec">News</h2>
+<div class="newsband">
+  <ul class="news">{items}</ul>
+  <ul class="press">{press}</ul>
+</div>
+
+<h2 class="h-page">Services</h2>
+{svc}"""
+
+    banner = f'<div class="banner"><h1>{site["banner"]}</h1></div>'
+    page("index.html", f"{site['name']}", body,
+         f"{site['name_full']}, Department of Computer Science, Rutgers-New Brunswick. "
+         "Trustworthy and Reliable AI Lab (TRAIL).", banner=banner)
 
 
 # ---------------------------------------------------------------- publications
@@ -267,36 +253,34 @@ def slug(s):
 
 
 def build_publications():
-    jump = "".join(
-        f'<a href="#{slug(sec["section"])}">{sec["section"]}</a>' for sec in pubs
-    )
+    scholar = next(l["url"] for l in site["links"] if l["label"] == "Google Scholar")
     blocks = ""
     for sec in pubs:
+        name = sec["section"]
+        if name == "Preprint":
+            blocks += f'<h2 class="h-group" id="{slug(name)}">{name}</h2>'
+        else:
+            if sec is pubs[1]:
+                blocks += '<h2 class="h-group" id="publications">Publications</h2>'
+            blocks += f'<h3 class="h-year" id="{slug(name)}">{name}</h3>'
         rows = ""
         for p in sec["items"]:
-            title = html.escape(p["title"])
-            title = f'<a href="{p["url"]}">{title}</a>' if p.get("url") else title
-            note = f'<span class="note">{p["note"]}</span>' if p.get("note") else ""
+            t = html.escape(p["title"])
+            t = f'<a href="{p["url"]}">{t}</a>' if p.get("url") else t
             rows += (
-                '<li class="pub">'
-                f'<span class="pub__title">{title}</span>'
-                f'<span class="pub__authors">{bold_me(p["authors"])}</span><br>'
-                f'<span class="pub__venue">{html.escape(p["venue"])}{note}</span>'
-                "</li>"
+                f'<li><span class="t">{t}</span>'
+                f'<span class="a">{p["authors"]}</span>'
+                f'<span class="v">{p["venue"]}</span></li>'
             )
-        blocks += (
-            f'<h2 id="{slug(sec["section"])}">{sec["section"]}</h2>'
-            f'<ul class="pubs">{rows}</ul>'
-        )
+        blocks += f'<ul class="pubs">{rows}</ul>'
 
-    scholar = next(l["url"] for l in site["links"] if l["label"] == "Google Scholar")
     total = sum(len(s["items"]) for s in pubs)
-    body = f"""<h1>Publications</h1>
-<p>A full list is also on <a href="{scholar}">Google Scholar</a>. An asterisk marks equal contribution.</p>
-<div class="jump">{jump}</div>
+    body = f"""<h1 class="h-page">Conference/Journal Papers
+  <a class="scholar" href="{scholar}">[google scholar]</a></h1>
+<p class="pub-note">(* indicates equal contributions)</p>
 {blocks}"""
     page("publications.html", f"Publications · {site['name']}", body,
-         f"{total} publications by {site['name']} on trustworthy AI, interpretability, "
+         f"{total} publications by {site['name_full']} on trustworthy AI, interpretability, "
          "agent safety, and AI for biomedicine.")
 
 
@@ -304,27 +288,16 @@ def build_publications():
 
 def build_group():
     blocks = ""
-    for sec in group["sections"]:
-        rows = ""
-        for m in sec["items"]:
-            who = (
-                f'<a href="{m["url"]}">{m["name"]}</a>' if m.get("url") else m["name"]
-            )
-            what = f'<span class="what">{m["detail"]}</span>' if m.get("detail") else ""
-            rows += f'<li><span class="who">{who}</span>{what}</li>'
-        blocks += f'<h2>{sec["section"]}</h2><ul class="people">{rows}</ul>'
-
-    joining = group.get("joining", "").strip()
-    body = f"""<h1>Group</h1>
-{blocks}
-{f'<div class="callout"><p>{joining}</p></div>' if joining else ''}"""
-    page("group.html", f"Group · {site['name']}", body)
+    for sec in group:
+        rows = "".join(f"<li>{m}</li>" for m in sec["items"])
+        blocks += f'<h2 class="h-page">{sec["section"]}</h2><ul class="people">{rows}</ul>'
+    page("group.html", f"Group · {site['name']}", blocks)
 
 
 # ---------------------------------------------------------------- teaching
 
-def course_href(slug):
-    return f"teaching/{slug}/"
+def course_href(slug_):
+    return f"teaching/{slug_}/"
 
 
 def build_teaching():
@@ -334,24 +307,18 @@ def build_teaching():
             f'<a href="{course_href(c["page"])}">{c["title"]}</a>'
             if c.get("page") else c["title"]
         )
-        rows += (
-            f'<li><span class="k">{c["term"]}</span>'
-            f'<span>{name}<span class="code">{c["code"]}</span></span></li>'
-        )
+        rows += f'<li>{c["term"]}, {c["code"]} {name}</li>'
     rg = teaching["reading_group"]
-    rg_title = (
+    rg_link = (
         f'<a href="{course_href(rg["page"])}">{rg["title"]}</a>'
         if rg.get("page") else rg["title"]
     )
-    body = f"""<h1>Teaching</h1>
-<h2>Courses</h2>
-<ul class="stack">{rows}</ul>
-<h2>Reading group</h2>
-<p><strong>{rg_title}</strong></p>"""
+    body = f"""<h2 class="h-sec">{teaching['heading']}</h2>
+<ul class="courses">{rows}</ul>
+<h2 class="h-sec">{rg['heading']}</h2>
+<p>{rg_link}</p>"""
     page("teaching.html", f"Teaching · {site['name']}", body)
 
-
-# ---------------------------------------------------------------- course pages
 
 def build_courses():
     """One page per course and for the reading group, at the original public URL."""
@@ -359,37 +326,35 @@ def build_courses():
         base = "../../"
         parts = []
         if c.get("facts"):
-            items = "".join(f"<li>{f}</li>" for f in c["facts"])
-            parts.append(f'<ul class="facts">{items}</ul>')
+            parts.append('<ul class="facts">' + "".join(f"<li>{f}</li>" for f in c["facts"]) + "</ul>")
         for sec in c.get("sections", []):
             paras = "".join(f"<p>{p}</p>" for p in sec["paras"])
-            head = "" if sec["heading"] == "About" else f'<h2>{sec["heading"]}</h2>'
+            head = "" if sec["heading"] == "About" else f'<h2 class="h-sec">{sec["heading"]}</h2>'
             parts.append(head + paras)
         sched = c.get("schedule")
         if sched:
             head = "".join(f"<th>{col}</th>" for col in sched["columns"])
-            body_rows = ""
+            rows = ""
             for row in sched["rows"]:
-                cells = ""
-                for cell in row:
-                    inner = "".join(f"<p>{p}</p>" for p in cell)
-                    cells += f"<td>{inner}</td>"
-                # short rows (a cancelled week) still need to span the table
-                missing = len(sched["columns"]) - len(row)
-                cells += "<td></td>" * max(0, missing)
-                body_rows += f"<tr>{cells}</tr>"
+                cells = "".join(
+                    "<td>" + "".join(f"<p>{p}</p>" for p in cell) + "</td>" for cell in row
+                )
+                cells += "<td></td>" * max(0, len(sched["columns"]) - len(row))
+                rows += f"<tr>{cells}</tr>"
             parts.append(
-                f'<h2>{sched["heading"]}</h2>'
+                f'<h2 class="h-sec">{sched["heading"]}</h2>'
                 '<div class="tablewrap"><table class="sched">'
-                f"<thead><tr>{head}</tr></thead><tbody>{body_rows}</tbody></table></div>"
+                f"<thead><tr>{head}</tr></thead><tbody>{rows}</tbody></table></div>"
             )
-        crumb = f'<p class="crumb"><a href="{base}teaching.html">Teaching</a></p>'
-        body = crumb + f'<h1>{c["heading"]}</h1>' + "".join(parts)
+        body = (
+            f'<p class="crumb"><a href="{base}teaching.html">Teaching</a></p>'
+            f'<h1 class="h-item">{c["heading"]}</h1>' + "".join(parts)
+        )
         page(
             f"teaching/{c['slug']}/index.html",
             f"{c['title']} · {site['name']}",
             body,
-            f"{c['title']} at Rutgers, taught by {site['name']}."
+            f"{c['title']} at Rutgers, taught by {site['name_full']}."
             if c.get("term") else f"{c['title']}, organized at Rutgers.",
             base=base,
         )
@@ -398,12 +363,9 @@ def build_courses():
 # ---------------------------------------------------------------- awards
 
 def build_awards():
-    rows = "".join(
-        f'<li><span class="k">{a["year"]}</span><span>{a["text"]}</span></li>'
-        for a in awards
-    )
-    body = f'<h1>Awards</h1>\n<ul class="stack">{rows}</ul>'
-    page("awards.html", f"Awards · {site['name']}", body)
+    rows = "".join(f"<li>{a}</li>" for a in awards)
+    page("awards.html", f"Awards · {site['name']}",
+         f'<h1 class="h-page">Awards</h1><ul class="gs">{rows}</ul>')
 
 
 # ---------------------------------------------------------------- blog
@@ -412,35 +374,32 @@ def build_blog():
     rows = ""
     for p in blog:
         tags = "".join(f"<span>{t}</span>" for t in p.get("tags", []))
-        rows += f"""<li class="post">
-  <h3><a href="{p['url']}">{html.escape(p['title'])}</a></h3>
-  <p class="post__meta"><span>{p['date']}</span>{tags}</p>
-  <p>{p['summary'].strip()}</p>
-  <p class="go"><a href="{p['url']}">Read the post</a></p>
+        rows += f"""<li>
+  <h2 class="h-item"><a href="{p['url']}">{p['title']}</a></h2>
+  <p class="post__date">{p['date']}</p>
+  <p class="post__tags">{tags}</p>
+  <p>{p['summary']}</p>
+  <p class="go"><a href="{p['url']}">[Read the blog &rarr;]</a></p>
 </li>"""
-    body = f"""<h1>Blog</h1>
-<ul class="posts">{rows}</ul>"""
-    page("blog.html", f"Blog · {site['name']}", body)
+    page("blog.html", f"Blog · {site['name']}", f'<ul class="posts">{rows}</ul>')
 
 
 # ---------------------------------------------------------------- misc
 
 def build_misc():
-    about = "".join(f"<p>{p.strip()}</p>" for p in misc["about"])
+    about = "".join(f"<li>{p}</li>" for p in misc["about"])
     trips = ""
     for t in misc["trips"]:
         shots = [p for p in t.get("photos", []) if os.path.exists(ROOT / "assets/img" / p)]
         gallery = ""
         if shots:
             imgs = "".join(
-                f'<img src="assets/img/{p}" alt="{t["place"]}, {t["year"]}" loading="lazy">'
-                for p in shots
+                f'<img src="assets/img/{p}" alt="{t["place"]}" loading="lazy">' for p in shots
             )
             gallery = f'<div class="gallery">{imgs}</div>'
-        trips += f'<h3>{t["place"]}, {t["year"]}</h3><p>{t["body"].strip()}</p>{gallery}'
-    body = f"""<h1>Misc</h1>
-{about}
-<h2>National parks and trips</h2>
+        trips += f'<div class="trip"><p><b>{t["place"]}:</b> {t["body"]}</p>{gallery}</div>'
+    body = f"""<h1 class="h-item">{misc['heading']}</h1>
+<ul class="gs">{about}</ul>
 {trips}"""
     page("misc.html", f"Misc · {site['name']}", body)
 
@@ -462,16 +421,15 @@ OLD_PATHS = {
 
 def build_redirects():
     for old, new in OLD_PATHS.items():
-        depth = old.count("/") + 1
-        target = "../" * depth + new
+        target = "../" * (old.count("/") + 1) + new
         d = ROOT / old
         d.mkdir(parents=True, exist_ok=True)
         (d / "index.html").write_text(
-            "<!DOCTYPE html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
-            f"<link rel=\"canonical\" href=\"https://{site['domain']}/{new}\">"
-            f"<meta http-equiv=\"refresh\" content=\"0; url={target}\">"
+            '<!DOCTYPE html>\n<html lang="en"><head><meta charset="utf-8">'
+            f'<link rel="canonical" href="https://{site["domain"]}/{new}">'
+            f'<meta http-equiv="refresh" content="0; url={target}">'
             "<title>Redirecting</title></head>"
-            f"<body><p>This page has moved. <a href=\"{target}\">Continue</a>.</p></body></html>\n",
+            f'<body><p>This page has moved. <a href="{target}">Continue</a>.</p></body></html>\n',
             encoding="utf-8",
         )
     print("wrote", len(OLD_PATHS), "redirect stubs")
@@ -482,9 +440,7 @@ def build_sitemap():
     # standalone post pages are real content, not generated by this script
     urls += [b["url"] for b in blog if not b["url"].startswith("http")]
     urls += [f"teaching/{c['slug']}/" for c in courses]
-    body = "".join(
-        f"<url><loc>https://{site['domain']}/{u}</loc></url>" for u in urls
-    )
+    body = "".join(f"<url><loc>https://{site['domain']}/{u}</loc></url>" for u in urls)
     (ROOT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
