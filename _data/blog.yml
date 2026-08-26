@@ -6,14 +6,15 @@
   tags: [Interpretability, Linear Probes, Evaluation Pitfalls]
   url: probe.html
   summary: >
-    Can you look inside a language model and read off a concept, such as whether it is being
-    truthful, or whether it is cheating on the task it was given? A common method says yes.
-    Replicating two recent papers, we find the classifier was separating the examples by how they
-    had been collected rather than by the concept it was meant to find.
+    A linear probe is the standard tool for asking whether a concept or a state is represented
+    inside a language model. Replicating two papers from top conferences, we find a flaw that is
+    easy to walk into. When the two groups of examples are assembled by different procedures, the
+    probe can learn the procedure instead of the concept, and report a near-perfect score that
+    says nothing about what is inside the model.
 
 - title: "Why Language Models Love the Em Dash: How Post-Training Recruits a Sparse Writing Circuit"
   date: August 12, 2026
-  tags: [Mechanistic Interpretability, LLM Post-Training, Model Behavior]
+  tags: [Mechanistic Interpretability, LLMs Post-Training, Model Behavior]
   url: emdash.html
   summary: >
     Why do some language models overuse the em dash while others almost never do? We trace this

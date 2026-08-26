@@ -1,0 +1,510 @@
+# Course and reading-group pages, ported verbatim from the Google Sites originals.
+# Each entry builds teaching/<slug>/index.html, keeping the old public URL.
+- slug: fall-2024-trustworthy-ai
+  term: Fall 2024
+  code: 16:198:598:02
+  title: Trustworthy AI Foundations
+  heading: 'Fall 2024 AI Topic Course: Trustworthy AI Foundations'
+  facts:
+  - >-
+    Lectures: Wednesday 12:10-1:30 and Friday 2-3:20pm in Richard Weeks Hall on Busch campus room 208
+  - 'Instructor: Ruixiang Tang'
+  - 'Office Hours: Friday 3-4:00pm, Hill Center room 416'
+  sections:
+  - heading: Course Overview
+    paras:
+    - >-
+      This graduate topic course aims to give students a broader view of Trustworthy AI and focuses on
+      understanding advanced techniques. The course covers key topics such as adversarial attacks and
+      defenses, bias detection and mitigation, AI privacy, uncertainty estimation, and interpretable AI.
+      Students will engage with the latest research, participate in discussions, and develop skills in
+      critically analyzing and presenting complex material.
+    - >-
+      Prerequisites: This course will assume fundamental knowledge in AI and machine learning (e.g., 01:198:440
+      - Introduction to Artificial Intelligence, 16:198:536 - Machine Learning, or equivalent) and mathematical
+      maturity (comfortable with linear algebra, probability, or equivalent). Students are expected to
+      read and discuss research papers. Please contact the instructor if you have questions regarding
+      whether your background is suitable for the course.
+  - heading: Grading
+    paras:
+    - 20% Quizzes
+    - 80% Final Project
+    - >-
+      We will have 5 short quizzes and one final project. The final project can be done individually or
+      in groups of no more than 3. Presentations will take place during the last three weeks of the semester,
+      followed by a Q&A session.
+    - >-
+      For the final project, students are required to choose a research paper on trustworthy AI, independently
+      replicate its results, and critically analyze it to identify any limitations or potential areas
+      for improvement. Students will then propose and develop a solution to address the identified issue
+      or introduce a novel idea to enhance the research.
+  schedule:
+    heading: Course Schedule (tentative)
+    columns:
+    - Week#
+    - Topic
+    - Notes
+    - Recommended Papers for Further Reading
+    rows:
+    - - - Week 1
+      - - Introduction to Trustworthy AI
+      - - Overview of course objectives
+        - Importance of Trustworthy AI
+        - Key concepts and definitions
+      - - >-
+          <a href="https://dl.acm.org/doi/full/10.1145/3546872">Trustworthy AI: A Computational Perspective</a>
+    - - - Week 2
+      - - Foundational Concepts in Deep Learning
+      - - Basic Knowledge of Deep Learning
+        - Feedforward, Backpropagation
+        - MLP, CNN, RNN,Transformer
+      - - <a href="https://d2l.ai/d2l-en.pdf">Dive into Deep Learning</a>
+    - - - Week 3
+      - - Interpretable AI - Part 1
+      - - Introduction to Interpretable AI
+        - Challenges of interpretability
+        - Techniques for XAI
+      - - >-
+          <a href="https://dl.acm.org/doi/10.1145/3359786">Techniques for Interpretable Machine Learning</a>
+        - >-
+          <a href="https://arxiv.org/abs/1602.04938">"Why Should I Trust You?": Explaining the Predictions
+          of Any Classifier</a>
+        - >-
+          <a href="https://openaccess.thecvf.com/content_ICCV_2017/papers/Selvaraju_Grad-CAM_Visual_Explanations_ICCV_2017_paper.pdf">Grad-CAM:
+          Visual Explanations from Deep Networks via Gradient-based Localization</a>
+    - - - Week 4
+      - - Interpretable AI - Part 2
+      - - Advanced methods for XAI
+        - Case studies and applications
+        - Evaluation of interpretability
+      - - >-
+          <a href="https://proceedings.neurips.cc/paper_files/paper/2018/file/294a8ed24b1ad22ec2e7efea049b8737-Paper.pdf">Sanity
+          Checks for Saliency Maps</a>
+        - >-
+          <a href="https://proceedings.neurips.cc/paper_files/paper/2019/file/fe4b8556000d0f0cae99daa5c5c5a410-Paper.pdf">A
+          Benchmark for Interpretability Methods in Deep Neural Networks</a>
+        - >-
+          <a href="https://ojs.aaai.org/index.php/AAAI/article/view/4252">Interpretation of Neural Networks
+          is Fragile</a>
+    - - - Week 5
+      - - Bias Detection and Mitigation for AI Models- Part 1
+      - - Understanding bias in AI models
+        - Sources of bias
+        - Methods for detecting bias
+      - - >-
+          <a href="https://www.nature.com/articles/s42256-020-00257-z">Shortcut learning in deep neural
+          networks</a>
+        - >-
+          <a href="https://proceedings.mlr.press/v81/buolamwini18a/buolamwini18a.pdf">Gender Shades: Intersectional
+          Accuracy Disparities in Commercial Gender Classification</a>
+        - >-
+          <a href="https://arxiv.org/abs/1811.12231">ImageNet-trained CNNs are biased towards texture;
+          increasing shape bias improves accuracy and robustness</a>
+    - - - Week 6
+      - - Bias Detection and Mitigation for AI Models - Part 2
+      - - Techniques for mitigating bias
+        - Fairness in AI
+        - Ethical considerations
+      - - <a href="https://arxiv.org/pdf/2006.08315">Mitigating Gender Bias in Captioning Systems</a>
+        - >-
+          <a href="https://arxiv.org/abs/1811.08489">Balanced Datasets Are Not Enough: Estimating and
+          Mitigating Gender Bias in Deep Image Representations</a>
+        - >-
+          <a href="https://arxiv.org/abs/1707.09457">Men Also Like Shopping: Reducing Gender Bias Amplification
+          using Corpus-level Constraints</a>
+    - - - Week 7
+      - - Adversarial Attacks and Defenses for AI Models - Part 1
+      - - Introduction to adversarial attacks
+        - Types of adversarial attacks
+        - Case studies and examples
+      - - <a href="https://arxiv.org/abs/1412.6572">Explaining and Harnessing Adversarial Examples</a>
+        - >-
+          <a href="https://arxiv.org/pdf/1706.06083">Towards Deep Learning Models Resistant to Adversarial
+          Attacks</a>
+        - >-
+          <a href="https://arxiv.org/abs/1905.02175">Adversarial Examples Are Not Bugs, They Are Features</a>
+        - >-
+          <a href="https://www.ndss-symposium.org/wp-content/uploads/2018/02/ndss2018_03A-5_Liu_paper.pdf">Trojaning
+          attack on neural networks</a>
+    - - - Week 8
+      - - Adversarial Attacks and Defenses for AI Models - Part 2
+      - - Defense against adversarial attacks
+        - Evaluation of defense strategies
+        - Practical applications and challenges
+      - - >-
+          <a href="https://arxiv.org/pdf/1902.02918">Certified Adversarial Robustness via Randomized Smoothing</a>
+        - >-
+          <a href="https://arxiv.org/abs/2002.12920">Automatic perturbation analysis for scalable certified
+          robustness and beyond</a>
+        - >-
+          <a href="https://openreview.net/pdf?id=2cYxNWNzk3">Setting the Trap: Capturing and Defeating
+          Backdoors in Pretrained Language Models through Honeypots</a>
+    - - - Week 9
+      - - AI Privacy
+      - - Introduction to AI privacy
+        - Privacy Attack
+        - Privacy-preserving techniques
+      - - >-
+          <a href="https://www.usenix.org/system/files/sec21-carlini-extracting.pdf">Extracting Training
+          Data from Large Language Models</a>
+        - <a href="https://arxiv.org/abs/1607.00133">Deep Learning with Differential Privacy</a>
+        - >-
+          <a href="https://arxiv.org/abs/2312.03724">DP-OPT: Make Large Language Model Your Privacy-Preserving
+          Prompt Engineer</a>
+    - - - Week 10
+      - - Trustworthy LLM - Part 1
+      - - Safety Alignment
+        - Jailbreaking Attack and Defense
+        - Multimodal Attack and Defense
+      - - >-
+          <a href="https://arxiv.org/pdf/2406.05946">Safety Alignment Should Be Made More Than Just a
+          Few Tokens Deep</a>
+        - >-
+          <a href="https://arxiv.org/pdf/2402.05162">Assessing the Brittleness of Safety Alignment via
+          Pruning and Low-Rank Modifications</a>
+        - >-
+          <a href="https://www.andyzhou.ai/pdfs/rpo.pdf">Robust Prompt Optimization for Defending Language
+          Models Against Jailbreaking Attacks</a>
+    - - - Week 11
+      - - Trustworthy LLM - Part 2
+      - - Hallucination Detection and Mitigation
+        - Uncertainty Estimation
+      - - >-
+          <a href="https://arxiv.org/abs/2305.17256">Large Language Models Can be Lazy Learners: Analyze
+          Shortcuts in In-Context Learning</a>
+        - >-
+          <a href="https://lilianweng.github.io/posts/2024-07-07-hallucination/">Extrinsic Hallucinations
+          in LLMs</a>
+        - >-
+          <a href="https://www.nature.com/articles/s41586-024-07421-0">Detecting hallucinations in large
+          language models using semantic entropy</a>
+        - <a href="https://arxiv.org/pdf/2406.02543">To Believe or Not to Believe Your LLM</a>
+    - - - Week 12
+      - - Guest Lecture / Industry Speaker
+      - - Invited talk from a leading expert in Trustworthy AI
+        - Discussion and Q&A session
+    - - - Week 13
+      - - Student Presentations - Part 1
+      - - Student presentations
+        - Discussion and feedback
+    - - - Week 14
+      - - Student Presentations - Part 2
+      - - Student presentations
+        - Discussion and feedback
+    - - - Week 15
+      - - Student Presentations - Part 3
+      - - Student presentations
+        - Discussion and feedback
+- slug: spring-2025-introduction-to-data-science
+  term: Spring 2025
+  code: 01:198:439
+  title: Introduction to Data Science
+  heading: Spring 2025 Introduction to Data Science
+  facts:
+  - 'Lectures: See details on Canvas.'
+  - 'Instructor: Ruixiang Tang'
+  - 'Recitation:'
+  - See details on Canvas.
+  - 'Office Hour:'
+  - 'Office Hours: Section 05 Tuesday 9am-10am (see zoom link on canvas)'
+  - 'Office Hours: Section 06 Tuesday 10am-11am (see zoom link on canvas)'
+  - 'Office Hours: Section 07 Wednesday 10am-11am (see zoom link on canvas)'
+  - 'Office Hours: Section 08 Tuesday 10am-11am (see zoom link on canvas)'
+  sections:
+  - heading: Course Overview
+    paras:
+    - >-
+      CS 439 Spring 2025 introduces foundational concepts and practical techniques in data science, equipping
+      students with skills in data manipulation, visualization, and advanced machine learning methods.
+      The course covers key topics such as data preprocessing, statistical analysis, regression, classification,
+      clustering, recommender systems, and an introduction to deep learning and large language models
+      (LLMs). Students will gain hands-on experience with tools like Python, Pandas, Seaborn, and TensorFlow
+      through five labs, five quizzes, and two major projects. With a focus on real-world applications,
+      this course emphasizes understanding mathematical foundations, dimensionality reduction, anomaly
+      detection, and modern AI techniques, preparing students for practical and research-driven careers
+      in data science.
+  - heading: Grading
+    paras:
+    - 5 Quizzes
+    - 5 Labs
+    - 3 Research Papers (also research paper-based quizzes)
+    - Midterm Exam
+    - Final Semester Project
+  - heading: Learning Resources
+    paras:
+    - >-
+      Course Videos on <a href="https://www.cubits.ai/collections/48/">CUbits</a>: <a href="https://www.cubits.ai/collections/48/">https://www.cubits.ai/collections/48/</a>
+  schedule:
+    heading: Course Schedule (tentative)
+    columns:
+    - Week#
+    - Title
+    - Topics
+    - Notes
+    rows:
+    - - - Week 1
+      - - Introduction to Data Science
+      - - Course Overview and Introduction
+        - Environment Setup and Tools
+        - Introduction to Python for Data Science
+      - - 'Tools: Pandas, NumPy'
+        - 'Lab: Environment setup and basic Python'
+        - 'Resources: Pandas cheat sheet, Plot tutorial'
+    - - - Week 2
+      - - Data Fundamentals
+      - - Data Manipulation with Pandas Data Collection and Web Scraping Data Quality and Preparation
+      - - 'Tools: BeautifulSoup'
+        - Lab 1 Released
+        - Quiz 1
+        - 'Recitation: Python and Pandas fundamentals'
+    - - - Week 3
+      - - Data Processing and Text Analysis
+      - - Advanced Data Collection
+        - Text Data Processing
+        - Data Preprocessing Techniques
+      - - Lab 1 Due
+        - Text analysis techniques
+        - Data transformation methods
+        - 'Recitation: Data manipulation practice'
+    - - - Week 4
+      - - Data Visualization and Analysis
+      - - Data Types and Visualization Techniques
+        - Exploratory Data Analysis
+        - Basic Statistical Analysis
+      - - Lab 2 Released
+        - Quiz 2
+        - 'Tools: Seaborn, Matplotlib'
+        - 'Recitation: Visualization techniques'
+    - - - Week 5
+      - - Mathematical Foundations
+      - - Visualization with Kernel Density Estimators
+        - Linear Algebra for Data Science
+        - Statistical Foundations
+      - - Lab 2 Due
+        - Mathematical concepts for ML
+        - 'Recitation: Linear algebra applications'
+    - - - Week 6
+      - - Dimensionality Reduction
+      - - Matrix Decompositions
+        - SVD and PCA
+        - Feature Engineering Basics
+      - - Lab 3 Released
+        - Advanced mathematical concepts
+        - 'Recitation: SVD and PCA practice'
+    - - - Week 7
+      - - Probability and Statistics
+      - - Probability Fundamentals Distributions and MLE
+        - Naïve Bayes Classification
+      - - Quiz 3
+        - 'Statistical modeling concepts Recitation: Probability and statistics practice'
+    - - - Week 8
+      - - Review and Assessment
+      - - Course Review
+        - Midterm Examination
+      - - Midterm Exam
+        - Review of key concepts
+        - 'Recitation: Exam preparation'
+    - - - Week 9
+      - - Regression Analysis
+      - - Linear Regression
+        - Gradient Descent
+        - Feature Engineering
+      - - Lab 3 Due
+        - Mid-Project Released
+        - Quiz 4
+        - 'Recitation: Regression practice'
+    - - - Week 10
+      - - Classification Techniques
+      - - Classification Fundamentals Logistic Regression Advanced Classification Methods
+      - - Support Vector Machines
+        - 'Neural Networks introduction Recitation: Classification practice'
+    - - - Week 11
+      - - Advanced Classification
+      - - Multi-class Classification Ensemble Methods Class Imbalance Problems
+      - - Mid-Project Due
+        - Lab 4 Released
+        - Advanced classification techniques
+        - 'Recitation: Advanced classification practice'
+    - - - Week 12
+      - - Unsupervised Learning
+      - - Clustering Analysis
+        - Dimensionality Reduction
+        - Anomaly Detection
+      - - Clustering algorithms
+        - Outlier detection methods
+        - Pattern recognition
+    - - - Week 13
+      - - Recommender Systems
+      - - Recommendation Algorithms
+        - Collaborative Filtering
+        - Content-Based Filtering
+      - - Lab 4 Due
+        - Lab 5 Released
+        - Quiz 5
+        - 'Recitation: Recommender systems practice'
+    - - - Week 14
+      - - Deep Learning and LLMs
+      - - Introduction to Deep Learning Neural Networks
+        - Large Language Models in Data Science
+      - - Applications in data labeling
+        - Data generation techniques
+        - Final project discussions
+- slug: fall-2025-massive-data-mining
+  term: Fall 2025
+  code: 16:198:550
+  title: Massive Data Mining
+  heading: Fall 2025 Massive Data Mining
+  facts:
+  - >-
+    Lectures: Wednesday 10:20am-1:20pm and <a href="https://maps.rutgers.edu/map#/?click=true&amp;lat=40.523763&amp;lng=-74.467350&amp;selected=3750&amp;sidebar=true&amp;underConstructionState=true&amp;zoom=19">PH-111</a>.
+  - 'Instructor: Ruixiang Tang'
+  - 'Office Hour: Friday 6pm-7pm'
+  sections:
+  - heading: Course Overview
+    paras:
+    - >-
+      This course introduces the fundamental concepts, techniques, and applications of data mining, with
+      an emphasis on analyzing and extracting knowledge from massive and complex datasets. Students will
+      learn core methods including classification, association analysis, clustering, and anomaly detection,
+      as well as strategies for evaluating and validating models to ensure reliability. The course will
+      also address challenges unique to large-scale data, such as scalability, distributed frameworks,
+      and avoiding false discoveries. Through lectures, readings, and hands-on exercises, students will
+      gain both theoretical understanding and practical experience in applying data mining methods to
+      real-world problems in science, engineering, business, and healthcare.
+  - heading: Grading
+    paras:
+    - 5 Quizzes
+    - 3 Research Papers (also research paper-based quizzes)
+    - Midterm Exam
+    - Final Semester Project
+  schedule:
+    heading: Course Schedule (tentative)
+    columns:
+    - Week#
+    - Title
+    - Topics
+    rows:
+    - - - Week 1
+      - - Introduction to Data Mining
+      - - Course Overview and Introduction
+        - Environment Setup and Tools
+        - Introduction to Python for Data Science
+    - - - Week 2
+      - - Data and Data Preparation
+      - - Types of data, data quality, preprocessing (normalization, sampling, dimensionality reduction).
+    - - - Week 3
+      - - 'Classification: Decision Trees'
+      - - Tree construction, splitting criteria (Gini, information gain), pruning.
+    - - - Week 4
+      - - Model Evaluation & Overfitting
+      - - Training vs. testing, cross-validation, bias–variance tradeoff, ROC/AUC.
+    - - - Week 5
+      - - Rule-Based Classifiers & k-NN
+      - - IF-THEN rules, covering vs. decision tree rules, nearest neighbor methods.
+    - - - Week 6
+      - - Naïve Bayes & Neural Networks
+      - - Bayes theorem, independence assumption, perceptrons, feed-forward NNs.
+    - - - Week 7
+      - - SVM, Ensemble Methods, Class Imbalance
+      - - Large-margin classifiers, bagging, boosting, random forests, rebalancing techniques.
+    - - - Week 8
+      - - 'Association Analysis: Basics'
+      - - Market basket analysis, frequent itemset mining, Apriori, support & confidence.
+    - - - Week 9
+      - - 'Association Analysis: Advanced'
+      - - Sequential patterns, graph patterns, interestingness measures.
+    - - - Week 10
+      - - 'Clustering: Partitional Methods'
+      - - K-means, initialization, distance measures, evaluation metrics.
+    - - - Week 11
+      - - 'Clustering: Advanced Methods'
+      - - Hierarchical clustering, DBSCAN, spectral clustering, cluster validation.
+    - - - Week 12
+      - - Anomaly Detection
+      - - Statistical, distance-based, density-based, clustering-based approaches.
+    - - - Week 13
+      - - Avoiding False Discoveries
+      - - Hypothesis testing, multiple comparisons, p-values, reproducibility.
+    - - - Week 14
+      - - Scalability & Big Data Mining
+      - - Scalability issues, distributed data mining, streaming data, wrap-up.
+- slug: trustworthy-ai-reading-group
+  title: Trustworthy AI Reading Group
+  heading: Trustworthy AI Reading Group
+  sections:
+  - heading: About
+    paras:
+    - >-
+      Welcome to the Trustworthy AI Reading Group! This reading group is dedicated to exploring critical
+      topics in AI, including fairness, security, explainability, and their broader applications. We aim
+      to create an inclusive environment that fosters lively discussions and encourages participation
+      from undergraduate, master’s, and PhD students alike.
+  - heading: Organizers
+    paras:
+    - >-
+      <a href="https://sharonlevy.github.io/">Dr. Sharon Levy</a>, Department of Computer Science, Rutgers
+      University
+    - >-
+      <a href="https://www.ruixiangtang.net/">Dr. Ruixiang (Ryan) Tang</a>, Department of Computer Science,
+      Rutgers University
+  - heading: Meeting Details
+    paras:
+    - 'When: Every Tuesday, 2:00 pm - 3:00 pm'
+    - 'Where: Hill Center, Room 482'
+    - 'First Session: October 22nd'
+    - >-
+      Each session will include the presentation and discussion of one or two research papers. We look
+      forward to your participation!
+    - >-
+      If you're interested in AI research or curious about the ethical and technical challenges of Trustworthy
+      AI, we would love to have you join us. We highly encourage students to present their own work, ideas,
+      or interesting papers. Please feel free to edit the CSV file <a href="https://docs.google.com/spreadsheets/d/1CnlqRWwvZnBiFT6dbLvgUpvJXBPpuBKONO9GpSk1GtM/edit?usp=sharing">[link]</a>
+      to select a time and paper you'd like to present and send an email to the organizers (<a href="mailto:s.levy@rutgers.edu">s.levy@rutgers.edu</a>,
+      <a href="mailto:ruixiang.tang@rutgers.edu">ruixiang.tang@rutgers.edu</a>).
+    - Feel free to share this with anyone who might be interested!
+  schedule:
+    heading: Schedule
+    columns:
+    - Date
+    - Presenter
+    - Title
+    - Video (if available)
+    rows:
+    - - - Oct 22, 2024
+      - - Dr. <a href="https://jyhong.gitlab.io/">Junyuan Hong</a>
+      - - 'Understanding, Integrating, and Deploying Responsible AI: A Tale About Privacy'
+      - - <a href="https://www.youtube.com/watch?v=YP4KDq6w-94">Video</a>
+    - - - Oct 29, 2024
+      - - Canceled
+      - - Canceled
+    - - - Nov 5, 2024
+      - - <a href="https://mingyuj666.github.io/">Mingyu Jin</a>
+        - <a href="https://www.akhorramrouz.com/">Adel Khorramrouz</a>
+      - - <a href="https://arxiv.org/abs/2402.17762">Massive Activation in Large Language Models</a>
+        - >-
+          <a href="https://www.arxiv.org/pdf/2410.00175">Adaptable Moral Stances of Large Language Models
+          on Sexist Content: Implications for Society and Gender Discourse</a>
+    - - - Nov 12, 2024
+      - - Canceled
+      - - EMNLP Conference
+    - - - Nov 19, 2024
+      - - Prof. Sharon Levy
+      - - Discovering Implicit Social Biases in Large Language Models
+    - - - Nov 26, 2024
+      - - Canceled
+      - - Thanksgiving Recess
+    - - - Dec 3, 2024
+      - - <a href="https://wujiangxu.github.io/">Wujiang Xu</a>
+      - - 'SLMRec: Empowering Small Language Models for Sequential Recommendation'
+    - - - Dec 10, 2024
+      - - Canceled
+      - - >-
+          <a href="https://ruccs.rutgers.edu/talks/list-of-upcoming-events/icalrepeat.detail/2024/12/10/912/-/fairness-and-randomness-in-predictive-systems-dr-katie-creel-northeastern-university">Seminar
+          "Fairness and Randomness in Predictive Systems - Dr. Katie Creel, Northeastern University"</a>
+    - - - Jan 21, 2025
+      - - Prof. <a href="https://www.rit.edu/directory/dxleec-dongfang-liu">Dongfang Liu</a>
+      - - This talk is held on Zoom.
+        - >-
+          Title: LLM for Social Good (<a href="https://rutgers.zoom.us/j/5320853631?pwd=JSneGQY07Kt3aT7PZgoRvCjDRPMSoE.1">Zoom
+          link</a>)
+        - Time change to Jan 21, 5PM

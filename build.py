@@ -28,6 +28,7 @@ teaching = load("teaching")
 awards = load("awards")
 blog = load("blog")
 misc = load("misc")
+courses = load("courses")
 
 FONTS = (
     '<link rel="preconnect" href="https://fonts.googleapis.com">'
@@ -74,11 +75,18 @@ def image_size(path, default=(400, 500)):
         return default
 
 
-def masthead(active):
+def rel(url, base):
+    """Prefix a site-relative URL so it resolves from a page nested in a subdirectory."""
+    if not base or url.startswith(("http://", "https://", "mailto:", "#", "/")):
+        return url
+    return base + url
+
+
+def masthead(active, base=""):
     """Top bar: brand on the left, section nav on the right, on every page."""
     nav = "".join(
         '<li><a href="{href}"{cur}>{label}</a></li>'.format(
-            href=n["href"],
+            href=rel(n["href"], base),
             label=n["label"],
             cur=' aria-current="page"' if n["href"] == active else "",
         )
@@ -86,8 +94,8 @@ def masthead(active):
     )
     return f"""<header class="masthead">
   <div class="masthead__in">
-    <a class="brand" href="index.html" aria-label="Home">
-      <img src="assets/img/trail-mark.svg" alt="TRAIL Lab shield" width="120" height="150">
+    <a class="brand" href="{rel("index.html", base)}" aria-label="Home">
+      <img src="{rel("assets/img/trail-mark.svg", base)}" alt="TRAIL Lab shield" width="120" height="150">
       <span class="brand__txt">
         <span class="brand__name">{site['name']}</span>
         <span class="brand__zh">唐瑞祥</span>
@@ -121,9 +129,11 @@ def identity():
 </div>"""
 
 
-def site_footer():
+def site_footer(base=""):
     """The contact block the left rail used to carry, on every page."""
-    links = "".join(f'<a href="{l["url"]}">{l["label"]}</a>' for l in site["links"])
+    links = "".join(
+        f'<a href="{rel(l["url"], base)}">{l["label"]}</a>' for l in site["links"]
+    )
     return f"""<footer class="page">
   <div class="foot">
     <p class="foot__who"><strong>{site['name']}</strong><br>
@@ -137,9 +147,11 @@ def site_footer():
 </footer>"""
 
 
-def page(filename, title, body, description=""):
+def page(filename, title, body, description="", base=""):
     desc = description or f"{site['name']}, {site['role']}, {site['institution']}."
     canon = "" if filename == "index.html" else filename
+    if canon.endswith("/index.html"):
+        canon = canon[: -len("index.html")]
     doc = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -152,23 +164,25 @@ def page(filename, title, body, description=""):
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://{site['domain']}/{canon}">
 <link rel="canonical" href="https://{site['domain']}/{canon}">
-<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{rel("assets/img/favicon.svg", base)}" type="image/svg+xml">
 {FONTS}
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="{rel("assets/css/style.css", base)}">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-{masthead(filename)}
+{masthead(filename, base)}
 <div class="wrap">
 <main id="main">
 {body}
 </main>
 </div>
-{site_footer()}
+{site_footer(base)}
 </body>
 </html>
 """
-    (ROOT / filename).write_text(doc, encoding="utf-8")
+    out = ROOT / filename
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(doc, encoding="utf-8")
     print("wrote", filename)
 
 
@@ -302,8 +316,6 @@ def build_group():
 
     joining = group.get("joining", "").strip()
     body = f"""<h1>Group</h1>
-<p>The Trustworthy and Reliable AI Lab works on interpretability, agent safety, perception
-reliability, and AI for biomedicine.</p>
 {blocks}
 {f'<div class="callout"><p>{joining}</p></div>' if joining else ''}"""
     page("group.html", f"Group · {site['name']}", body)
@@ -311,25 +323,76 @@ reliability, and AI for biomedicine.</p>
 
 # ---------------------------------------------------------------- teaching
 
+def course_href(slug):
+    return f"teaching/{slug}/"
+
+
 def build_teaching():
     rows = ""
     for c in teaching["courses"]:
         name = (
-            f'<a href="{c["url"]}">{c["title"]}</a>' if c.get("url") else c["title"]
+            f'<a href="{course_href(c["page"])}">{c["title"]}</a>'
+            if c.get("page") else c["title"]
         )
         rows += (
             f'<li><span class="k">{c["term"]}</span>'
             f'<span>{name}<span class="code">{c["code"]}</span></span></li>'
         )
     rg = teaching["reading_group"]
-    rg_title = f'<a href="{rg["url"]}">{rg["title"]}</a>' if rg.get("url") else rg["title"]
+    rg_title = (
+        f'<a href="{course_href(rg["page"])}">{rg["title"]}</a>'
+        if rg.get("page") else rg["title"]
+    )
     body = f"""<h1>Teaching</h1>
 <h2>Courses</h2>
 <ul class="stack">{rows}</ul>
 <h2>Reading group</h2>
-<p><strong>{rg_title}</strong></p>
-<p>{rg['body'].strip()}</p>"""
+<p><strong>{rg_title}</strong></p>"""
     page("teaching.html", f"Teaching · {site['name']}", body)
+
+
+# ---------------------------------------------------------------- course pages
+
+def build_courses():
+    """One page per course and for the reading group, at the original public URL."""
+    for c in courses:
+        base = "../../"
+        parts = []
+        if c.get("facts"):
+            items = "".join(f"<li>{f}</li>" for f in c["facts"])
+            parts.append(f'<ul class="facts">{items}</ul>')
+        for sec in c.get("sections", []):
+            paras = "".join(f"<p>{p}</p>" for p in sec["paras"])
+            head = "" if sec["heading"] == "About" else f'<h2>{sec["heading"]}</h2>'
+            parts.append(head + paras)
+        sched = c.get("schedule")
+        if sched:
+            head = "".join(f"<th>{col}</th>" for col in sched["columns"])
+            body_rows = ""
+            for row in sched["rows"]:
+                cells = ""
+                for cell in row:
+                    inner = "".join(f"<p>{p}</p>" for p in cell)
+                    cells += f"<td>{inner}</td>"
+                # short rows (a cancelled week) still need to span the table
+                missing = len(sched["columns"]) - len(row)
+                cells += "<td></td>" * max(0, missing)
+                body_rows += f"<tr>{cells}</tr>"
+            parts.append(
+                f'<h2>{sched["heading"]}</h2>'
+                '<div class="tablewrap"><table class="sched">'
+                f"<thead><tr>{head}</tr></thead><tbody>{body_rows}</tbody></table></div>"
+            )
+        crumb = f'<p class="crumb"><a href="{base}teaching.html">Teaching</a></p>'
+        body = crumb + f'<h1>{c["heading"]}</h1>' + "".join(parts)
+        page(
+            f"teaching/{c['slug']}/index.html",
+            f"{c['title']} · {site['name']}",
+            body,
+            f"{c['title']} at Rutgers, taught by {site['name']}."
+            if c.get("term") else f"{c['title']}, organized at Rutgers.",
+            base=base,
+        )
 
 
 # ---------------------------------------------------------------- awards
@@ -356,8 +419,6 @@ def build_blog():
   <p class="go"><a href="{p['url']}">Read the post</a></p>
 </li>"""
     body = f"""<h1>Blog</h1>
-<p>Notes on things we ran into while doing the work: mechanisms we did not expect, evaluations that
-looked better than they were, and results that needed a second look.</p>
 <ul class="posts">{rows}</ul>"""
     page("blog.html", f"Blog · {site['name']}", body)
 
@@ -396,10 +457,6 @@ OLD_PATHS = {
     "teaching": "teaching.html",
     "awards": "awards.html",
     "misc": "misc.html",
-    "teaching/fall-2024-trustworthy-ai": "teaching.html",
-    "teaching/spring-2025-introduction-to-data-science": "teaching.html",
-    "teaching/trustworthy-ai-reading-group": "teaching.html",
-    "teaching/fall-2025-massive-data-mining": "teaching.html",
 }
 
 
@@ -424,6 +481,7 @@ def build_sitemap():
     urls = ["" if n["href"] == "index.html" else n["href"] for n in site["nav"]]
     # standalone post pages are real content, not generated by this script
     urls += [b["url"] for b in blog if not b["url"].startswith("http")]
+    urls += [f"teaching/{c['slug']}/" for c in courses]
     body = "".join(
         f"<url><loc>https://{site['domain']}/{u}</loc></url>" for u in urls
     )
@@ -445,6 +503,7 @@ if __name__ == "__main__":
     build_publications()
     build_group()
     build_teaching()
+    build_courses()
     build_awards()
     build_blog()
     build_misc()

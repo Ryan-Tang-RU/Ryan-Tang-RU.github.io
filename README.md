@@ -6,11 +6,12 @@ framework, no build step on the server. GitHub Pages serves the committed `.html
 ## Layout
 
 ```
-_data/*.yml        all content lives here (bio, news, publications, group, teaching, awards, blog, misc)
+_data/*.yml        all content lives here (bio, news, publications, group, teaching, courses, awards, blog, misc)
 build.py           renders the .yml files into the .html pages
 assets/css/        one stylesheet
 assets/img/        logo, favicon, portrait, trip photos
 index.html ...     generated pages, committed to the repo
+teaching/<slug>/   course and reading-group pages, at their original Google Sites URLs
 home/ publications/ ...  redirect stubs so old Google Sites URLs keep working
 CNAME              custom domain
 ```
@@ -130,6 +131,11 @@ Google Sites used extensionless paths such as `/publications` and `/teaching/fal
 `build.py` writes a small redirect page at each of those paths, so bookmarks, citations, and search
 results land on the right page instead of a 404. Add more in the `OLD_PATHS` dictionary in
 `build.py` if you find any that are missing.
+
+The four `/teaching/...` paths are not redirects: they are the real course pages, built from
+`_data/courses.yml` at exactly the URLs the old site used. Each entry carries the page heading, the
+logistics box, the prose sections, and the week-by-week schedule table. Edit that file to update a
+syllabus; add an entry (plus a `page:` key in `_data/teaching.yml`) to add a course.
 
 ## Local preview
 

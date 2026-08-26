@@ -295,3 +295,46 @@ footer.page {
   .wrap { display: block; padding: 0; }
   a { color: inherit; border: 0; }
 }
+
+/* ---------------------------------------------------------------- course pages */
+
+.crumb {
+  font-size: .82rem; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); margin: 0 0 .6rem;
+}
+.crumb a { color: var(--muted); border-bottom-color: var(--rule); }
+.crumb a:hover { color: var(--ink); }
+
+.facts {
+  list-style: none; margin: 0 0 1.6rem; padding: .9rem 1.1rem;
+  background: var(--mist); border: 1px solid var(--rule); border-radius: .3rem;
+  font-size: .9rem; line-height: 1.55; color: var(--ink-soft);
+}
+.facts li + li { margin-top: .3rem; }
+
+.tablewrap { overflow-x: auto; margin: 0 0 1.8rem; -webkit-overflow-scrolling: touch; }
+
+.sched {
+  border-collapse: collapse; width: 100%; min-width: 40rem;
+  font-size: .85rem; line-height: 1.5;
+}
+.sched th, .sched td {
+  text-align: left; vertical-align: top;
+  padding: .55rem .7rem; border-bottom: 1px solid var(--rule);
+}
+.sched th {
+  font-family: var(--sans); font-weight: 600; font-size: .78rem;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--ink-soft); white-space: nowrap;
+}
+.sched tbody tr:hover { background: var(--mist); }
+.sched td:first-child { white-space: nowrap; font-weight: 600; color: var(--ink); }
+.sched p { margin: 0; }
+.sched p + p { margin-top: .3rem; }
+
+/* course pages run wider than the reading measure so the schedule fits */
+.wrap:has(.sched) main { max-width: none; }
+
+@media (max-width: 40rem) {
+  .sched { min-width: 34rem; font-size: .8rem; }
+}
