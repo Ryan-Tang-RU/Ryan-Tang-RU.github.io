@@ -74,10 +74,8 @@ def image_size(path, default=(400, 500)):
         return default
 
 
-def rail(active):
-    links = "".join(
-        f'<a href="{l["url"]}">{l["label"]}</a>' for l in site["links"]
-    )
+def masthead(active):
+    """Top bar: brand on the left, section nav on the right, on every page."""
     nav = "".join(
         '<li><a href="{href}"{cur}>{label}</a></li>'.format(
             href=n["href"],
@@ -86,30 +84,57 @@ def rail(active):
         )
         for n in site["nav"]
     )
+    return f"""<header class="masthead">
+  <div class="masthead__in">
+    <a class="brand" href="index.html" aria-label="Home">
+      <img src="assets/img/trail-mark.svg" alt="TRAIL Lab shield" width="120" height="150">
+      <span class="brand__txt">
+        <span class="brand__name">{site['name']}</span>
+        <span class="brand__zh">唐瑞祥</span>
+      </span>
+    </a>
+    <nav class="site" aria-label="Sections"><ul>{nav}</ul></nav>
+  </div>
+</header>"""
+
+
+def identity():
+    """Portrait and contact details. Only the home page carries this."""
     portrait = ""
     if os.path.exists(ROOT / site["photo"]):
         pw, ph = image_size(ROOT / site["photo"])
         portrait = (
-            f'<img class="rail__portrait" src="{site["photo"]}" '
+            f'<img class="ident__portrait" src="{site["photo"]}" '
             f'alt="Portrait of {site["name"]}" width="{pw}" height="{ph}">'
         )
-    return f"""<aside class="rail">
-  <a class="rail__mark" href="index.html" aria-label="Home">
-    <img src="assets/img/trail-mark.svg" alt="TRAIL Lab shield" width="120" height="150">
-  </a>
-  <p class="rail__name">{site['name']}</p>
-  <p class="rail__zh">唐瑞祥</p>
+    links = "".join(f'<a href="{l["url"]}">{l["label"]}</a>' for l in site["links"])
+    return f"""<div class="ident">
   {portrait}
-  <p class="rail__meta">
-    <strong>{site['role']}</strong><br>
-    {site['department']}<br>
-    {site['institution']}<br>
-    {site['address']}<br>
-    <a href="mailto:{site['email']}">{site['email']}</a>
-  </p>
-  <div class="rail__links">{links}</div>
-  <nav class="site" aria-label="Sections"><ul>{nav}</ul></nav>
-</aside>"""
+  <div class="ident__body">
+    <p class="ident__role"><strong>{site['role']}</strong><br>
+      {site['department']}<br>
+      {site['institution']}<br>
+      {site['address']}<br>
+      <a href="mailto:{site['email']}">{site['email']}</a></p>
+    <div class="ident__links">{links}</div>
+  </div>
+</div>"""
+
+
+def site_footer():
+    """The contact block the left rail used to carry, on every page."""
+    links = "".join(f'<a href="{l["url"]}">{l["label"]}</a>' for l in site["links"])
+    return f"""<footer class="page">
+  <div class="foot">
+    <p class="foot__who"><strong>{site['name']}</strong><br>
+      {site['role']}, {site['department']}<br>
+      {site['institution']}<br>
+      {site['address']}<br>
+      <a href="mailto:{site['email']}">{site['email']}</a></p>
+    <div class="foot__links">{links}</div>
+  </div>
+  <p class="foot__legal">{site['name']} · {site['lab']} · {site['institution']}</p>
+</footer>"""
 
 
 def page(filename, title, body, description=""):
@@ -133,15 +158,13 @@ def page(filename, title, body, description=""):
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+{masthead(filename)}
 <div class="wrap">
-{rail(filename)}
 <main id="main">
 {body}
 </main>
 </div>
-<footer class="page">
-  {site['name']} · {site['lab']} · {site['institution']}
-</footer>
+{site_footer()}
 </body>
 </html>
 """
@@ -203,7 +226,8 @@ def build_home():
 })();
 </script>""".replace("NEWSCOUNT", str(len(news)))
 
-    body = f"""<p class="eyebrow">{site['lab']}</p>
+    body = f"""{identity()}
+<p class="eyebrow">{site['lab']}</p>
 <h1>Infusing trust throughout the AI lifecycle</h1>
 <div class="lede">{bio}</div>
 
