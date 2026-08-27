@@ -59,7 +59,7 @@ services:
   - "Area Chair: Association for Computational Linguistics (ACL)"
   - "Senior PC: ACM International Conference on Information and Knowledge Management (CIKM)"
   - "Senior PC: Association for the Advancement of Artificial Intelligence (AAAI)"
-  - "Mentor: ML Alignment &amp; Theory Scholars (MATS)"
+  - "Research Mentor: <a href=\"https://www.matsprogram.org/\">ML Alignment &amp; Theory Scholars (MATS)</a>"
 - label: 'Editorial Board:'
   items:
   - Associate Editor, Smart Health
