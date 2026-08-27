@@ -18,6 +18,10 @@ courses:
     code: "01:198:439"
     title: Introduction to Data Science
     page: spring-2025-introduction-to-data-science
+  - term: Fall 2026
+    code: "16:198:550"
+    title: Massive Data Mining
+    page: fall-2026-massive-data-mining
 
 reading_group:
   heading: Reading Group
