@@ -2,7 +2,7 @@
 # Inline <b>/<i>/<a> in these strings is rendered as-is.
 name: Ruixiang Tang
 name_full: Ruixiang (Ryan) Tang
-domain: ryan-tang-ru.github.io
+domain: www.ruixiangtang.net
 email: ruixiang.tang@rutgers.edu
 department: Department of Computer Science
 institution: Rutgers-New Brunswick
@@ -59,6 +59,7 @@ services:
   - "Area Chair: Association for Computational Linguistics (ACL)"
   - "Senior PC: ACM International Conference on Information and Knowledge Management (CIKM)"
   - "Senior PC: Association for the Advancement of Artificial Intelligence (AAAI)"
+  - "Mentor: ML Alignment &amp; Theory Scholars (MATS)"
 - label: 'Editorial Board:'
   items:
   - Associate Editor, Smart Health
