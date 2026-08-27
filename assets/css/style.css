@@ -83,7 +83,7 @@ main { display: block; }
   /* Rutgers scarlet, used until a photo is dropped at assets/img/banner.jpg */
   background: linear-gradient(115deg, #8c0022 0%, #cc0033 45%, #2b2f33 100%);
   background-size: cover; background-position: center;
-  padding: 74px var(--gutter);
+  padding: 104px var(--gutter);
   text-align: center;
   position: relative;
 }
@@ -131,10 +131,11 @@ ul.gs p { margin: 0; }
 
 /* ---------------------------------------------------------------- home */
 
-.ident { display: flex; gap: 40px; align-items: flex-start; padding-top: 34px; }
-.ident__body { min-width: 0; flex: 1 1 auto; }
+.ident { display: flex; gap: 30px; align-items: center; padding-top: 34px; flex-wrap: wrap; }
+.ident__body { min-width: 17rem; flex: 1 1 20rem; align-self: flex-start; }
 .ident__body p { margin: 0 0 6px; }
-.ident__portrait { width: 210px; flex: none; border-radius: 2px; }
+.ident__portrait { width: 266px; flex: none; border-radius: 2px; }
+.ident__logo { width: 266px; flex: none; }
 
 .social { display: flex; gap: 14px; margin: 18px 0 0; padding: 0; list-style: none; }
 .social a {
@@ -258,8 +259,9 @@ footer.page a { color: var(--muted); }
   .h-page { font-size: 26px; }
   .h-sec { font-size: 19px; }
   .h-item { font-size: 20px; }
-  .ident { flex-direction: column-reverse; gap: 22px; }
-  .ident__portrait { width: 160px; }
+  .ident { gap: 22px; }
+  .ident__portrait { width: 45%; max-width: 190px; }
+  .ident__logo { width: 100%; max-width: 300px; }
   .areas__in { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr; gap: 14px; }
   .masthead__in { gap: 10px; }

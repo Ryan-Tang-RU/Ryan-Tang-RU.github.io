@@ -67,7 +67,11 @@ and biased upward (`background-position: center 24%`) so the skyline, not the wa
 A 34% scrim keeps the white title readable over it. Swap the file to change the photo; delete it and
 the band falls back to a Rutgers scarlet gradient.
 
-The TRAIL logo files (`trail-mark.svg`, `trail-logo.svg`, `favicon.svg`) are already in place.
+`trail-logo.png` is the full lab logo — shield, wordmark and tagline. It sits beside the portrait on
+the home page, both 266px wide, the arrangement the Google Sites original used. `_data/site.yml`
+points at it under `logo:`; drop that key and the home page simply omits it. `trail-mark.svg` is the
+shield on its own, used at 32px in the top bar where the wordmark would be illegible, and
+`favicon.svg` is the browser-tab icon.
 
 ## Publishing
 
