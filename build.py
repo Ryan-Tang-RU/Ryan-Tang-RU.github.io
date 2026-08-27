@@ -10,6 +10,7 @@ migrated from. Strings in _data/ may contain inline <b>, <i> and <a>; they are
 written into the page as-is, so keep them valid HTML.
 """
 
+import hashlib
 import html
 import os
 import pathlib
@@ -74,6 +75,20 @@ def image_size(path, default=(400, 500)):
     return default
 
 
+def asset_version(path):
+    """Short content hash, appended to the stylesheet URL.
+
+    The .html files and the stylesheet are separate requests with separate
+    cache lifetimes, so a browser can hold a stale stylesheet against freshly
+    deployed markup and lay the page out with rules that no longer exist.
+    Changing the URL whenever the bytes change makes that impossible.
+    """
+    try:
+        return hashlib.sha256((ROOT / path).read_bytes()).hexdigest()[:8]
+    except OSError:
+        return ""
+
+
 def rel(url, base):
     """Prefix a site-relative URL so it resolves from a page in a subdirectory."""
     if not base or url.startswith(("http://", "https://", "mailto:", "#", "/")):
@@ -134,6 +149,9 @@ def site_footer(base=""):
 </footer>"""
 
 
+CSS_VERSION = ""  # set in __main__, once the stylesheet is final
+
+
 def page(filename, title, body, description="", base="", banner=""):
     desc = description or f"{site['name_full']}, {site['department']}, {site['institution']}."
     canon = "" if filename == "index.html" else filename
@@ -153,7 +171,7 @@ def page(filename, title, body, description="", base="", banner=""):
 <link rel="canonical" href="https://{site['domain']}/{canon}">
 <link rel="icon" href="{rel('assets/img/favicon.svg', base)}" type="image/svg+xml">
 {FONTS}
-<link rel="stylesheet" href="{rel('assets/css/style.css', base)}">
+<link rel="stylesheet" href="{rel('assets/css/style.css', base)}?v={CSS_VERSION}">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -175,12 +193,20 @@ def page(filename, title, body, description="", base="", banner=""):
 # ---------------------------------------------------------------- home
 
 def build_home():
-    def ident_img(key, cls, alt):
+    def ident_img(key, cls, alt, shown=266):
+        """The width/height attributes describe the size the image is *shown* at.
+
+        The files are larger so they stay sharp on a dense display, but writing
+        the intrinsic width here would make the image 800px wide any time the
+        stylesheet does not apply, which collapses the text column beside it.
+        """
         path = site.get(key)
         if not path or not os.path.exists(ROOT / path):
             return ""
-        w, h = image_size(ROOT / path)
-        return f'<img class="{cls}" src="{path}" alt="{alt}" width="{w}" height="{h}">'
+        iw, ih = image_size(ROOT / path)
+        h = round(shown * ih / iw) if iw else shown
+        return (f'<img class="{cls}" src="{path}" alt="{alt}" '
+                f'width="{shown}" height="{h}">')
 
     # the original set the portrait and the lab logo side by side, right of the text
     portrait = ident_img("photo", "ident__portrait", f'Portrait of {site["name_full"]}')
@@ -463,6 +489,7 @@ def build_sitemap():
 
 
 if __name__ == "__main__":
+    CSS_VERSION = asset_version("assets/css/style.css")
     build_home()
     build_publications()
     build_group()

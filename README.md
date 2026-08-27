@@ -81,6 +81,12 @@ into `main`; nothing reaches the live site until that merge lands.
 Settings → Pages → Source: "Deploy from a branch", branch `main`, folder `/ (root)`. `.nojekyll`
 stays in the repo so Pages serves the files directly instead of running Jekyll over them.
 
+The stylesheet is linked as `style.css?v=<hash>`, the hash taken from its own bytes. Pages serves
+the `.html` files and the stylesheet as separate requests with separate cache lifetimes, so without
+this a returning visitor can get new markup with a stylesheet their browser cached earlier and lay
+the page out with rules that no longer exist. `build.py` recomputes the hash on every run, so a CSS
+change always lands under a URL no browser has seen. Nothing to do by hand.
+
 The site is served at `https://ryan-tang-ru.github.io/`. There is no custom domain and no `CNAME`
 file. If you ever want one, add the domain under Settings → Pages → Custom domain (which writes the
 `CNAME` file), point DNS at GitHub, and change `domain:` in `_data/site.yml` to match so the
