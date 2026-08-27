@@ -1,5 +1,7 @@
 # News, ported from the Google Sites original. `tag` renders as the bracketed [paper]/[award] label.
 - date: 8/2026
+  text: I'm happy to serve as guest editor for the <b>Pattern Recognition</b> Special Issue on <a href="https://www.sciencedirect.com/special-issue/336704/world-modeling-for-dynamic-video-understanding">“<b>World Modeling for Dynamic Video Understanding</b>.”</a> Submissions are warmly welcome.
+- date: 8/2026
   tag: paper
   text: One paper accepted to <b>EMNLP 2026</b>. We studied proactive safety auditing for multi-turn LLM agents, estimating risk from partial trajectories before unsafe behavior surfaces in the outcome.
 - date: 7/2026
