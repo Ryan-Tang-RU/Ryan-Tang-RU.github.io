@@ -160,8 +160,30 @@ def analytics_tag():
         return ""
     if provider == "goatcounter":
         endpoint = ident if ident.startswith("http") else f"https://{ident}.goatcounter.com/count"
-        return (f'<script data-goatcounter="{endpoint}" '
-                f'async src="//gc.zgo.at/count.js"></script>')
+        # Loaded behind a guard rather than as a plain <script src>, so that our
+        # own visits can be left out of the numbers: open any page once with
+        # #gc-off on the end of the URL and this browser stops being counted,
+        # on every page and every later visit. #gc-on puts it back. The flag
+        # lives in localStorage, so it is per browser and survives a restart
+        # but not a clear-site-data.
+        return (
+            "<script>"
+            "(function(){var k='gcskip';"
+            "function set(){var h=location.hash;try{"
+            "if(h==='#gc-off'){localStorage.setItem(k,'1');"
+            "alert('Visits from this browser are no longer counted.');return 1;}"
+            "if(h==='#gc-on'){localStorage.removeItem(k);"
+            "alert('Visits from this browser are counted again.');}"
+            "}catch(e){}return 0;}"
+            "addEventListener('hashchange',set);"
+            "if(set())return;"
+            "try{if(localStorage.getItem(k))return;}catch(e){}"
+            "var s=document.createElement('script');s.async=true;"
+            "s.src='//gc.zgo.at/count.js';"
+            f"s.setAttribute('data-goatcounter','{endpoint}');"
+            "document.head.appendChild(s);})();"
+            "</script>"
+        )
     if provider == "cloudflare":
         return ('<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
                 f'data-cf-beacon=\'{{"token": "{ident}"}}\'></script>')
