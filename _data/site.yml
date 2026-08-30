@@ -9,7 +9,7 @@
 #   plausible    id = the domain registered with Plausible
 analytics:
   provider: goatcounter
-  id: ""
+  id: "ryan-tang"
 
 name: Ruixiang Tang
 name_full: Ruixiang (Ryan) Tang
