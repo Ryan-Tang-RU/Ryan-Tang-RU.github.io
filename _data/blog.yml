@@ -15,3 +15,11 @@
   - Evaluation Pitfalls
   url: probe.html
   summary: A linear probe is the standard tool for asking whether a concept or a state is represented inside a language model. Replicating two papers from top conferences, we find a flaw that is easy to walk into. When the two groups of examples are assembled by different procedures, the probe can learn the procedure instead of the concept, and report a near-perfect score that says nothing about what is inside the model.
+- title: "Are 99% of Academic Papers Really Garbage? Long Tails, Hidden Failures, and the Price of Exploration"
+  date: August 30 2026
+  tags:
+  - Research Culture
+  - Academia and Industry
+  - Incentives
+  url: ninetynine.html
+  summary: A claim that keeps coming up on podcasts is that PhDs are useless, papers are useless, and ninety-nine percent of academia produces work nobody needs. The long tail it points at is real, but it is not a disease specific to research. Industry filters its failures out of sight while academia archives its own in public and forever. What deserves the criticism is not the ninety-nine percent itself, but an incentive system that rewards safe output and makes intellectual risk professionally irrational.

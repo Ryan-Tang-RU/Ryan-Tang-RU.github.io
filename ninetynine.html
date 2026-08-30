@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Are 99% of Academic Papers Really Garbage? &middot; Ruixiang Tang</title>
+<meta name="description" content="Papers are useless, PhDs are useless, ninety-nine percent of academia is garbage. The long tail is real, but it is not unique to research: industry filters its failures out of sight while academia archives its own in public. The thing worth criticising is the incentive system, not the ninety-nine percent.">
+<meta property="og:title" content="Are 99% of Academic Papers Really Garbage?">
+<meta property="og:description" content="Papers are useless, PhDs are useless, ninety-nine percent of academia is garbage. The long tail is real, but it is not unique to research: industry filters its failures out of sight while academia archives its own in public. The thing worth criticising is the incentive system, not the ninety-nine percent.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.ruixiangtang.net/ninetynine.html">
+<link rel="canonical" href="https://www.ruixiangtang.net/ninetynine.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<style>
+
+/* Same tokens as the two earlier posts, so the series reads as one. */
+:root{--bg:#f5f3ee;--panel:#fffdf9;--ink:#20232a;--soft:#5a606c;--faint:#8a8f9a;
+--line:#e5e0d5;--s1:#a8362a;--s2:#03648c;
+--warm:#a8362a;--cool:#136b7c;--accent:#a8362a;
+--warm-wash:#f6e6e3;--cool-wash:#dceaee;--ground:#fffdf9;--ink-soft:#5a606c;
+--rule:#e5e0d5;--rule-faint:#efebe2;--plate:#fffdf9;--sunk:#efece4;
+--sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+--serif:Georgia,'Times New Roman',serif;--mono:ui-monospace,Consolas,monospace}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--bg:#16181c;--panel:#1e2127;--ink:#e9e6df;--soft:#a9aeb8;--faint:#787d87;
+--line:#2c2f37;--s1:#d8635a;--s2:#3e8fd6;
+--warm:#f08a80;--cool:#7fb4f2;--accent:#f08a80;
+--warm-wash:#33201e;--cool-wash:#1a2836;--ground:#1e2127;--ink-soft:#a9aeb8;
+--rule:#2c2f37;--rule-faint:#242830;--plate:#1e2127;--sunk:#20242b}}
+:root[data-theme="dark"]{
+--bg:#16181c;--panel:#1e2127;--ink:#e9e6df;--soft:#a9aeb8;--faint:#787d87;
+--line:#2c2f37;--s1:#d8635a;--s2:#3e8fd6;
+--warm:#f08a80;--cool:#7fb4f2;--accent:#f08a80;
+--warm-wash:#33201e;--cool-wash:#1a2836;--ground:#1e2127;--ink-soft:#a9aeb8;
+--rule:#2c2f37;--rule-faint:#242830;--plate:#1e2127;--sunk:#20242b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.68}
+.wrap{max-width:940px;margin:0 auto;padding:48px 22px 88px}
+h1{font-family:var(--serif);font-size:32px;line-height:1.18;margin:0 0 10px}
+.sub{color:var(--soft);font-size:16px;margin:0 0 4px;max-width:70ch}
+.byline{font-family:var(--mono);font-size:12.5px;color:var(--faint);
+  margin:20px 0 38px;padding-top:15px;border-top:1px solid var(--line);
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.byline b{font-family:var(--serif);font-size:19px;color:var(--ink);font-weight:600;letter-spacing:.01em}
+h2{font-family:var(--serif);font-size:23px;margin:46px 0 10px;padding-top:20px;
+   border-top:1px solid var(--line)}
+h3{font-family:var(--serif);font-size:19px;font-weight:600;margin:34px 0 8px;line-height:1.3}
+p{font-size:16px;margin:0 0 18px}
+.lede{font-size:19px;line-height:1.55}
+strong{font-weight:640}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 14px}
+code{font-family:var(--mono);font-size:14px;background:var(--line);padding:1px 5px;border-radius:3px}
+a{color:var(--s2);text-decoration:none;border-bottom:1px solid var(--line)}
+a:hover{border-bottom-color:currentColor}
+a:focus-visible{outline:2px solid var(--s2);outline-offset:3px}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;
+  line-height:1.65;margin:20px 0;color:var(--ink)}
+pre .k{color:var(--s2);font-weight:600}
+pre .c{color:var(--faint)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:22px 0 26px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat .v{font-family:var(--mono);font-size:23px;color:var(--ink);line-height:1.2;
+  font-variant-numeric:tabular-nums}
+.stat .l{font-size:12.5px;color:var(--soft);margin-top:4px;line-height:1.45}
+.stat.w .v{color:var(--warm)} .stat.o .v{color:var(--cool)} .stat.a .v{color:var(--s2)}
+.key{background:var(--panel);border-left:3px solid var(--accent);border-radius:6px;
+  padding:14px 18px;margin:20px 0}
+.key .h{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--accent);margin:0 0 6px}
+.key p{margin:0;font-size:15.5px}
+.key p+p{margin-top:10px}
+.caveat{font-size:15.5px;color:var(--soft);background:var(--sunk);border-radius:8px;
+  padding:14px 18px;margin:20px 0;line-height:1.7}
+.caveat strong{color:var(--ink)}
+.pending{font-size:15.5px;color:var(--soft);border:1px dashed var(--line);
+  border-radius:8px;padding:14px 18px;margin:20px 0}
+figure{margin:26px 0;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:14px 16px}
+.plate{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.fignum{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+figcaption{font-size:13px;color:var(--soft);margin-top:10px;padding-top:10px;
+  border-top:1px solid var(--line);line-height:1.6}
+figcaption strong{color:var(--ink);font-weight:620}
+.ex{display:grid;grid-template-columns:minmax(96px,140px) 1fr;gap:0 20px;align-items:baseline;margin:22px 0}
+.ex>div{padding:9px 0;border-bottom:1px solid var(--line)}
+.ex .cond{font-size:13px;font-weight:620}
+.ex .out{font-family:var(--serif);font-size:15px}
+.ex>div:nth-last-child(-n+2){border-bottom:none}
+.tw{overflow-x:auto;margin:22px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--soft);font-weight:400;text-align:left;padding:0 0 8px;border-bottom:1px solid var(--line)}
+td{padding:8px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+td:first-child{padding-right:22px;white-space:normal}
+th.n,td.n{text-align:right;font-variant-numeric:tabular-nums;padding-left:26px}
+td.n{font-family:var(--mono);font-size:13.5px}
+td.hi{color:var(--warm);font-weight:600}
+td.good{color:var(--cool);font-weight:600}
+td.mute{color:var(--faint)}
+td.s{font-family:var(--mono);font-size:13.5px;white-space:normal}
+th.c{text-align:center}
+tr.grp td{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--faint);padding-top:16px;white-space:normal;border-bottom:1px solid var(--line)}
+tr.rule td{border-top:1px solid var(--line)}
+tr:last-child td{border-bottom:none}
+ol{margin:18px 0 26px;padding-left:24px}
+ol li{margin:0 0 9px;padding-left:4px}
+ol li::marker{color:var(--accent);font-family:var(--mono);font-size:13px}
+ul.refs{list-style:none;padding:0;margin:22px 0 0;font-size:14px}
+ul.refs li{padding:9px 0;border-bottom:1px solid var(--line);color:var(--soft);line-height:1.6}
+ul.refs li:last-child{border-bottom:none}
+ul.refs li b{color:var(--ink);font-weight:620}
+.end{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+  font-size:13px;color:var(--faint)}
+@media(max-width:600px){h1{font-size:27px}h2{font-size:20px}h3{font-size:17px}.wrap{padding:36px 18px 72px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.postnav{font-family:var(--mono);font-size:13px;margin:0 0 28px}
+.postnav a{color:var(--s2);text-decoration:none;border-bottom:1px solid var(--line)}
+.postnav a:hover{border-bottom-color:currentColor}
+.big{font-size:20px;line-height:1.5;color:var(--warm);font-family:var(--serif);
+  margin:30px 0 10px}
+td.txt{white-space:normal;line-height:1.55;padding-right:22px}
+th{vertical-align:bottom}
+td:first-child{font-weight:620;width:22%}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="postnav"><a href="blog.html">&larr; Ruixiang Tang &middot; Blog</a></p>
+
+<p class="eyebrow">Research culture &middot; Essay</p>
+<h1>Are 99% of Academic Papers Really Garbage?</h1>
+<p class="sub">A claim that keeps coming up on podcasts and in long-form conversations: PhDs are useless, papers are useless, and ninety-nine percent of academia produces work nobody needs. The long tail it points at is real. But it is not a disease specific to research, and the comparison it rests on is between all of academia's output and the small, filtered part of industry's that anyone is allowed to see. What deserves the criticism is not the ninety-nine percent itself. It is an incentive system that rewards safe output and makes intellectual risk professionally irrational.</p>
+
+<p class="byline"><b>Ruixiang (Ryan) Tang</b> &nbsp;&middot;&nbsp; Rutgers University &nbsp;&middot;&nbsp; August 2026</p>
+
+<p class="lede">I have been listening to a lot of podcasts and long-form conversations
+recently, including several with researchers and engineers from industry labs. One theme
+keeps coming back in one form or another: <strong>PhDs are increasingly useless, papers are
+mostly useless, and perhaps ninety-nine percent of academia is producing work that nobody
+actually needs.</strong></p>
+
+<p>To be fair, I understand where the sentiment comes from. In AI especially the contrast
+can feel almost absurd. Industry moves incredibly fast, models that matter reach hundreds of
+millions of users within months, and a small number of engineering decisions can have more
+visible impact than thousands of academic papers combined. Meanwhile academia produces an
+ever-growing volume of papers, many of which look incremental, overcomplicated, difficult to
+reproduce, or destined to receive very few citations.</p>
+
+<p>From a strongly pragmatic perspective the conclusion almost writes itself. If most papers
+never become products, never change an industry and never substantially influence later
+research, what exactly are they for? And if a PhD takes five or six of your most productive
+years while someone else joins industry, builds things, earns more money and acquires
+experience that the market values more directly, why do the PhD at all?</p>
+
+<p>These are legitimate questions. I think there is a perfectly reasonable argument that
+doing a PhD may have poor expected ROI for many individuals. But that is very different from
+saying that PhDs are socially useless, or that research whose usefulness is not immediately
+visible is itself useless.</p>
+
+<div class="key">
+<p class="h">The distinction this essay turns on</p>
+<p><em>Is this a good use of five years of my life?</em> and <em>does a society need people
+trained to do this?</em> are two different questions, and the answer to the first tells you
+very little about the answer to the second.</p>
+<p>The same distinction applies to papers. A paper can be unimportant without being
+worthless.</p>
+</div>
+
+<p>The claim that &ldquo;99% of academic papers are garbage&rdquo; sounds persuasive largely
+because we are evaluating research from the endpoint of a very pragmatic selection process.
+We look backward, identify the tiny set of ideas that eventually mattered, and conclude that
+everything else must have been waste. I think this mistakes an observable surface phenomenon
+for the underlying structure of knowledge production. <strong>It also contains a subtle form
+of survivorship bias.</strong></p>
+
+<h2>Long tails are not an academic disease</h2>
+
+<p>We tend to compare the full, messy, publicly visible output of academia with the highly
+filtered successes of other domains. Of course academia looks bad under that comparison.
+What we forget is that <strong>long-tail distributions are not unique to research. They are a
+basic feature of almost every creative activity.</strong></p>
+
+<p>In science, engineering, startups, art, literature, music and software, genuinely
+exceptional work is always rare. Only a tiny fraction of startups become important companies.
+Most products fail. Most codebases are ordinary at best. Most films are forgotten, most
+novels never become classics, and most engineering projects do not redefine an industry.
+Figure 1 is the shape all of them share.</p>
+
+<figure>
+<span class="fignum">Figure 1 &middot; The same shape, everywhere</span>
+<div class="plate">
+<svg viewBox="0 0 760 244" role="img" aria-label="Four schematic histograms, one each for academic papers, startups, films and novels, and software projects. All four have the same shape: a single very tall bar on the left and a long, low tail to the right.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--faint)"/></marker></defs>
+<text x="20" y="18" font-size="10.5" fill="var(--soft)" font-family="var(--mono)" letter-spacing=".08em">ACADEMIC PAPERS</text>
+<rect x="26" y="70" width="9" height="140" fill="var(--warm)"/>
+<rect x="38" y="144" width="9" height="66" fill="var(--faint)" opacity=".45"/>
+<rect x="50" y="167" width="9" height="43" fill="var(--faint)" opacity=".45"/>
+<rect x="62" y="178" width="9" height="32" fill="var(--faint)" opacity=".45"/>
+<rect x="74" y="185" width="9" height="25" fill="var(--faint)" opacity=".45"/>
+<rect x="86" y="189" width="9" height="21" fill="var(--faint)" opacity=".45"/>
+<rect x="98" y="192" width="9" height="18" fill="var(--faint)" opacity=".45"/>
+<rect x="110" y="194" width="9" height="16" fill="var(--faint)" opacity=".45"/>
+<rect x="122" y="196" width="9" height="14" fill="var(--faint)" opacity=".45"/>
+<rect x="134" y="198" width="9" height="12" fill="var(--faint)" opacity=".45"/>
+<rect x="146" y="199" width="9" height="11" fill="var(--faint)" opacity=".45"/>
+<rect x="158" y="200" width="9" height="10" fill="var(--faint)" opacity=".45"/>
+<rect x="170" y="201" width="9" height="9" fill="var(--faint)" opacity=".45"/>
+<rect x="182" y="202" width="9" height="8" fill="var(--faint)" opacity=".45"/>
+<path d="M20,210.5 L194,210.5" stroke="var(--line)" stroke-width="1"/>
+<text x="26" y="230" font-size="10" fill="var(--faint)">citations</text>
+<text x="24" y="62" font-size="10" fill="var(--warm)">top 1%</text>
+<text x="78" y="62" font-size="10" fill="var(--faint)">&larr; everything else</text>
+<text x="205" y="18" font-size="10.5" fill="var(--soft)" font-family="var(--mono)" letter-spacing=".08em">STARTUPS</text>
+<rect x="211" y="70" width="9" height="140" fill="var(--warm)"/>
+<rect x="223" y="144" width="9" height="66" fill="var(--faint)" opacity=".45"/>
+<rect x="235" y="167" width="9" height="43" fill="var(--faint)" opacity=".45"/>
+<rect x="247" y="178" width="9" height="32" fill="var(--faint)" opacity=".45"/>
+<rect x="259" y="185" width="9" height="25" fill="var(--faint)" opacity=".45"/>
+<rect x="271" y="189" width="9" height="21" fill="var(--faint)" opacity=".45"/>
+<rect x="283" y="192" width="9" height="18" fill="var(--faint)" opacity=".45"/>
+<rect x="295" y="194" width="9" height="16" fill="var(--faint)" opacity=".45"/>
+<rect x="307" y="196" width="9" height="14" fill="var(--faint)" opacity=".45"/>
+<rect x="319" y="198" width="9" height="12" fill="var(--faint)" opacity=".45"/>
+<rect x="331" y="199" width="9" height="11" fill="var(--faint)" opacity=".45"/>
+<rect x="343" y="200" width="9" height="10" fill="var(--faint)" opacity=".45"/>
+<rect x="355" y="201" width="9" height="9" fill="var(--faint)" opacity=".45"/>
+<rect x="367" y="202" width="9" height="8" fill="var(--faint)" opacity=".45"/>
+<path d="M205,210.5 L379,210.5" stroke="var(--line)" stroke-width="1"/>
+<text x="211" y="230" font-size="10" fill="var(--faint)">returns</text>
+<text x="390" y="18" font-size="10.5" fill="var(--soft)" font-family="var(--mono)" letter-spacing=".08em">FILMS AND NOVELS</text>
+<rect x="396" y="70" width="9" height="140" fill="var(--warm)"/>
+<rect x="408" y="144" width="9" height="66" fill="var(--faint)" opacity=".45"/>
+<rect x="420" y="167" width="9" height="43" fill="var(--faint)" opacity=".45"/>
+<rect x="432" y="178" width="9" height="32" fill="var(--faint)" opacity=".45"/>
+<rect x="444" y="185" width="9" height="25" fill="var(--faint)" opacity=".45"/>
+<rect x="456" y="189" width="9" height="21" fill="var(--faint)" opacity=".45"/>
+<rect x="468" y="192" width="9" height="18" fill="var(--faint)" opacity=".45"/>
+<rect x="480" y="194" width="9" height="16" fill="var(--faint)" opacity=".45"/>
+<rect x="492" y="196" width="9" height="14" fill="var(--faint)" opacity=".45"/>
+<rect x="504" y="198" width="9" height="12" fill="var(--faint)" opacity=".45"/>
+<rect x="516" y="199" width="9" height="11" fill="var(--faint)" opacity=".45"/>
+<rect x="528" y="200" width="9" height="10" fill="var(--faint)" opacity=".45"/>
+<rect x="540" y="201" width="9" height="9" fill="var(--faint)" opacity=".45"/>
+<rect x="552" y="202" width="9" height="8" fill="var(--faint)" opacity=".45"/>
+<path d="M390,210.5 L564,210.5" stroke="var(--line)" stroke-width="1"/>
+<text x="396" y="230" font-size="10" fill="var(--faint)">audience</text>
+<text x="575" y="18" font-size="10.5" fill="var(--soft)" font-family="var(--mono)" letter-spacing=".08em">SOFTWARE PROJECTS</text>
+<rect x="581" y="70" width="9" height="140" fill="var(--warm)"/>
+<rect x="593" y="144" width="9" height="66" fill="var(--faint)" opacity=".45"/>
+<rect x="605" y="167" width="9" height="43" fill="var(--faint)" opacity=".45"/>
+<rect x="617" y="178" width="9" height="32" fill="var(--faint)" opacity=".45"/>
+<rect x="629" y="185" width="9" height="25" fill="var(--faint)" opacity=".45"/>
+<rect x="641" y="189" width="9" height="21" fill="var(--faint)" opacity=".45"/>
+<rect x="653" y="192" width="9" height="18" fill="var(--faint)" opacity=".45"/>
+<rect x="665" y="194" width="9" height="16" fill="var(--faint)" opacity=".45"/>
+<rect x="677" y="196" width="9" height="14" fill="var(--faint)" opacity=".45"/>
+<rect x="689" y="198" width="9" height="12" fill="var(--faint)" opacity=".45"/>
+<rect x="701" y="199" width="9" height="11" fill="var(--faint)" opacity=".45"/>
+<rect x="713" y="200" width="9" height="10" fill="var(--faint)" opacity=".45"/>
+<rect x="725" y="201" width="9" height="9" fill="var(--faint)" opacity=".45"/>
+<rect x="737" y="202" width="9" height="8" fill="var(--faint)" opacity=".45"/>
+<path d="M575,210.5 L749,210.5" stroke="var(--line)" stroke-width="1"/>
+<text x="581" y="230" font-size="10" fill="var(--faint)">reuse</text>
+</svg>
+</div>
+<figcaption><strong>Schematic, not data.</strong> Impact is long-tailed in every field where people try to make something new. The tail is not evidence that a field is broken; it is what a search process looks like from the outside.</figcaption>
+</figure>
+
+<p><strong>The top one percent is exceptional precisely because the remaining ninety-nine
+percent is not.</strong> Expecting research to somehow escape this distribution is
+unrealistic.</p>
+
+<h2>Industrial garbage is hidden, academic garbage is transparent</h2>
+
+<p>The reason people feel the problem more strongly in academia is that academic output is
+unusually visible. Papers are published, archived, indexed and preserved. A mediocre paper
+written fifteen years ago can still be found today and mocked with a simple &ldquo;this got
+published?&rdquo; Academia effectively maintains a permanent public record of its incremental
+ideas, dead ends, failed experiments and unremarkable results.</p>
+
+<p>Industry works very differently. It produces enormous amounts of bad code, weak product
+ideas, nonsensical business logic, overengineered systems, failed experiments and projects
+that should probably never have existed in the first place. Anyone who has spent enough time
+inside a sufficiently large organisation has probably encountered internal systems that make
+you wonder how they were ever approved.</p>
+
+<p>But most of this disappears behind organisational walls. A bad project gets killed. An
+unsuccessful product gets shut down. A useless prototype remains in a private repository. An
+architectural disaster is eventually rewritten. A terrible business plan dies in an internal
+presentation. An entire startup disappears, and a few years later almost nobody remembers
+that it existed. The public mostly sees what survives.</p>
+
+<figure>
+<span class="fignum">Figure 2 &middot; Where the failures go</span>
+<div class="plate">
+<svg viewBox="0 0 760 344" role="img" aria-label="Two rows. In the academic row, everything attempted flows into a single permanent public record in which good and ordinary work are equally visible. In the industry row, the same volume of attempts passes through a market and organisational filter: most of it is cancelled and stays private behind an organisational wall, and only the survivors reach the public.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--faint)"/></marker></defs>
+<text x="20" y="20" font-size="10.5" fill="var(--accent)" font-family="var(--mono)" letter-spacing=".08em">A &nbsp;ACADEMIA</text>
+<rect x="20" y="38" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="33" y="38" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="46" y="38" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="59" y="38" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="72" y="38" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="20" y="51" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="33" y="51" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="46" y="51" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="59" y="51" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="72" y="51" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="20" y="64" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="33" y="64" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="46" y="64" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="59" y="64" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="72" y="64" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="20" y="77" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="33" y="77" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="46" y="77" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="59" y="77" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="72" y="77" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<text x="20" y="116" font-size="10" fill="var(--faint)">everything attempted</text>
+<path d="M96,64 L136,64" fill="none" stroke="var(--faint)" stroke-width="1.3" marker-end="url(#a)"/>
+<rect x="150" y="30" width="590" height="106" rx="6" fill="var(--panel)" stroke="var(--line)"/>
+<text x="164" y="50" font-size="10.5" fill="var(--faint)" font-family="var(--mono)" letter-spacing=".08em">PUBLISHED &middot; INDEXED &middot; ARCHIVED &middot; PERMANENT</text>
+<rect x="164" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="192" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="220" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="248" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="276" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="304" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="332" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="360" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="388" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="416" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="444" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="472" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="500" y="62" width="16" height="16" rx="2" fill="var(--warm)"/>
+<rect x="528" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="556" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="584" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="612" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="640" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="668" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="696" y="62" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<text x="164" y="102" font-size="10" fill="var(--faint)">incremental results, dead ends, negative results and the occasional idea</text>
+<text x="164" y="118" font-size="10" fill="var(--faint)">that changes everything &mdash; all equally visible, for as long as the index exists</text>
+<text x="20" y="172" font-size="10.5" fill="var(--accent)" font-family="var(--mono)" letter-spacing=".08em">B &nbsp;INDUSTRY</text>
+<rect x="20" y="190" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="33" y="190" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="46" y="190" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="59" y="190" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="72" y="190" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="20" y="203" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="33" y="203" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="46" y="203" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="59" y="203" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="72" y="203" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="20" y="216" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="33" y="216" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="46" y="216" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="59" y="216" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="72" y="216" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="20" y="229" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="33" y="229" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="46" y="229" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="59" y="229" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<rect x="72" y="229" width="10" height="10" rx="1.5" fill="var(--faint)" opacity=".4"/>
+<text x="20" y="268" font-size="10" fill="var(--faint)">everything attempted</text>
+<path d="M96,216 L136,216" fill="none" stroke="var(--faint)" stroke-width="1.3" marker-end="url(#a)"/>
+<rect x="150" y="190" width="86" height="52" rx="6" fill="var(--cool-wash)" stroke="var(--cool)" stroke-width="1.1"/>
+<text x="193" y="212" font-size="10.5" fill="var(--ink)" text-anchor="middle">market /</text>
+<text x="193" y="226" font-size="10.5" fill="var(--ink)" text-anchor="middle">organisation</text>
+<path d="M193,248 L193,278" fill="none" stroke="var(--faint)" stroke-width="1.3" marker-end="url(#a)"/>
+<rect x="120" y="284" width="330" height="46" rx="6" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width="1.1" stroke-dasharray="4 3"/>
+<text x="136" y="305" font-size="10.5" fill="var(--ink)">cancelled &middot; shut down &middot; rewritten &middot; never shipped</text>
+<text x="136" y="320" font-size="10" fill="var(--faint)">stays private</text>
+<path d="M480,164 L480,336" stroke="var(--faint)" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="486" y="176" font-size="10" fill="var(--faint)">the organisational wall</text>
+<path d="M240,216 L472,216" fill="none" stroke="var(--faint)" stroke-width="1.3" marker-end="url(#a)"/>
+<rect x="500" y="188" width="240" height="56" rx="6" fill="var(--panel)" stroke="var(--line)"/>
+<text x="514" y="206" font-size="10.5" fill="var(--faint)" font-family="var(--mono)" letter-spacing=".08em">WHAT THE PUBLIC SEES</text>
+<rect x="514" y="216" width="16" height="16" rx="2" fill="var(--warm)"/>
+<rect x="540" y="216" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="566" y="216" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+<rect x="592" y="216" width="16" height="16" rx="2" fill="var(--faint)" opacity=".4"/>
+</svg>
+</div>
+<figcaption>Both rows start from the same volume of attempts. Academia keeps its record in public and permanently; industry filters first and publishes the survivors. <strong>The visible difference in quality is mostly a difference in what is visible.</strong></figcaption>
+</figure>
+
+<p>I am not convinced that the underlying quality distribution is radically different.
+Imagine that we somehow had permanent public access to every abandoned codebase, every failed
+product proposal, every internal experiment, every disastrous architecture decision, every
+pointless dashboard, every six-month project that was quietly cancelled and every business
+strategy that died before launch. I suspect our impression of the average quality of
+industrial output would become substantially less flattering.</p>
+
+<p>The market and the organisation act as filters. We then look at the filtered output and
+mistake it for the entire production process. <strong>Academia simply exposes much more of
+the process itself.</strong></p>
+
+<h2>What &ldquo;garbage&rdquo; should actually mean</h2>
+
+<p>This is also why I am reluctant to describe every mediocre, boring, incremental or
+ultimately useless paper as garbage. For me, genuinely garbage research is research that is
+<strong>fraudulent, fabricated, deliberately misleading or intellectually dishonest.</strong>
+A paper can be unimportant without being worthless in that stronger sense.</p>
+
+<p>There is also a training dimension that people often underestimate. A beginner does not
+enter a PhD and immediately produce a field-defining idea. Learning how to do research
+requires practice: formulating questions, reading literature, identifying assumptions,
+designing baselines, controlling variables, building experiments, dealing with contradictory
+evidence, and learning what actually constitutes a convincing argument. Sometimes the result
+of that training is a complicated solution to a simple problem. Sometimes the resulting paper
+contributes almost nothing lasting to the field. That does not mean the process itself had no
+value.</p>
+
+<p>We accept this logic almost everywhere else. Nobody expects a junior software engineer's
+early code to transform computer science. Nobody expects every young musician's first
+composition to become a masterpiece. Nobody thinks every startup founded by a first-time
+entrepreneur needs to become Google in order for the founder to have learned something.
+<strong>Skill development necessarily generates large amounts of ordinary output. Research is
+no different.</strong></p>
+
+<p>This is one reason why &ldquo;a PhD is useless&rdquo; is too broad a statement. A PhD can
+absolutely be a bad financial decision for a particular person, and it may be unnecessary for
+many careers. If your goal is to become an excellent software engineer, founder, product
+leader or applied ML engineer, spending five years doing a PhD may very well be worse than
+spending those five years building things. But a PhD was never designed purely as a
+salary-maximising credential. <strong>At its best it is an apprenticeship in producing
+knowledge under uncertainty.</strong> Whether that apprenticeship is worth the opportunity
+cost is an individual decision. Whether society needs people trained to do it is a completely
+different question.</p>
+
+<h2>Research is search under uncertainty</h2>
+
+<p>Science itself is fundamentally a process of searching under uncertainty. The most
+interesting research questions are often precisely the ones whose value cannot be known in
+advance. If you already know with high confidence that an idea will work, that customers will
+want it, that it will produce measurable value and that it can be executed on schedule, then
+what you are doing starts to look much more like engineering than research.</p>
+
+<p><strong>Real research has to tolerate failure.</strong> Someone works on an idea for a
+year and discovers that it goes nowhere. Someone proposes a method that barely improves the
+baseline. Someone develops a theory nobody cares about for a decade. Someone runs an
+extensive set of experiments only to conclude that a promising direction simply does not
+work. From a purely outcome-oriented perspective all of this looks terribly inefficient. It
+<em>is</em> inefficient. But if you eliminate that inefficiency, you also eliminate much of
+the possibility of genuine discovery.</p>
+
+<p>You cannot know beforehand which apparently minor observation will inspire a different
+formulation, which failed experiment will prevent hundreds of people from repeating the same
+mistake, or which obscure idea will suddenly become important when hardware, data or another
+conceptual breakthrough catches up with it. <strong>Scientific progress requires diversity in
+the search space.</strong> In that sense science resembles evolution more than industrial
+optimisation. Most mutations do not produce transformative adaptations. Most search paths do
+not lead anywhere particularly interesting. But a system that permits no unsuccessful
+variation cannot produce meaningful novelty either.</p>
+
+<p>And this leads to an obvious problem with the &ldquo;99% is garbage&rdquo; argument.
+Suppose we somehow decided that the ninety-nine percent really is waste and should therefore
+be eliminated. How, exactly, do we determine <em>in advance</em> which papers belong to the
+one percent? We cannot. We only know afterward. That is the survivorship bias, and Figure 3
+is the whole of it.</p>
+
+<figure>
+<span class="fignum">Figure 3 &middot; You can only sort afterwards</span>
+<div class="plate">
+<svg viewBox="0 0 760 206" role="img" aria-label="The same grid of ninety squares twice. On the left, at the time, every square looks identical. On the right, twenty years later, one square is highlighted as the work that changed the field, four are marked as locally useful, and the rest have faded.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--faint)"/></marker></defs>
+<text x="20" y="20" font-size="10.5" fill="var(--soft)" font-family="var(--mono)" letter-spacing=".08em">AT THE TIME</text>
+<text x="420" y="20" font-size="10.5" fill="var(--soft)" font-family="var(--mono)" letter-spacing=".08em">TWENTY YEARS LATER</text>
+<rect x="20" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="420" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="38" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="438" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="56" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="456" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="74" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="474" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="92" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="492" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="110" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="510" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="128" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="528" y="40" width="13" height="13" rx="2" fill="var(--cool)" opacity=".8"/>
+<rect x="146" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="546" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="164" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="564" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="182" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="582" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="200" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="600" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="218" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="618" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="236" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="636" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="254" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="654" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="272" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="672" y="40" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="20" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="420" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="38" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="438" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="56" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="456" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="74" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="474" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="92" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="492" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="110" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="510" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="128" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="528" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="146" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="546" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="164" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="564" y="58" width="13" height="13" rx="2" fill="var(--cool)" opacity=".8"/>
+<rect x="182" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="582" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="200" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="600" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="218" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="618" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="236" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="636" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="254" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="654" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="272" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="672" y="58" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="20" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="420" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="38" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="438" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="56" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="456" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="74" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="474" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="92" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="492" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="110" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="510" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="128" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="528" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="146" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="546" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="164" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="564" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="182" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="582" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="200" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="600" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="218" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="618" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="236" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="636" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="254" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="654" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="272" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="672" y="76" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="20" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="420" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="38" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="438" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="56" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="456" y="94" width="13" height="13" rx="2" fill="var(--warm)"/>
+<rect x="74" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="474" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="92" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="492" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="110" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="510" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="128" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="528" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="146" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="546" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="164" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="564" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="182" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="582" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="200" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="600" y="94" width="13" height="13" rx="2" fill="var(--cool)" opacity=".8"/>
+<rect x="218" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="618" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="236" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="636" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="254" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="654" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="272" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="672" y="94" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="20" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="420" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="38" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="438" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="56" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="456" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="74" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="474" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="92" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="492" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="110" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="510" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="128" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="528" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="146" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="546" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="164" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="564" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="182" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="582" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="200" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="600" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="218" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="618" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="236" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="636" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="254" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="654" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="272" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="672" y="112" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="20" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="420" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="38" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="438" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="56" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="456" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="74" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="474" y="130" width="13" height="13" rx="2" fill="var(--cool)" opacity=".8"/>
+<rect x="92" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="492" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="110" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="510" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="128" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="528" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="146" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="546" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="164" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="564" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="182" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="582" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="200" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="600" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="218" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="618" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="236" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="636" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="254" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="654" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<rect x="272" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".38"/>
+<rect x="672" y="130" width="13" height="13" rx="2" fill="var(--faint)" opacity=".18"/>
+<path d="M320,94 L396,94" fill="none" stroke="var(--faint)" stroke-width="1.3" marker-end="url(#a)"/>
+<text x="358" y="84" font-size="10" fill="var(--faint)" text-anchor="middle">selection</text>
+<text x="20" y="176" font-size="10.5" fill="var(--faint)">every one of these looked worth trying to somebody</text>
+<text x="420" y="176" font-size="10.5" fill="var(--faint)">one changed the field, a few mattered locally,</text>
+<text x="420" y="191" font-size="10.5" fill="var(--faint)">the rest is the cost of the search</text>
+</svg>
+</div>
+<figcaption>The grid on the left is what a funding agency, a programme committee or a PhD student is actually looking at. The grid on the right is the one people have in mind when they say ninety-nine percent of it was waste. <strong>Nobody has ever been shown the right-hand grid in advance.</strong></figcaption>
+</figure>
+
+<h2>Somebody still has to plant the trees</h2>
+
+<p>This is also why I find the recurring industry-versus-academia framing too simplistic.
+Industry is exceptionally good at recognising promising ideas and turning them into scalable,
+efficient, useful systems. Once a technical possibility becomes sufficiently visible,
+industry can mobilise capital, engineering talent, infrastructure and distribution at a scale
+academia usually cannot match. That is extraordinarily valuable. Once the fruit is ripe,
+industry is often much better at harvesting it. <strong>But somebody still has to plant
+trees.</strong></p>
+
+<p>Many technologies that now look obviously useful were built on years or even decades of
+research whose commercial value was highly uncertain at the time. <strong>Artificial
+intelligence is perhaps the most obvious example.</strong> Today AI is one of the largest
+technological and commercial forces in the world, so it is easy to reconstruct its history as
+though the destination had always been obvious. It was not. AI went through repeated cycles
+of enormous optimism followed by disappointment, including the periods we now call the AI
+winters, when funding contracted, commercial expectations collapsed and many people became
+deeply sceptical that the field was going anywhere. Yet people continued working on neural
+networks, statistical learning, optimisation, representation learning, computer vision,
+language modelling and many other ideas whose ultimate value could not be known at the time.
+Some of those directions looked niche. Some looked impractical. Some failed repeatedly.
+Neural networks themselves spent long periods outside the intellectual mainstream of AI.</p>
+
+<p>Then algorithms improved. Data became abundant. GPUs became available. Compute scaled.
+Infrastructure improved. Multiple research trajectories that had existed for decades suddenly
+became mutually reinforcing, and ideas that previously looked academically interesting but
+commercially marginal became the foundations of an enormous industry. Looking backward, the
+story feels almost inevitable. Of course neural networks mattered. Of course scaling
+mattered. Of course language models would become useful. But <strong>this is precisely what
+hindsight does: it converts an uncertain search process into an apparently obvious historical
+trajectory.</strong></p>
+
+<p>Cryo-electron microscopy is another beautiful example, and perhaps an even better one
+because it comes from a completely different domain. Today cryo-EM is a transformative tool
+in structural biology. Researchers can use it to reveal the structures of complex biological
+molecules at extremely high resolution, with enormous implications for understanding
+biological mechanisms and developing therapeutics. Again, the value seems obvious now. But
+getting there required decades of work on problems that would have looked painfully
+specialised to anyone demanding immediate practical returns. Biological samples are easily
+damaged by electron beams. Water crystallises when frozen in ordinary ways, destroying the
+structures researchers want to observe. Images are extremely noisy, and individual molecular
+observations may contain barely usable signal. Turning enormous numbers of imperfect
+two-dimensional images into reliable three-dimensional structures required advances in sample
+preparation, electron microscopy, detectors, computation and reconstruction algorithms.
+Researchers spent years solving those individual pieces. At many points there was no obvious
+billion-dollar industry waiting at the end of the road.</p>
+
+<p>Eventually those pieces came together. Vitrification improved sample preservation.
+Reconstruction methods advanced. Detectors became dramatically better. Computational
+processing improved. The field entered what came to be called a &ldquo;resolution
+revolution,&rdquo; and cryo-EM became one of the most powerful tools available for studying
+molecular structure.</p>
+
+<figure>
+<span class="fignum">Figure 4 &middot; Two long stretches of uncertainty</span>
+<div class="plate">
+<svg viewBox="0 0 760 412" role="img" aria-label="Two timelines drawn on the same scale from 1970 to 2026. The upper track follows neural networks through two AI winters to backpropagation in 1986, AlexNet in 2012, transformers in 2017 and chat models in 2022. The lower track follows cryo-electron microscopy from the first structures obtained by electron microscopy in 1975 and vitrification in the early 1980s through single-particle reconstruction and direct electron detectors to the 2017 Nobel Prize. Both spend decades with no visible commercial destination.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--faint)"/></marker></defs>
+<text x="20" y="56" font-size="10.5" fill="var(--accent)" font-family="var(--mono)" letter-spacing=".08em">NEURAL NETWORKS AND AI</text>
+<rect x="135.7" y="126" width="68.60000000000002" height="22" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width=".8" stroke-dasharray="3 3"/>
+<text x="170.0" y="164" font-size="9.5" fill="var(--warm)" text-anchor="middle">AI winter</text>
+<rect x="284.3" y="126" width="68.59999999999997" height="22" fill="var(--warm-wash)" stroke="var(--warm)" stroke-width=".8" stroke-dasharray="3 3"/>
+<text x="318.6" y="164" font-size="9.5" fill="var(--warm)" text-anchor="middle">AI winter</text>
+<path d="M90.0,140 L730.0,140" stroke="var(--line)" stroke-width="2"/>
+<circle cx="272.9" cy="140" r="3.4" fill="var(--s2)"/>
+<path d="M272.9,136 L272.9,105" stroke="var(--s2)" stroke-width="1" opacity=".5"/>
+<text x="272.9" y="100" font-size="10.5" fill="var(--ink)" text-anchor="middle">1986 backpropagation</text>
+<circle cx="570.0" cy="140" r="3.4" fill="var(--s2)"/>
+<path d="M570.0,136 L570.0,105" stroke="var(--s2)" stroke-width="1" opacity=".5"/>
+<text x="570.0" y="100" font-size="10.5" fill="var(--ink)" text-anchor="middle">2012 AlexNet, GPUs</text>
+<circle cx="627.1" cy="140" r="3.4" fill="var(--s2)"/>
+<path d="M627.1,136 L627.1,123" stroke="var(--s2)" stroke-width="1" opacity=".5"/>
+<text x="627.1" y="118" font-size="10.5" fill="var(--ink)" text-anchor="middle">2017 transformers</text>
+<circle cx="684.3" cy="140" r="3.4" fill="var(--s2)"/>
+<path d="M684.3,136 L684.3,87" stroke="var(--s2)" stroke-width="1" opacity=".5"/>
+<text x="684.3" y="82" font-size="10.5" fill="var(--ink)" text-anchor="middle">2022 chat models</text>
+<text x="20" y="188" font-size="10" fill="var(--faint)">roughly forty years in which the commercial destination was not visible</text>
+<text x="20" y="226" font-size="10.5" fill="var(--accent)" font-family="var(--mono)" letter-spacing=".08em">CRYO-ELECTRON MICROSCOPY</text>
+<path d="M90.0,310 L730.0,310" stroke="var(--line)" stroke-width="2"/>
+<circle cx="147.1" cy="310" r="3.4" fill="var(--s2)"/>
+<path d="M147.1,306 L147.1,275" stroke="var(--s2)" stroke-width="1" opacity=".5"/>
+<text x="147.1" y="270" font-size="10.5" fill="var(--ink)" text-anchor="middle">1975 first structures by EM</text>
+<circle cx="227.1" cy="310" r="3.4" fill="var(--s2)"/>
+<path d="M227.1,306 L227.1,293" stroke="var(--s2)" stroke-width="1" opacity=".5"/>
+<text x="227.1" y="288" font-size="10.5" fill="var(--ink)" text-anchor="middle">1982 vitrification</text>
+<circle cx="375.7" cy="310" r="3.4" fill="var(--s2)"/>
+<path d="M375.7,306 L375.7,257" stroke="var(--s2)" stroke-width="1" opacity=".5"/>
+<text x="375.7" y="252" font-size="10.5" fill="var(--ink)" text-anchor="middle">1990s single-particle reconstruction</text>
+<circle cx="581.4" cy="310" r="3.4" fill="var(--s2)"/>
+<path d="M581.4,306 L581.4,293" stroke="var(--s2)" stroke-width="1" opacity=".5"/>
+<text x="581.4" y="288" font-size="10.5" fill="var(--ink)" text-anchor="middle">2013 direct detectors</text>
+<circle cx="627.1" cy="310" r="3.4" fill="var(--s2)"/>
+<path d="M627.1,306 L627.1,275" stroke="var(--s2)" stroke-width="1" opacity=".5"/>
+<text x="627.1" y="270" font-size="10.5" fill="var(--ink)" text-anchor="middle">2017 Nobel Prize</text>
+<text x="20" y="358" font-size="10" fill="var(--faint)">specialised problems: beam damage, ice, noise, reconstruction</text>
+<path d="M90,384 L730,384" stroke="var(--line)" stroke-width="1"/>
+<path d="M90.0,384 L90.0,389" stroke="var(--faint)" stroke-width="1"/>
+<text x="90.0" y="402" font-size="10" fill="var(--faint)" text-anchor="middle">1970</text>
+<path d="M204.3,384 L204.3,389" stroke="var(--faint)" stroke-width="1"/>
+<text x="204.3" y="402" font-size="10" fill="var(--faint)" text-anchor="middle">1980</text>
+<path d="M318.6,384 L318.6,389" stroke="var(--faint)" stroke-width="1"/>
+<text x="318.6" y="402" font-size="10" fill="var(--faint)" text-anchor="middle">1990</text>
+<path d="M432.9,384 L432.9,389" stroke="var(--faint)" stroke-width="1"/>
+<text x="432.9" y="402" font-size="10" fill="var(--faint)" text-anchor="middle">2000</text>
+<path d="M547.1,384 L547.1,389" stroke="var(--faint)" stroke-width="1"/>
+<text x="547.1" y="402" font-size="10" fill="var(--faint)" text-anchor="middle">2010</text>
+<path d="M661.4,384 L661.4,389" stroke="var(--faint)" stroke-width="1"/>
+<text x="661.4" y="402" font-size="10" fill="var(--faint)" text-anchor="middle">2020</text>
+</svg>
+</div>
+<figcaption>Drawn to scale, from documented events. Neither line was obvious while it was being walked: neural networks spent two funding winters outside the mainstream, and cryo-EM spent decades on beam damage, ice, noise and reconstruction before there was any billion-dollar application in sight. <strong>Hindsight turns both into straight lines.</strong></figcaption>
+</figure>
+
+<p>These two stories come from radically different fields, but the lesson is the same.
+<strong>We know that AI and cryo-EM mattered because we are standing at the end of the story
+and looking backward. The researchers doing the foundational work did not have that
+privilege.</strong> They did not know which approaches would survive. They did not know which
+experiments would fail. They did not know whether surrounding technologies would mature. They
+did not know how long progress would take. If every research programme had been required to
+demonstrate obvious short-term commercial value before receiving resources, it is far from
+clear that either trajectory would have survived long enough to reach the point where its
+usefulness became obvious.</p>
+
+<p>This is why I do not find &ldquo;industry creates value while academia produces
+papers&rdquo; to be a particularly convincing model of technological progress. Industry is
+often much better at exploiting a technical possibility once the possibility becomes visible.
+Academia, public research institutions and long-horizon research labs serve a different
+function: they can explore spaces in which <strong>the value function itself is still
+unknown.</strong> If upstream exploration disappears, downstream optimisation eventually runs
+out of things to optimise.</p>
+
+<h2>The real problem is the incentive system</h2>
+
+<p>None of this, however, means that the current academic system should be defended as it is.
+In fact, I think the strongest criticism of modern academia lies somewhere else entirely. The
+main problem is not that most papers fail to change the world; that is probably unavoidable.
+<strong>The deeper problem is that the current academic incentive system often rewards the
+wrong kind of mediocrity while punishing genuine risk.</strong></p>
+
+<p>Researchers need papers to graduate. They need papers to get jobs. They need papers for
+grants, tenure, promotion, immigration cases, awards and future funding. Once publication
+count becomes a proxy for research quality, researchers rationally begin optimising the
+proxy. The safest strategy is no longer necessarily to ask the most important question. It is
+often to ask a question that can produce a publishable answer within a predictable period of
+time. This naturally favours low-risk projects, incremental improvements, fashionable
+benchmarks, easily measurable gains and ideas reviewers can understand quickly.</p>
+
+<figure>
+<span class="fignum">Figure 5 &middot; Where the incentive points</span>
+<div class="plate">
+<svg viewBox="0 0 760 320" role="img" aria-label="A quadrant plot. The horizontal axis runs from outcomes that are hard to predict to outcomes that are easy to predict; the vertical axis is how much the result would matter. Ambitious, uncertain work sits in the upper left; safe, reliably publishable increments sit in the lower right, where a cluster of dots has gathered. A thick arrow runs from the upper left to that cluster, labelled: what the metric rewards.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--faint)"/></marker></defs>
+<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--warm)"/></marker></defs>
+<rect x="120" y="44" width="580" height="230" rx="8" fill="var(--panel)" stroke="var(--line)"/>
+<path d="M410,44 L410,274" stroke="var(--line)"/>
+<path d="M120,159 L700,159" stroke="var(--line)"/>
+<text x="138" y="70" font-size="11.5" fill="var(--warm)">ambitious and uncertain</text>
+<text x="138" y="85" font-size="11.5" fill="var(--warm)">may produce nothing</text>
+<text x="138" y="100" font-size="11.5" fill="var(--warm)">publishable for years</text>
+<text x="428" y="70" font-size="11.5" fill="var(--soft)">important and predictable</text>
+<text x="428" y="85" font-size="11.5" fill="var(--soft)">&mdash; rare</text>
+<text x="138" y="258" font-size="11.5" fill="var(--soft)">risky and unimportant</text>
+<text x="428" y="228" font-size="11.5" fill="var(--cool)">safe increments</text>
+<text x="428" y="243" font-size="11.5" fill="var(--cool)">reliably publishable</text>
+<text x="428" y="258" font-size="11.5" fill="var(--cool)">on schedule</text>
+<circle cx="585" cy="180" r="4.2" fill="var(--cool)" opacity=".55"/>
+<circle cx="621" cy="204" r="4.2" fill="var(--cool)" opacity=".55"/>
+<circle cx="657" cy="190" r="4.2" fill="var(--cool)" opacity=".55"/>
+<circle cx="605" cy="226" r="4.2" fill="var(--cool)" opacity=".55"/>
+<circle cx="647" cy="222" r="4.2" fill="var(--cool)" opacity=".55"/>
+<circle cx="683" cy="212" r="4.2" fill="var(--cool)" opacity=".55"/>
+<circle cx="631" cy="240" r="4.2" fill="var(--cool)" opacity=".55"/>
+<circle cx="693" cy="234" r="4.2" fill="var(--cool)" opacity=".55"/>
+<circle cx="669" cy="192" r="4.2" fill="var(--cool)" opacity=".55"/>
+<path d="M250,140 L578,178" fill="none" stroke="var(--warm)" stroke-width="2.4" marker-end="url(#a2)"/>
+<text x="262" y="198" font-size="11.5" fill="var(--warm)">what the metric rewards</text>
+<text x="120" y="300" font-size="10.5" fill="var(--faint)">outcome hard to predict</text>
+<text x="700" y="300" font-size="10.5" fill="var(--faint)" text-anchor="end">outcome easy to predict</text>
+<path d="M120,282 L700,282" stroke="var(--line)"/>
+<text x="46" y="159" font-size="10.5" fill="var(--faint)" text-anchor="middle" transform="rotate(-90 46 159)">how much it would matter if it worked &rarr;</text>
+</svg>
+</div>
+<figcaption>Schematic. Nothing here says researchers are lazy or dishonest &mdash; the arrow is what a rational person does when publication count decides graduation, hiring, promotion and funding. <strong>The cluster in the lower right is the system working exactly as designed.</strong></figcaption>
+</figure>
+
+<p>Meanwhile, genuinely ambitious research may require years of work. It may fail completely.
+It may produce ugly negative results. It may refuse to fit neatly into the conventions of a
+conference paper. Under a sufficiently rigid KPI system, doing risky research can become
+professionally irrational.</p>
+
+<p>And the researchers responding to those incentives are not necessarily irrational or
+dishonest. Quite the opposite. <strong>They may simply be optimising perfectly for the system
+we designed.</strong> If publications determine whether someone graduates, gets hired, gets
+promoted or receives funding, then it should surprise nobody that people learn to maximise
+publications. Goodhart's law applies to academia as well as anywhere else: <strong>when a
+measure becomes a target, it stops being a good measure.</strong></p>
+
+<div class="key">
+<p class="h">The real pathology</p>
+<p>The problem is not that researchers sometimes produce mediocre papers. The problem is when
+researchers are forced to produce papers that even they do not consider particularly
+meaningful, simply to survive professionally.</p>
+<p>There is a huge difference between unavoidable exploratory failure and artificial output
+generated to satisfy a metric.</p>
+</div>
+
+<h2>Two kinds of ninety-nine percent</h2>
+
+<p><strong>If academia produces ninety-nine percent ordinary work because research is
+inherently uncertain, that is not necessarily a crisis. If it produces ninety-nine percent
+ordinary work because everyone has been trained to maximise publication count while
+minimising intellectual risk, then something has gone badly wrong.</strong> Those two
+situations look identical in a citation histogram and demand completely different
+responses.</p>
+
+<div class="tw">
+<table>
+<tr><th>&nbsp;</th><th>The cost of exploration</th><th>Output produced for a metric</th></tr>
+<tr><td>What it consists of</td>
+    <td class="txt">Honest attempts, failed hypotheses, training work, partial insights,
+        negative results</td>
+    <td class="txt">Sliced results, benchmark chasing, work done to clear a bar nobody
+        believes in</td></tr>
+<tr><td>Why it exists</td>
+    <td class="txt">The value of an idea is usually not knowable in advance</td>
+    <td class="txt">Publication count decides graduation, hiring, promotion, funding</td></tr>
+<tr><td>What removing it costs</td>
+    <td class="txt hi">The discovery process itself</td>
+    <td class="txt good">Nothing worth keeping</td></tr>
+<tr><td>The right response</td>
+    <td class="txt">Protect it, and stop calling it waste</td>
+    <td class="txt">Reform the incentive, not the researcher</td></tr>
+</table>
+</div>
+
+<p>If mediocrity is partly the statistical consequence of exploration, aggressively
+eliminating it risks destroying exploration itself. If mediocrity is being artificially
+amplified by incentives that reward paper count over intellectual ambition, then we should
+reform those incentives. We should not conclude that research itself is useless.</p>
+
+<p>This is ultimately why I remain sceptical when I hear broad claims about the uselessness
+of PhDs, papers or academia. Often the argument begins with something perfectly reasonable:
+most papers have little immediate practical impact; many people do not need a PhD for the
+careers they want; the opportunity cost of spending years in graduate school is enormous;
+academia contains plenty of bureaucratic nonsense. I agree with all of that. But then the
+argument quietly changes into a much stronger claim: <strong>if something does not have
+obvious practical value now, it has no value.</strong></p>
+
+<p>That is the part I reject. It reflects a very narrow form of pragmatism &mdash; the
+assumption that because we cannot identify the utility of an idea today, that utility does not
+exist. But the entire difficulty of exploration is precisely that <strong>the value of an
+idea is often revealed only after the exploration has already happened.</strong> A society
+that insists every research project justify itself in advance through short-term usefulness
+will eventually stop producing exactly the kinds of ideas whose usefulness cannot be predicted
+in advance.</p>
+
+<p>There is something deeply valuable about maintaining institutions in which people are
+allowed to spend time on questions that may turn out to be useless. Some theories should be
+allowed to fail. Some experiments should produce negative results. Some researchers should be
+allowed to take intellectual detours. Some PhD students should spend months discovering that
+their beautiful idea simply does not work. Some papers should exist even if almost nobody ever
+reads them. That sounds inefficient because it is. <strong>Exploration is expensive. There is
+no way around that.</strong> The alternative is to stop exploring anything whose return cannot
+be predicted, which may improve efficiency in the short run while quietly destroying the
+possibility of fundamentally new directions in the long run.</p>
+
+<p>We should absolutely improve academic incentives. We should punish fraud aggressively. We
+should reduce pointless publication slicing, discourage empty benchmark chasing, take negative
+results more seriously and create more room for long-term, high-risk research. We should care
+less about raw publication counts and more about whether researchers are asking questions
+worth asking. And perhaps most importantly, we should recognise that a system in which young
+researchers cannot afford to spend two years failing at an ambitious problem is unlikely to
+produce very much ambitious research.</p>
+
+<p>But I do not think the goal should be to eliminate the ninety-nine percent. <strong>The
+ninety-nine percent is probably unavoidable in any domain where people are genuinely searching
+for something new.</strong> The more important question is what that ninety-nine percent
+consists of. Is it honest exploration, failed hypotheses, training, partial insights, negative
+results and intellectual experimentation? Or is it bureaucratic production generated because
+everyone desperately needs another line on a CV? Those are not the same thing.</p>
+
+<p>So yes, perhaps ninety-nine percent of academic papers will never become important. Perhaps
+most will never be read again. Perhaps many solve problems that, in hindsight, did not need
+solving. That bothers me much less than the possibility of creating a research system in which
+nobody is willing to attempt something that might fail. The one percent that changes the world
+does not appear from nowhere. It emerges from a much larger space of ordinary ideas, failed
+attempts, partial insights, wrong turns, dead ends and apparently useless experiments. We only
+know which ones mattered after the selection process is over.</p>
+
+<p>That is why I think we should be careful with claims like <strong>&ldquo;99% of academia is
+garbage,&rdquo; &ldquo;papers are useless,&rdquo; or &ldquo;PhDs are useless.&rdquo;</strong>
+As critiques of incentives and individual career choices, they can contain a lot of truth. As
+descriptions of how knowledge production works, they are far too simplistic.</p>
+
+<p class="big">Industry is very good at picking fruit. But if nobody is willing to sit around
+planting trees whose yield is uncertain, eventually there will be nothing left to pick.</p>
+
+<h2>Notes and sources</h2>
+
+<ul class="refs">
+<li><b>[1] The AI winters.</b> The contraction of funding and expectations in the mid-1970s
+and again from the late 1980s. The 1973 Lighthill report to the UK Science Research Council
+is the usual marker for the first of them.</li>
+<li><b>[2] Rumelhart, Hinton and Williams.</b> Learning representations by back-propagating
+errors. <i>Nature</i> 323, 1986.</li>
+<li><b>[3] Krizhevsky, Sutskever and Hinton.</b> ImageNet classification with deep
+convolutional neural networks. NeurIPS 2012 &mdash; the point at which depth, data and GPUs
+became mutually reinforcing in public view.</li>
+<li><b>[4] Cryo-EM.</b> Henderson and Unwin, three-dimensional model of the purple membrane
+obtained by electron microscopy, <i>Nature</i> 257, 1975; Dubochet and colleagues on
+vitrification of water for electron microscopy in the early 1980s; Frank on single-particle
+reconstruction. The three shared the
+<a href="https://www.nobelprize.org/prizes/chemistry/2017/summary/">2017 Nobel Prize in
+Chemistry</a>.</li>
+<li><b>[5] K&uuml;hlbrandt.</b> The resolution revolution. <i>Science</i> 343, 2014 &mdash; on
+what direct electron detectors did to the field.</li>
+<li><b>[6] Strathern.</b> &ldquo;Improving ratings&rdquo;: audit in the British University
+system. <i>European Review</i> 5, 1997 &mdash; the formulation of Goodhart's law used
+here.</li>
+</ul>
+
+<p class="end">Figures 1, 3 and 5 are schematic: they show a shape and a direction, not
+measured data. Figure 4 is drawn to scale from the dates in note [1] and note [4]. This is an
+opinion piece, and the opinions in it are mine.</p>
+
+</div>
+</body>
+</html>
