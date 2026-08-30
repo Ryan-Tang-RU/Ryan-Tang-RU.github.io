@@ -53,7 +53,7 @@ nav:
 - label: Misc
   href: misc.html
 bio:
-- I am a Tenure-Track Assistant Professor in the Department of Computer Science at Rutgers University–New Brunswick, where I lead the <b>T</b>rustworthy and <b>R</b>eliable <b>AI L</b>ab (<b>TRAIL</b>). I received my Ph.D. in Computer Science from Rice University and my B.S. from Tsinghua University.
+- I am an Assistant Professor in the Department of Computer Science at Rutgers University–New Brunswick, where I lead the <b>T</b>rustworthy and <b>R</b>eliable <b>AI L</b>ab (<b>TRAIL</b>). I received my Ph.D. in Computer Science from Rice University and my B.S. from Tsinghua University.
 - TRAIL works on <b>Trustworthy AI</b>, with the goal of infusing trust throughout the AI lifecycle. We pursue this goal by <b>formalizing trustworthiness objectives</b> (e.g., robustness, interpretability, and safety) and developing principled algorithms with <b>measurable guarantees and transparent failure modes</b>. We also collaborate closely with biologists and health informaticians to translate trustworthy learning methods to high-impact problems in biology and medicine.
 - Large Foundation Models introduce new and complex trustworthiness challenges. Our long-term objective is to develop learning algorithms that improve <b>reasoning reliability</b> under distribution shift and adversarial manipulation, supported by <b>theoretical frameworks that connect representation, optimization, and uncertainty to trust outcomes</b>. By advancing the underlying reasoning mechanisms, we aim to make these models more reliable, transparent, and resistant to misuse.
 research:
