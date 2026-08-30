@@ -136,19 +136,6 @@ def masthead(active, base=""):
 </header>"""
 
 
-def site_footer(base=""):
-    links = " · ".join(
-        f'<a href="{rel(l["url"], base)}">{l["label"]}</a>' for l in site["links"]
-    )
-    return f"""<footer class="page">
-  <div class="band">
-    <p>{site['name_full']} · {site['department']}, {site['institution']}
-       · <a href="mailto:{site['email']}">{site['email']}</a></p>
-    <p>{links}</p>
-  </div>
-</footer>"""
-
-
 CSS_VERSION = ""  # set in __main__, once the stylesheet is final
 
 
@@ -180,7 +167,6 @@ def page(filename, title, body, description="", base="", banner=""):
 <main id="main" class="band">
 {body}
 </main>
-{site_footer(base)}
 </body>
 </html>
 """
@@ -224,7 +210,8 @@ def build_home():
 
     items = ""
     for n in news:
-        tag = f'<span class="tag">[{n["tag"]}]</span>' if n.get("tag") else ""
+        tag = (f'<span class="tag tag--{n["tag"]}">[{n["tag"]}]</span>'
+               if n.get("tag") else "")
         when = f'<span class="when">{n["date"]}:</span> ' if n.get("date") else ""
         items += f"<li>{tag}{when}{n['text']}</li>"
 
