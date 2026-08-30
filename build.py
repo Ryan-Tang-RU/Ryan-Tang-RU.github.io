@@ -139,6 +139,60 @@ def masthead(active, base=""):
 CSS_VERSION = ""  # set in __main__, once the stylesheet is final
 
 
+# ---------------------------------------------------------------- analytics
+
+STANDALONE = ["emdash.html", "probe.html", "ninetynine.html"]
+MARK_OPEN, MARK_CLOSE = "<!-- analytics -->", "<!-- /analytics -->"
+
+
+def analytics_tag():
+    """The visitor counter, configured by the `analytics` block in site.yml.
+
+    Nothing is written until both provider and id are filled in, so by default
+    the pages carry no third-party script at all. The providers below are
+    cookieless and store no personal data, which is why the site needs no
+    consent banner; adding one that sets cookies would change that.
+    """
+    cfg = site.get("analytics") or {}
+    provider = (cfg.get("provider") or "").strip().lower()
+    ident = str(cfg.get("id") or "").strip()
+    if not provider or not ident:
+        return ""
+    if provider == "goatcounter":
+        endpoint = ident if ident.startswith("http") else f"https://{ident}.goatcounter.com/count"
+        return (f'<script data-goatcounter="{endpoint}" '
+                f'async src="//gc.zgo.at/count.js"></script>')
+    if provider == "cloudflare":
+        return ('<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+                f'data-cf-beacon=\'{{"token": "{ident}"}}\'></script>')
+    if provider == "plausible":
+        return (f'<script defer data-domain="{ident}" '
+                f'src="https://plausible.io/js/script.js"></script>')
+    raise SystemExit(f"site.yml: unknown analytics provider {provider!r}")
+
+
+def build_standalone_analytics():
+    """The three long-form posts are written by hand rather than generated.
+
+    Keep their snippet in step with site.yml by rewriting a marked block, so
+    there is still only one place to change the counter.
+    """
+    block = f"{MARK_OPEN}{analytics_tag()}{MARK_CLOSE}"
+    for name in STANDALONE:
+        f = ROOT / name
+        if not f.exists():
+            continue
+        doc = f.read_text(encoding="utf-8")
+        if MARK_OPEN in doc:
+            a, b = doc.index(MARK_OPEN), doc.index(MARK_CLOSE) + len(MARK_CLOSE)
+            new = doc[:a] + block + doc[b:]
+        else:
+            new = doc.replace("</body>", f"{block}\n</body>", 1)
+        if new != doc:
+            f.write_text(new, encoding="utf-8")
+            print("updated", name)
+
+
 def page(filename, title, body, description="", base="", banner=""):
     desc = description or f"{site['name_full']}, {site['department']}, {site['institution']}."
     canon = "" if filename == "index.html" else filename
@@ -167,7 +221,7 @@ def page(filename, title, body, description="", base="", banner=""):
 <main id="main" class="band">
 {body}
 </main>
-</body>
+{analytics_tag()}</body>
 </html>
 """
     out = ROOT / filename
@@ -486,5 +540,6 @@ if __name__ == "__main__":
     build_blog()
     build_misc()
     build_redirects()
+    build_standalone_analytics()
     build_sitemap()
     print("done")
