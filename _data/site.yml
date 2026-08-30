@@ -1,5 +1,16 @@
 # Home page and site chrome, ported from the Google Sites original.
 # Inline <b>/<i>/<a> in these strings is rendered as-is.
+# Visitor counting. Leave id empty and no third-party script is written into
+# any page. Fill it in and every page, including the three blog posts, starts
+# reporting to the dashboard of the provider below.
+#   goatcounter  id = the site code you picked, e.g. ruixiangtang
+#                     dashboard: https://<code>.goatcounter.com
+#   cloudflare   id = the Web Analytics beacon token
+#   plausible    id = the domain registered with Plausible
+analytics:
+  provider: goatcounter
+  id: "ryan-tang"
+
 name: Ruixiang Tang
 name_full: Ruixiang (Ryan) Tang
 domain: www.ruixiangtang.net
