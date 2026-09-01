@@ -26,7 +26,7 @@ banner_image: assets/img/banner.jpg
 # Lab photo at the top of the Group page. Nothing is rendered until the file
 # exists, so the page is safe to build without it.
 group_photo: assets/img/group-2026.jpg
-group_photo_caption: TRAIL Lab group dinner
+group_photo_caption: TRAIL Lab, Fall 2026
 identity:
 - Department of Computer Science
 - Rutgers-New Brunswick
@@ -104,6 +104,6 @@ press:
   image: press-rice.jpg
   caption: csweb.rice.edu/news/rice-cs-xia-ben-hu-investigates-llms-and-likely-applications
 - title: TrojanNet - a simple yet effective attack on machine learning models
-  url: https://portswigger.net/daily-swig/trojannet-a-simple-yet-effective-attack-on-machine-learning-models
+  url: https://web.archive.org/web/2020/https://portswigger.net/daily-swig/trojannet-a-simple-yet-effective-attack-on-machine-learning-models
   image: press-trojannet.jpg
   caption: TrojanNet - a simple yet effective attack on machine learning models
