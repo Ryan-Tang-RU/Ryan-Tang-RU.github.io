@@ -23,6 +23,10 @@ banner: Trustworthy and Reliable AI Lab (TRAIL Lab)
 # Drop a photo at assets/img/banner.jpg and the header band uses it behind the
 # title; without one the band falls back to the Rutgers scarlet gradient.
 banner_image: assets/img/banner.jpg
+# Lab photo at the top of the Group page. Nothing is rendered until the file
+# exists, so the page is safe to build without it.
+group_photo: assets/img/group-2026.jpg
+group_photo_caption: TRAIL Lab group dinner
 identity:
 - Department of Computer Science
 - Rutgers-New Brunswick

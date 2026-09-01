@@ -383,8 +383,25 @@ def build_publications():
 
 # ---------------------------------------------------------------- group
 
+def group_photo():
+    """The lab photo at the top of the Group page.
+
+    Skipped entirely until the file is actually in the repo, so the page never
+    shows a broken image.
+    """
+    path = site.get("group_photo")
+    if not path or not os.path.exists(ROOT / path):
+        return ""
+    w, h = image_size(ROOT / path, (1440, 1080))
+    cap = site.get("group_photo_caption") or ""
+    cap = f"<figcaption>{cap}</figcaption>" if cap else ""
+    return (f'<figure class="groupshot">'
+            f'<img src="{path}" alt="{site["banner"]} members at a group dinner" '
+            f'width="{w}" height="{h}">{cap}</figure>')
+
+
 def build_group():
-    blocks = ""
+    blocks = group_photo()
     for sec in group:
         rows = "".join(f"<li>{m}</li>" for m in sec["items"])
         blocks += f'<h2 class="h-page">{sec["section"]}</h2><ul class="people">{rows}</ul>'
