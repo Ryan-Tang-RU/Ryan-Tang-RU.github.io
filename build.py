@@ -401,11 +401,11 @@ def group_photo():
 
 
 def build_group():
-    blocks = group_photo()
+    blocks = ""
     for sec in group:
         rows = "".join(f"<li>{m}</li>" for m in sec["items"])
         blocks += f'<h2 class="h-page">{sec["section"]}</h2><ul class="people">{rows}</ul>'
-    page("group.html", f"Group · {site['name']}", blocks)
+    page("group.html", f"Group · {site['name']}", blocks + group_photo())
 
 
 # ---------------------------------------------------------------- teaching
