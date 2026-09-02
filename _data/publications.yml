@@ -44,7 +44,7 @@
   - title: "TRACES: Proactive Safety Auditing for Multi-Turn LLM Agents via Trajectory-State Modeling"
     url: "https://arxiv.org/abs/2605.27690"
     authors: Jiaqian Li, Yanshu Li, Boxuan Zhang, <b>Ruixiang Tang</b>, Kuan-Hao Huang
-    venue: <i>Empirical Methods in Natural Language Processing, <b>EMNLP Main</b>, 2025</i>
+    venue: <i>Empirical Methods in Natural Language Processing, <b>EMNLP Main</b>, 2026</i>
   - title: Reinforcing Consistency in Video MLLMs with Structured Rewards
     url: "https://arxiv.org/pdf/2604.01460"
     authors: Yihao Quan, Zeru Shi, Jinman Zhao, <b>Ruixiang Tang</b>
@@ -77,10 +77,6 @@
     url: "https://arxiv.org/abs/2601.08000"
     authors: Can Jin*, Rui Wu*, Tong Che*, Qixin Zhang, Hongwu Peng, Jiahui Zhao, Zhenting Wang, Wenqi Wei, Ligong Han, Zhao Zhang, Yuan Cao, <b>Ruixiang Tang</b>, Dimitris N Metaxas
     venue: <i>Association for Computational Linguistics, <b>ACL Main</b>, 2026</i>
-  - title: "Read the Scene, Not the Script: Outcome-Aware Safety for LLMs"
-    url: "https://www.arxiv.org/abs/2510.04320"
-    authors: Rui Wu, Yihao Quan, Zeru Shi, Zhenting Wang, Yanshu Li, <b>Ruixiang Tang</b>
-    venue: <i>International Conference on Learning Representations, <b>ICLR AIWILD Workshop</b>, (Spotlight)</i>
   - title: "Shifting Uncertainty to Critical Moments: Towards Reliable Uncertainty Quantification for VLA Model"
     url: "https://arxiv.org/pdf/2603.18342"
     authors: Yanchuan Tang*, Taowen Wang*, Yuefei Chen, Boxuan Zhang, Qiang Guan, <b>Ruixiang Tang</b>
@@ -160,12 +156,16 @@
     url: "https://openreview.net/forum?id=zxg6601zoc"
     authors: Yiyang Liu, James Chenhao Liang, <b>Ruixiang Tang</b>, Yugyung Lee, Majid Rabbani, Sohail Dianat, Raghuveer Rao, Lifu Huang, Dongfang Liu, Qifan Wang, Cheng Han
     venue: <i>International Conference on Learning Representations</i>, <i><b>ICLR</b> 2025 </i>
-  - title: "DBR: Divergence-Based Regularization for Debiasing Natural Language Understanding ModelsZihao Li, Ruixiang Tang, Lu Cheng, Shuaiqiang Wang, Dawei Yin, Mengnan DuSIGKDD Explorations, 2025"
+  - title: "DBR: Divergence-Based Regularization for Debiasing Natural Language Understanding Models"
     url: "https://arxiv.org/abs/2502.18353"
-    authors: <b>2024</b>
-    venue: "<a href=\"https://arxiv.org/abs/2303.13035\"><b>SPeC: A Soft Prompt-Based Calibration on Mitigating Performance Variability in Clinical Notes Summarization</b></a>"
+    authors: Zihao Li, <b>Ruixiang Tang</b>, Lu Cheng, Shuaiqiang Wang, Dawei Yin, Mengnan Du
+    venue: <i>SIGKDD Explorations Letter, 2025</i>
 - section: '2024'
   items:
+  - title: The Science of Detecting LLM-Generated Text
+    url: "https://arxiv.org/abs/2303.07205"
+    authors: <b>Ruixiang Tang</b>, Yu-Neng Chuang, Xia Hu
+    venue: <i><b>Communications of the ACM</b>, 2024</i>
   - title: "SPeC: A Soft Prompt-Based Calibration on Mitigating Performance Variability in Clinical Notes Summarization"
     url: "https://arxiv.org/abs/2303.13035"
     authors: Yu-Neng Chuang, <b>Ruixiang Tang</b>, Xiaoqian Jiang, Xia Hu
@@ -199,7 +199,7 @@
     url: "https://arxiv.org/abs/2310.13291"
     authors: <b>Ruixiang Tang</b>, Gord Lueck, Rodolfo Quispe, Huseyin A Inan, Janardhan Kulkarni, Xia Hu
     venue: <i>Findings of Empirical Methods in Natural Language Processing</i>, <i><b>EMNLP</b> 2023 </i>
-  - title: "Setting the Trap: Capturing and Defeating Backdoor Threats in Pretrained Language Models through Honeypots"
+  - title: "Setting the Trap: Capturing and Defeating Backdoors in Pretrained Language Models through Honeypots"
     url: "https://arxiv.org/pdf/2310.18633.pdf"
     authors: "<b>Ruixiang Tang*</b>, Jiayi Yuan*, <a href=\"https://openreview.net/profile?id=~Yiming_Li1\">Yiming Li</a>, <a href=\"https://openreview.net/profile?id=~Zirui_Liu1\">Zirui Liu</a>, <a href=\"https://openreview.net/profile?id=~Rui_Chen4\">Rui Chen</a>, <a href=\"https://openreview.net/profile?id=~Xia_Hu4\">Xia Hu</a>"
     venue: <i>Conference on Neural Information Processing Systems, <b>NeurIPS</b> 2023 </i>
@@ -212,12 +212,9 @@
     authors: Jiayi Yuan,<b> Ruixiang Tang</b>, Xiaoqian Jiang, Xia Hu
     venue: <i><b>AMIA</b> 2023 Annual Symposium (Best Student Paper )</i>
   - title: Winner-Take-All Column Row Sampling for Memory Efficient Adaptation of Language Model
-    authors: ''
-    venue: ''
-  - title: The Science of Detecting LLM-Generated Text
-    url: "https://arxiv.org/abs/2303.07205"
-    authors: <b>Ruixiang Tang</b>, Yu-Neng Chuang, Xia Hu
-    venue: <i><b>Communications of the ACM</b>, 2023</i>
+    url: "https://papers.nips.cc/paper_files/paper/2023/hash/0a6059857ae5c82ea9726ee9282a7145-Abstract-Conference.html"
+    authors: Zirui Liu*, Guanchu Wang*, Shaochen Zhong, Zhaozhuo Xu, Daochen Zha, <b>Ruixiang Tang</b>, Zhimeng Jiang, Kaixiong Zhou, Vipin Chaudhary, Shuai Xu, Xia Hu
+    venue: <i>Conference on Neural Information Processing Systems, <b>NeurIPS</b>, 2023</i>
   - title: "Large Language Models Can be Lazy Learners: Analyze Shortcuts in In-Context Learning"
     url: "https://aclanthology.org/2023.findings-acl.284/"
     authors: <b>Ruixiang Tang</b>, Dehan Kong, Longtao Huang, Hui Xue
@@ -299,3 +296,9 @@
     url: "https://www.spiedigitallibrary.org/conference-proceedings-of-spie/10948/2512883/Multi-organ-segmentation-in-clinical-computed-tomography-for-patient-specific/10.1117/12.2512883.short"
     authors: Wanyi Fu, Shobhit Sharma, Taylor Smith, Rui Hou, Ehsan Abadi, Vignesh Selvakumaran, <b>Ruixiang Tang</b>, Joseph Y Lo, W Paul Segars, Anuj J Kapadia, Justin B Solomon, Geoffrey D Rubin, Ehsan Samei
     venue: "<i>SPIE Medical Imaging: Physics of Medical Imaging, 2019</i>"
+- section: Workshop Papers
+  items:
+  - title: "Read the Scene, Not the Script: Outcome-Aware Safety for LLMs"
+    url: "https://www.arxiv.org/abs/2510.04320"
+    authors: Rui Wu, Yihao Quan, Zeru Shi, Zhenting Wang, Yanshu Li, <b>Ruixiang Tang</b>
+    venue: <i>International Conference on Learning Representations, <b>ICLR AIWILD Workshop</b>, 2026 (Spotlight)</i>

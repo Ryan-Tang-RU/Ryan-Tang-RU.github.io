@@ -194,6 +194,7 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
 .pubs .t a { color: inherit; text-decoration: none; }
 .pubs .t a:hover { text-decoration: underline; }
 .pubs .a { display: block; }
+.pubs .corr { font-weight: 700; color: var(--tag-award); }
 .pubs .v { display: block; font-style: italic; color: var(--ink-head); }
 
 /* ---------------------------------------------------------------- group / teaching / awards */
