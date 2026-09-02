@@ -107,6 +107,10 @@
     venue: <i>European Chapter of the Association for Computational Linguistics, <b>EACL</b>, 2026</i>
 - section: '2025'
   items:
+  - title: "Fair-RGNN: Mitigating Relational Bias on Knowledge Graphs"
+    url: "https://dl.acm.org/doi/10.1145/3681792"
+    authors: Yu-Neng Chuang, Kwei-Herng Lai, <b>Ruixiang Tang</b>, Mengnan Du, Chia-Yuan Chang, Na Zou, Xia Hu
+    venue: <i>Transactions on Knowledge Discovery from Data, <b>TKDD</b>, 2025</i>
   - title: "TACO: Enhancing Multimodal In-context Learning via Task Mapping-Guided Sequence Configuration"
     url: "https://arxiv.org/abs/2505.17098"
     authors: Yanshu Li, Tian Yun, Jianjiang Yang, Pinyuan Feng, Jinfa Huang, <b>Ruixiang Tang</b>
@@ -137,9 +141,9 @@
     authors: Haein Kong, A M Muntasir Rahman, <b>Ruixiang Tang</b>, Vivek Singh
     venue: <i>Asia-Pacific Chapter of the Association for Computational Linguistics, <b>AACL Findings</b>, 2025</i>
   - title: Survey and Improvement Strategies for Gene Prioritization with Large Language Models
-    url: "https://arxiv.org/abs/2501.18794"
+    url: "https://academic.oup.com/bioinformaticsadvances/article/5/1/vbaf148/8172498"
     authors: Matthew Neeley*, Guantong Qi*, Guanchu Wang*, <b>Ruixiang Tang</b>, Dongxue Mao, Chaozhong Liu, Sasidhar Pasupuleti, Bo Yuan, Fan Xia, Pengfei Liu, Zhandong Liu, Xia Hu
-    venue: <i>Bioinformatics Advances</i>
+    venue: <i>Bioinformatics Advances, 2025</i>
   - title: Uncertainty Quantification for Multiple-Choice Questions is Just One-Token Deep
     url: "https://dl.acm.org/doi/abs/10.1145/3746252.3760887"
     authors: Qingcheng Zeng, Mingyu Jin, Qinkai Yu, Zhenting Wang, Wenyue Hua, Zihao Zhou, Guangyan Sun, Yanda Meng, Shiqing Ma, Qifan Wang, Felix Juefei-Xu, Kaize Ding, Fan Yang, <b>Ruixiang Tang</b>, Yongfeng Zhang
@@ -182,10 +186,6 @@
     url: "https://arxiv.org/abs/2402.01586"
     authors: Wenyue Hua, Xianjun Yang, Mingyu Jin, Wei Cheng, <b>Ruixiang Tang</b>, Yongfeng Zhang
     venue: <i>Findings of Empirical Methods in Natural Language Processing</i>, <i><b>EMNLP</b> 2024 </i>
-  - title: "Fair-RGNN: Mitigating Relational Bias on Knowledge Graphs"
-    url: "https://dl.acm.org/doi/10.1145/3681792"
-    authors: Yu-Neng Chuang, Kwei-Herng Lai, <b>Ruixiang Tang</b>, Mengnan Du, Chia-Yuan Chang, Na Zou, Xia Hu
-    venue: <i>Transactions on Knowledge Discovery from Data, <b>TKDD</b> 2024 </i>
   - title: "Secure Your Model: An Effective Key Prompt Protection Mechanism for Large Language Models"
     authors: <b>Ruixiang Tang*</b>, Yu-Neng Chuang*, Xuanting Cai, Mengnan Du, Xia Hu
     venue: <i>Findings of Annual Conference of the North American Chapter of the ACL, <b>NAACL</b> 2024 </i>
@@ -283,7 +283,7 @@
   - title: Breast Mass Detection in Mammograms via Blending Adversarial Learning
     url: "https://link.springer.com/chapter/10.1007/978-3-030-32778-1_6"
     authors: Chunze Lin, <b>Ruixiang Tang</b>, Darryl D Lin, Langechuan Liu, Jiwen Lu, Yunqiang Chen, Dashan Gao, Jie Zhou
-    venue: <i>International Workshop on <b>Simulation and Synthesis in Medical Imaging</b>, 2020</i>
+    venue: <i>International Workshop on <b>Simulation and Synthesis in Medical Imaging</b>, <b>SASHIMI</b>, 2019</i>
   - title: Deep Feature Disentanglement Learning for Bone Suppression in Chest Radiographs
     url: "https://ieeexplore.ieee.org/document/9098399"
     authors: Chunze Lin, <b>Ruixiang Tang</b>, Darryl D Lin, Langechuan Liu, Jiwen Lu, Yunqiang Chen, Dashan Gao, Jie Zhou
