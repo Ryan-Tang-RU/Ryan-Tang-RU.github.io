@@ -542,37 +542,21 @@ def build_blog():
 # ---------------------------------------------------------------- software
 
 def build_software():
-    """One card per project, newest first.
-
-    Uses the Blog page's classes so a new section needs no new CSS. `notes` is for
-    the caveats a reader needs in order not to misread the thing - they belong next
-    to the link, not buried inside the tool.
-    """
+    """One card per project, newest first. Uses the Blog page's classes, so a new
+    section needs no new CSS."""
     if not software["projects"]:
-        # Nothing to show: do not write a page, and do not put one in the sitemap.
-        # An empty section on a public site is worse than no section.
+        # Nothing to show: write no page and contribute nothing to the sitemap. An
+        # empty section on a public site is worse than no section.
         return
     rows = ""
     for pr in software["projects"]:
-        tags = "".join(f"<span>{t}</span>" for t in pr.get("tags", []))
         meta = " &middot; ".join(
             str(x) for x in (pr.get("date"), pr.get("status")) if x)
-        notes = ""
-        if pr.get("notes"):
-            notes = ("<ul class=\"gs\">"
-                     + "".join(f"<li>{n}</li>" for n in pr["notes"]) + "</ul>")
-        links = f'<p class="go"><a href="{pr["url"]}">[Open it &rarr;]</a></p>'
-        if pr.get("repo"):
-            links = ('<p class="go">'
-                     f'<a href="{pr["url"]}">[Open it &rarr;]</a> '
-                     f'<a href="{pr["repo"]}">[Source &rarr;]</a></p>')
         rows += f"""<li>
   <h2 class="h-item"><a href="{pr['url']}">{pr['title']}</a></h2>
   <p class="post__date">{meta}</p>
-  <p class="post__tags">{tags}</p>
   <p>{pr['summary']}</p>
-  {notes}
-  {links}
+  <p class="go"><a href="{pr['url']}">[Open it &rarr;]</a></p>
 </li>"""
     body = (f'<h1 class="h-page">{software["heading"]}</h1>'
             f'<p>{software["intro"]}</p>'

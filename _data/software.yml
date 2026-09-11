@@ -1,10 +1,13 @@
-# Software page. Each entry becomes one card, newest first; `url` may be a page in
-# this site or an external link. Keep `summary` to a few sentences - the detail
-# belongs on the project's own page. Use `>-` for any text containing a colon,
-# which YAML would otherwise read as a mapping key.
+# Software page. One entry per project, newest first. Keep `summary` to a sentence
+# or two; `url` may be a page in this site or an external link. Use `>-` for any
+# text containing a colon, which YAML would otherwise read as a mapping key.
+#
+#  - title: Name
+#    url: software/slug/
+#    date: 2026
+#    status: in development      # optional
+#    summary: >-
+#      One or two sentences.
 heading: Software
-intro: >-
-  Tools built in the course of research, kept in a state where someone else can run
-  them. Each one links to something you can open and use, not only to a repository.
-# The explorer goes here once the interactive build is published.
+intro: Tools built in the course of research.
 projects: []
