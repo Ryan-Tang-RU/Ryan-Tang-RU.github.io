@@ -186,8 +186,15 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
   pointer-events: none;
 }
 
-/* the checkbox is the state; it stays focusable rather than hidden */
-.news-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; }
+/* The checkbox carries the state and stays focusable rather than hidden. It is
+   pinned to the bottom of the column, next to its label: clicking a label
+   focuses its control, and the browser scrolls a focused control into view, so
+   a checkbox parked at the top of the list would throw the reader back to the
+   first item on every click. */
+.news-toggle {
+  position: absolute; left: 0; bottom: 0;
+  width: 1px; height: 1px; opacity: 0; margin: 0;
+}
 .news-toggle:checked ~ .newslist { max-height: none; }
 .news-toggle:checked ~ .newslist::after { display: none; }
 
