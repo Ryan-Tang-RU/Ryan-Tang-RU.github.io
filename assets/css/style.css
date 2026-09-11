@@ -170,24 +170,37 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
 .news .tag--paper { color: var(--tag-paper); }
 .news .tag--award { color: var(--tag-award); }
 
-/* There are far more news items than press cuttings, so cap the list at about
-   the height of the rail beside it and let it scroll rather than running the
-   page on for another two thousand pixels. Only where the two sit side by side. */
-@media (min-width: 1101px) {
-  .news {
-    max-height: 1500px; overflow-y: scroll; padding-right: 16px;
-    overscroll-behavior: contain; scrollbar-gutter: stable;
-    /* macOS hides overlay scrollbars until you scroll, so the track itself is
-       drawn here and stays visible either way */
-    border-right: 1px solid var(--rule);
-    scrollbar-width: thin; scrollbar-color: #c4c4c4 #efefef;
-  }
-  .news:focus-visible { outline: 2px solid var(--link); outline-offset: 4px; }
-  .news::-webkit-scrollbar { width: 8px; }
-  .news::-webkit-scrollbar-track { background: #efefef; border-radius: 4px; }
-  .news::-webkit-scrollbar-thumb { background: #c4c4c4; border-radius: 4px; }
-  .news::-webkit-scrollbar-thumb:hover { background: #ababab; }
+/* The news list is much longer than the press rail beside it. It used to be a
+   nested scroll box, which traps the wheel: the page stops moving while the
+   pointer is over the list, and you have to scroll past fifty items to get out.
+   So nothing here scrolls on its own. The list is simply clipped to about the
+   rail's height, fades out at the cut, and a button lifts the cap. The page
+   scrolls normally wherever the pointer happens to be. */
+
+.newscol { position: relative; min-width: 0; }
+
+.newslist { position: relative; max-height: 1440px; overflow: hidden; }
+.newslist::after {           /* the fade that says the list continues */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 130px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, var(--paper) 88%);
+  pointer-events: none;
 }
+
+/* the checkbox is the state; it stays focusable rather than hidden */
+.news-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; }
+.news-toggle:checked ~ .newslist { max-height: none; }
+.news-toggle:checked ~ .newslist::after { display: none; }
+
+.news-more {
+  display: inline-block; margin: 16px 0 0; cursor: pointer;
+  color: var(--link); font-size: 15px; line-height: 1.6;
+  border-bottom: 1px solid transparent;
+}
+.news-more:hover { border-bottom-color: currentColor; }
+.news-toggle:focus-visible ~ .news-more { outline: 2px solid var(--link); outline-offset: 3px; }
+.news-more__shut { display: none; }
+.news-toggle:checked ~ .news-more .news-more__open { display: none; }
+.news-toggle:checked ~ .news-more .news-more__shut { display: inline; }
 
 .press { list-style: none; margin: 0; padding: 0; font-size: 14px; line-height: 1.5; }
 .press li { margin: 0 0 16px; }
@@ -275,6 +288,7 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
   :root { --gutter: 40px; }
   .areas__in { grid-template-columns: repeat(2, 1fr); gap: 30px; }
   .newsband { grid-template-columns: 1fr; gap: 34px; }
+  .newslist { max-height: 900px; }
 }
 
 @media (max-width: 700px) {
