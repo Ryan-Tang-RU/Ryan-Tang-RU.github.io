@@ -307,6 +307,10 @@ def build_home():
             svc += f'<p class="svc-label">{g["label"]}</p>'
         svc += '<ul class="gs">' + "".join(f"<li>{i}</li>" for i in g["items"]) + "</ul>"
 
+    # a closing invitation, skipped if site.yml does not carry one
+    joining = (f'<p class="joining">{site["joining"]}</p>'
+               if site.get("joining") else "")
+
     body = f"""<div class="ident">
   <div class="ident__body">
     <h1 class="h-item">{site['name_full']}</h1>
@@ -331,7 +335,8 @@ def build_home():
 </div>
 
 <h2 class="h-page">Services</h2>
-{svc}"""
+{svc}
+{joining}"""
 
     shot = site.get("banner_image")
     style = ""
