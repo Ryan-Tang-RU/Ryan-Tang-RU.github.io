@@ -324,19 +324,19 @@ def build_home():
 
 <h2 class="h-sec">About Our Lab</h2>
 {bio}
+{joining}
 
 <h2 class="h-sec">Research Overview</h2>
 <div class="areas"><div class="areas__in">{areas}</div></div>
 
 <h2 class="h-sec">News</h2>
 <div class="newsband">
-  <ul class="news">{items}</ul>
+  <ul class="news" tabindex="0" aria-label="News">{items}</ul>
   <ul class="press">{press}</ul>
 </div>
 
 <h2 class="h-page">Services</h2>
-{svc}
-{joining}"""
+{svc}"""
 
     shot = site.get("banner_image")
     style = ""

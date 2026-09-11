@@ -170,6 +170,25 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
 .news .tag--paper { color: var(--tag-paper); }
 .news .tag--award { color: var(--tag-award); }
 
+/* There are far more news items than press cuttings, so cap the list at about
+   the height of the rail beside it and let it scroll rather than running the
+   page on for another two thousand pixels. Only where the two sit side by side. */
+@media (min-width: 1101px) {
+  .news {
+    max-height: 1500px; overflow-y: scroll; padding-right: 16px;
+    overscroll-behavior: contain; scrollbar-gutter: stable;
+    /* macOS hides overlay scrollbars until you scroll, so the track itself is
+       drawn here and stays visible either way */
+    border-right: 1px solid var(--rule);
+    scrollbar-width: thin; scrollbar-color: #c4c4c4 #efefef;
+  }
+  .news:focus-visible { outline: 2px solid var(--link); outline-offset: 4px; }
+  .news::-webkit-scrollbar { width: 8px; }
+  .news::-webkit-scrollbar-track { background: #efefef; border-radius: 4px; }
+  .news::-webkit-scrollbar-thumb { background: #c4c4c4; border-radius: 4px; }
+  .news::-webkit-scrollbar-thumb:hover { background: #ababab; }
+}
+
 .press { list-style: none; margin: 0; padding: 0; font-size: 14px; line-height: 1.5; }
 .press li { margin: 0 0 16px; }
 .press a { color: var(--link); display: block; }
@@ -178,7 +197,7 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
 .svc-label { font-weight: 700; margin: 14px 0 4px; }
 
 /* the closing invitation under Services */
-.joining { margin: 30px 0 0; padding-top: 20px; border-top: 1px solid var(--rule); }
+.joining { margin: 22px 0 0; }
 .joining a { color: var(--link); }
 
 /* ---------------------------------------------------------------- publications */
