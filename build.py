@@ -307,6 +307,10 @@ def build_home():
             svc += f'<p class="svc-label">{g["label"]}</p>'
         svc += '<ul class="gs">' + "".join(f"<li>{i}</li>" for i in g["items"]) + "</ul>"
 
+    # a closing invitation, skipped if site.yml does not carry one
+    joining = (f'<p class="joining">{site["joining"]}</p>'
+               if site.get("joining") else "")
+
     body = f"""<div class="ident">
   <div class="ident__body">
     <h1 class="h-item">{site['name_full']}</h1>
@@ -331,7 +335,8 @@ def build_home():
 </div>
 
 <h2 class="h-page">Services</h2>
-{svc}"""
+{svc}
+{joining}"""
 
     shot = site.get("banner_image")
     style = ""
@@ -349,12 +354,33 @@ def slug(s):
     return "".join(c.lower() if c.isalnum() else "-" for c in s).strip("-")
 
 
+ME = "<b>Ruixiang Tang</b>"
+
+
+def mark_corresponding(authors, explicit=None):
+    """Flag the papers Ruixiang is corresponding author on.
+
+    The convention on this site is that he is corresponding author when he is
+    last author. An entry can set `corresponding: true/false` in the YAML when
+    that does not hold, which is the only thing to change if a paper is an
+    exception.
+    """
+    last = authors.rstrip().rstrip(".").rstrip().endswith(ME)
+    flag = last if explicit is None else explicit
+    if not flag or ME not in authors:
+        return authors
+    i = authors.rfind(ME)
+    return (authors[:i] + ME
+            + '<sup class="corr" title="corresponding author">&dagger;</sup>'
+            + authors[i + len(ME):])
+
+
 def build_publications():
     scholar = next(l["url"] for l in site["links"] if l["label"] == "Google Scholar")
     blocks = ""
     for sec in pubs:
         name = sec["section"]
-        if name == "Preprint":
+        if name in ("Preprint", "Workshop Papers"):
             blocks += f'<h2 class="h-group" id="{slug(name)}">{name}</h2>'
         else:
             if sec is pubs[1]:
@@ -366,7 +392,7 @@ def build_publications():
             t = f'<a href="{p["url"]}">{t}</a>' if p.get("url") else t
             rows += (
                 f'<li><span class="t">{t}</span>'
-                f'<span class="a">{p["authors"]}</span>'
+                f'<span class="a">{mark_corresponding(p["authors"], p.get("corresponding"))}</span>'
                 f'<span class="v">{p["venue"]}</span></li>'
             )
         blocks += f'<ul class="pubs">{rows}</ul>'
@@ -374,7 +400,7 @@ def build_publications():
     total = sum(len(s["items"]) for s in pubs)
     body = f"""<h1 class="h-page">Conference/Journal Papers
   <a class="scholar" href="{scholar}">[google scholar]</a></h1>
-<p class="pub-note">(* indicates equal contributions)</p>
+<p class="pub-note">(* indicates equal contribution; &dagger; indicates corresponding author)</p>
 {blocks}"""
     page("publications.html", f"Publications · {site['name']}", body,
          f"{total} publications by {site['name_full']} on trustworthy AI, interpretability, "
