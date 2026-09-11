@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="An interactive knowledge graph of the type 1 diabetes literature: 131,511 PubMed records, 26,185 normalised entities, co-mention neighbourhoods across ten time windows.">
+<meta property="og:title" content="T1D Knowledge Graph Explorer">
+<meta property="og:description" content="Co-mention neighbourhoods in the type 1 diabetes literature, 1960-2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.ruixiangtang.net/software/t1d-kg/">
+<link rel="canonical" href="https://www.ruixiangtang.net/software/t1d-kg/">
+<link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+<title>T1D Graph Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* one link back into the site; the page is otherwise self-contained */
+.bar .home{color:#cfe3f5;text-decoration:none;font:400 12px "IBM Plex Mono",monospace;
+  margin-right:14px;white-space:nowrap}
+.bar .home:hover{color:#fff;text-decoration:underline}
+/* The payload is 2.2 MB. Loaded as a blocking <script src> the page showed nothing
+   at all until the last byte arrived; fetched, it can report its own progress. */
+.boot{position:fixed;inset:0;z-index:200;display:flex;align-items:center;
+  justify-content:center;background:#f6f9fd;transition:opacity .25s}
+.boot.gone{opacity:0;pointer-events:none}
+.boot__card{width:min(420px,84vw);text-align:center;
+  font-family:"Open Sans",system-ui,sans-serif}
+.boot__t{font:700 15px/1.3 "Open Sans",system-ui,sans-serif;color:#16324f}
+.boot__s{margin-top:6px;font-size:12.5px;color:#4e4e4e}
+.boot__track{margin-top:14px;height:5px;border-radius:99px;background:#e8ecf3;
+  overflow:hidden}
+.boot__fill{height:100%;width:0;border-radius:99px;background:#219197;
+  transition:width .15s linear}
+.boot__fill.spin{width:35%;animation:bootslide 1.1s ease-in-out infinite}
+@keyframes bootslide{0%{margin-left:-35%}100%{margin-left:100%}}
+.boot__n{margin-top:7px;font:400 11px "IBM Plex Mono",ui-monospace,monospace;
+  color:#6b7280;min-height:14px}
+.boot__err{color:#9B3724}
+@media (prefers-reduced-motion:reduce){
+  .boot__fill.spin{animation:none;width:100%}
+  .boot{transition:none}
+}
+:root{
+  /* PanKbase house palette (taken from pankbase.org CSS) */
+  --navy:#16324f; --brand:#219197; --link:#175cd3;
+  --ground:#f6f9fd; --surface:#ffffff; --surface-2:#edf0f7; --tint:#e8f1fb;
+  --ink:#1f2937; --ink-2:#4e4e4e; --ink-3:#6b7280; --rule:#d9e6f5; --hair:#e8ecf3;
+  /* categorical series — validated: lightness band, chroma floor, CVD >= 8,
+     normal-vision floor >= 15, contrast >= 3:1 against the ground */
+  --t-gene:#0f9a7e; --t-disease:#1f6fc4; --t-chem:#e0661f; --t-species:#b8336a;
+  --t-other:#6b7280;
+  --new:#c78720; --lost:#9aa5b1;
+  --sans:"Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --navy:#0c1826; --brand:#2fa8ae; --link:#6aa6f0;
+  --ground:#121a24; --surface:#18222e; --surface-2:#1f2b39; --tint:#1a2836;
+  --ink:#e7edf3; --ink-2:#a9b6c2; --ink-3:#7d8b99; --rule:#2a3846; --hair:#222e3c;
+  --t-gene:#30a67f; --t-disease:#2a71d8; --t-chem:#b5652f; --t-species:#c23575;
+  --t-other:#8593a1; --new:#d99b2f; --lost:#55636f;
+}}
+:root[data-theme="dark"]{
+  --navy:#0c1826; --brand:#2fa8ae; --link:#6aa6f0;
+  --ground:#121a24; --surface:#18222e; --surface-2:#1f2b39; --tint:#1a2836;
+  --ink:#e7edf3; --ink-2:#a9b6c2; --ink-3:#7d8b99; --rule:#2a3846; --hair:#222e3c;
+  --t-gene:#30a67f; --t-disease:#2a71d8; --t-chem:#b5652f; --t-species:#c23575;
+  --t-other:#8593a1; --new:#d99b2f; --lost:#55636f;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;
+  line-height:1.5}
+a{color:var(--link)}
+.bar{background:var(--navy);color:#fff;padding:14px 22px;display:flex;
+  align-items:baseline;gap:16px;flex-wrap:wrap}
+.bar h1{font-size:1.06rem;font-weight:700;margin:0;letter-spacing:-.01em}
+.bar .sub{font-size:.8rem;opacity:.78}
+.bar .snap{margin-left:auto;font-family:var(--mono);font-size:.72rem;opacity:.7}
+.wrap{max-width:1500px;margin:0 auto;padding:18px 22px 60px}
+.note{background:var(--tint);border:1px solid var(--rule);border-radius:4px;
+  padding:10px 14px;font-size:.82rem;color:var(--ink-2);margin:0 0 16px}
+.note b{color:var(--ink)}
+
+/* controls */
+.ctl{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin:0 0 16px}
+.fld{display:flex;flex-direction:column;gap:5px}
+label{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
+  font-weight:600}
+input[type=text]{font-family:var(--sans);font-size:.9rem;padding:7px 10px;width:290px;
+  border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink)}
+input[type=text]:focus{outline:2px solid var(--brand);outline-offset:1px}
+.hits{position:absolute;z-index:20;background:var(--surface);border:1px solid var(--rule);
+  border-radius:4px;max-height:280px;overflow:auto;width:290px;
+  box-shadow:0 6px 18px rgba(22,50,79,.14)}
+.hits div{padding:6px 10px;cursor:pointer;font-size:.85rem;display:flex;gap:8px;
+  align-items:center}
+.hits div:hover,.hits div.sel{background:var(--tint)}
+.hits .ty{font-family:var(--mono);font-size:.68rem;color:var(--ink-3)}
+.wsel{display:flex;gap:2px;flex-wrap:wrap}
+.wsel button{font-family:var(--mono);font-size:.72rem;padding:6px 7px;cursor:pointer;
+  border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);
+  border-radius:3px}
+.wsel button[aria-pressed=true]{background:var(--brand);border-color:var(--brand);
+  color:#fff;font-weight:500}
+.wsel button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.play{display:flex;gap:6px}
+.play button{font-size:.8rem;padding:6px 12px;cursor:pointer;border:1px solid var(--rule);
+  background:var(--surface);color:var(--ink);border-radius:4px;font-family:var(--sans)}
+.play button:hover{background:var(--tint)}
+
+/* layout */
+.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px}
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:5px;
+  padding:14px 16px}
+.card h2{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 10px;font-weight:700}
+canvas{display:block;width:100%;height:auto}
+
+/* turnover stat strip */
+.turn{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);
+  border:1px solid var(--hair);border-radius:4px;margin:0 0 12px;overflow:hidden}
+.turn div{background:var(--surface);padding:9px 11px}
+.turn .v{font-family:var(--mono);font-size:1.16rem;font-weight:500;
+  font-variant-numeric:tabular-nums;line-height:1.15}
+.turn .k{font-size:.68rem;color:var(--ink-3);margin-top:3px;line-height:1.3}
+.turn .v.new{color:var(--new)} .turn .v.lost{color:var(--lost)}
+
+/* legend */
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:.76rem;color:var(--ink-2);
+  margin:10px 0 0;align-items:center}
+.leg span{display:flex;gap:5px;align-items:center}
+.leg svg{flex:none}
+
+/* table */
+.scroll{overflow:auto;max-height:340px}
+table{border-collapse:collapse;width:100%;font-size:.82rem}
+th,td{padding:5px 8px;text-align:left;border-bottom:1px solid var(--hair);
+  white-space:nowrap}
+thead th{position:sticky;top:0;background:var(--surface-2);font-size:.66rem;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:700;
+  z-index:2}
+td.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--tint)}
+.chip{font-family:var(--mono);font-size:.62rem;padding:.08em .34em;border-radius:2px;
+  font-weight:500}
+.chip.new{background:color-mix(in oklab,var(--new) 18%,transparent);color:var(--new)}
+.chip.rel{background:color-mix(in oklab,var(--brand) 18%,transparent);color:var(--brand)}
+.nm{max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* contact sheet */
+.sheet{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-top:4px}
+.sheet figure{margin:0;cursor:pointer;border:1px solid var(--hair);border-radius:4px;
+  padding:4px 3px 2px;background:var(--surface);text-align:center}
+.sheet figure[aria-current=true]{border-color:var(--brand);
+  box-shadow:inset 0 0 0 1px var(--brand)}
+.sheet figcaption{font-family:var(--mono);font-size:.6rem;color:var(--ink-3);
+  margin-top:1px}
+@media (max-width:1080px){
+  .grid{grid-template-columns:1fr}
+  .sheet{grid-template-columns:repeat(5,1fr)}
+}
+.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:.7rem;color:var(--ink-3);line-height:1.7}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="boot" id="boot" role="status" aria-live="polite">
+  <div class="boot__card">
+    <div class="boot__t">T1D Knowledge Graph</div>
+    <div class="boot__s" id="bootmsg">Loading the graph&hellip;</div>
+    <div class="boot__track"><div class="boot__fill" id="bootfill"></div></div>
+    <div class="boot__n" id="bootn"></div>
+  </div>
+</div>
+
+<div class="bar">
+  <a class="home" href="../../software.html">&larr; Ruixiang Tang &middot; Software</a>
+  <h1>T1D Graph Explorer</h1>
+  <span class="sub">PanKbase AI Pilot &middot; TRAIL Lab &middot; co-mention neighbourhoods over 65 years</span>
+  <span class="snap" id="snap"></span>
+</div>
+
+<div class="wrap">
+  <p class="note">Pick an entity and move through the ten windows. The ring redraws for
+  each window and marks which neighbours are <b>new</b>, which are <b>held</b> from the
+  previous window, and which have <b>gone</b> — so the turnover is visible rather than
+  inferred. Edge weight is PMI; the <b>relation</b> chip means PubTator extracted a
+  relation for that pair, which exists only for gene/disease/chemical/variant
+  combinations and never between two diseases.</p>
+
+  <div class="ctl">
+    <div class="fld" style="position:relative">
+      <label for="q">Entity</label>
+      <input type="text" id="q" placeholder="type 1 diabetes, INS, teplizumab, HLA-DQB1…"
+             autocomplete="off" role="combobox" aria-expanded="false" aria-controls="hits">
+      <div class="hits" id="hits" hidden role="listbox"></div>
+    </div>
+    <div class="fld">
+      <label>Window</label>
+      <div class="wsel" id="wsel" role="group" aria-label="time window"></div>
+    </div>
+    <div class="fld">
+      <label>Step</label>
+      <div class="play">
+        <button id="prev" title="previous window">◀</button>
+        <button id="playb" title="play through the windows">▶ play</button>
+        <button id="next" title="next window">▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2 id="gtitle">Neighbourhood</h2>
+      <canvas id="cv" width="900" height="620" role="img"
+        aria-label="Radial neighbourhood graph of the selected entity for the selected window"></canvas>
+      <div class="leg" id="leg"></div>
+    </div>
+
+    <div>
+      <div class="turn" id="turn"></div>
+      <div class="card" style="margin-bottom:16px">
+        <h2>Own trajectory, 1960–2025 <span style="font-weight:400;text-transform:none;letter-spacing:0">— share of papers where its type is identified; shaded bands are Kleinberg bursts</span></h2>
+        <canvas id="tr" width="660" height="150" role="img"
+          aria-label="Share-over-time trace for the selected entity with burst intervals"></canvas>
+      </div>
+      <div class="card">
+        <h2>Neighbours in this window <span id="ncount" style="font-weight:400"></span></h2>
+        <div class="scroll">
+          <table id="ntab">
+            <thead><tr><th>entity</th><th>type</th><th class="n">papers</th>
+              <th class="n">PMI</th><th>state</th><th>trend</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>The same neighbourhood across every window — click one to jump</h2>
+    <div class="sheet" id="sheet"></div>
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    <div class="card">
+      <h2>Top by co-mention degree in this window</h2>
+      <div class="scroll" style="max-height:260px">
+        <table id="dtab">
+          <thead><tr><th>entity</th><th>type</th><th class="n">degree</th>
+            <th class="n">papers</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Pair detail</h2>
+      <div id="pair" style="font-size:.86rem;color:var(--ink-2)">
+        Click a neighbour in the table or the ring.</div>
+    </div>
+  </div>
+
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+window.T1DBoot = (D) => {
+const TYPE_SLOT = {Gene:"gene", Disease:"disease", Chemical:"chem", Species:"species"};
+const SHAPE = {Gene:"circle", Disease:"square", Chemical:"diamond", Species:"triangle"};
+const RING = 24;                     // neighbours drawn in the ring
+let focal = null, wi = D.windows.length - 1, playing = null, hoverIdx = -1;
+
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const typeName = i => D.types[i] || "Other";
+const colorOf = ti => cssv("--t-" + (TYPE_SLOT[typeName(ti)] || "other"));
+const shapeOf = ti => SHAPE[typeName(ti)] || "dot";
+
+// ---- per-window adjacency, built once ----
+const adj = D.windows.map(() => new Map());
+for (const [w, a, b, c, pmi] of D.edges) {
+  if (!adj[w].has(a)) adj[w].set(a, []);
+  if (!adj[w].has(b)) adj[w].set(b, []);
+  adj[w].get(a).push([b, c, pmi]);
+  adj[w].get(b).push([a, c, pmi]);
+}
+const edgeKey = (a, b) => a < b ? a + "_" + b : b + "_" + a;
+const wEdge = D.windows.map(() => new Map());
+for (const [w, a, b, c, pmi] of D.edges) wEdge[w].set(edgeKey(a, b), [c, pmi]);
+
+const neigh = (i, w) => (adj[w].get(i) || []).slice().sort((x, y) => y[2] - x[2]);
+
+// ---- search ----
+const q = document.getElementById("q"), hits = document.getElementById("hits");
+function search(s) {
+  s = s.trim().toLowerCase();
+  if (!s) return [];
+  const out = [];
+  for (let i = 0; i < D.nodes.length; i++) {
+    const n = D.nodes[i], nm = n[1].toLowerCase();
+    const k = nm.indexOf(s);
+    if (k >= 0) out.push([k === 0 ? 0 : 1, -n[2], i]);
+  }
+  out.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  return out.slice(0, 40).map(x => x[2]);
+}
+function renderHits(list) {
+  hits.innerHTML = "";
+  if (!list.length) { hits.hidden = true; q.setAttribute("aria-expanded", "false"); return; }
+  for (const i of list) {
+    const n = D.nodes[i], d = document.createElement("div");
+    d.setAttribute("role", "option");
+    d.innerHTML = `<svg width="10" height="10" aria-hidden="true">${
+      glyphSvg(n[0], 5, 5, 4)}</svg><span>${esc(n[1])}</span>` +
+      `<span class="ty">${typeName(n[0])} · ${n[2].toLocaleString()}</span>`;
+    d.onclick = () => { pick(i); hits.hidden = true; };
+    hits.appendChild(d);
+  }
+  hits.hidden = false; q.setAttribute("aria-expanded", "true");
+}
+q.addEventListener("input", () => renderHits(search(q.value)));
+q.addEventListener("focus", () => { if (q.value) renderHits(search(q.value)); });
+document.addEventListener("click", e => {
+  if (!hits.contains(e.target) && e.target !== q) hits.hidden = true;
+});
+const esc = s => String(s).replace(/[&<>"]/g, c =>
+  ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+
+function glyphSvg(ti, cx, cy, r) {
+  const c = colorOf(ti), sh = shapeOf(ti);
+  if (sh === "square") return `<rect x="${cx-r}" y="${cy-r}" width="${2*r}" height="${2*r}" rx="1" fill="${c}"/>`;
+  if (sh === "diamond") return `<polygon points="${cx},${cy-r*1.2} ${cx+r*1.2},${cy} ${cx},${cy+r*1.2} ${cx-r*1.2},${cy}" fill="${c}"/>`;
+  if (sh === "triangle") return `<polygon points="${cx},${cy-r*1.2} ${cx+r*1.1},${cy+r} ${cx-r*1.1},${cy+r}" fill="${c}"/>`;
+  if (sh === "dot") return `<circle cx="${cx}" cy="${cy}" r="${r*0.7}" fill="${c}"/>`;
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${c}"/>`;
+}
+
+// ---- window selector ----
+const wsel = document.getElementById("wsel");
+D.windows.forEach((w, i) => {
+  const b = document.createElement("button");
+  b.textContent = w; b.setAttribute("aria-pressed", String(i === wi));
+  b.onclick = () => { wi = i; stop(); draw(); };
+  wsel.appendChild(b);
+});
+const syncWsel = () => [...wsel.children].forEach((b, i) =>
+  b.setAttribute("aria-pressed", String(i === wi)));
+document.getElementById("prev").onclick = () => { wi = Math.max(0, wi - 1); stop(); draw(); };
+document.getElementById("next").onclick = () => { wi = Math.min(D.windows.length - 1, wi + 1); stop(); draw(); };
+const playb = document.getElementById("playb");
+function stop() { if (playing) { clearInterval(playing); playing = null; playb.textContent = "▶ play"; } }
+playb.onclick = () => {
+  if (playing) return stop();
+  playb.textContent = "❙❙ stop";
+  playing = setInterval(() => {
+    wi = (wi + 1) % D.windows.length; draw();
+  }, 1400);
+};
+
+// ---- geometry, tweened ----
+let layout = new Map(), target = new Map(), anim = null;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function computeTarget(list, W, H) {
+  const cx = W / 2, cy = H / 2 + 6, R = Math.min(W, H) * 0.37;
+  const t = new Map([[focal, [cx, cy]]]);
+  const byType = new Map();
+  list.forEach(e => {
+    const ti = D.nodes[e[0]][0];
+    if (!byType.has(ti)) byType.set(ti, []);
+    byType.get(ti).push(e);
+  });
+  const order = [...byType.keys()].sort((a, b) => a - b);
+  let k = 0, total = list.length;
+  for (const ti of order) for (const e of byType.get(ti)) {
+    const a = -Math.PI / 2 + (2 * Math.PI * k) / Math.max(total, 1);
+    const rr = R * (0.78 + 0.22 * (e[2] / Math.max(list[0][2], 0.001)));
+    t.set(e[0], [cx + rr * Math.cos(a), cy + rr * Math.sin(a)]);
+    k++;
+  }
+  return t;
+}
+
+function draw() {
+  syncWsel();
+  const cv = document.getElementById("cv");
+  const W = cv.width, H = cv.height;
+  if (focal === null) {
+    const ctx = cv.getContext("2d");
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssv("--ink-3"); ctx.font = "500 15px " + cssv("--sans");
+    ctx.textAlign = "center";
+    ctx.fillText("Search for an entity to begin — try “type 1 diabetes”, “INS” or “teplizumab”.", W / 2, H / 2);
+    return;
+  }
+  // Compare like with like: the ring shows the top RING neighbours, so turnover is
+  // measured against the previous window's top RING, not against every neighbour it
+  // ever had. T1D alone has 762 neighbours in 2020-2025, so the other comparison
+  // would report ~740 "gone" every window and mean nothing.
+  const list = neigh(focal, wi).slice(0, RING);
+  const prev = new Set(wi > 0 ? neigh(focal, wi - 1).slice(0, RING).map(e => e[0]) : []);
+  const now = new Set(list.map(e => e[0]));
+  const lost = [...prev].filter(x => !now.has(x));
+
+  target = computeTarget(list, W, H);
+  // ghosts for departed neighbours sit just outside the ring
+  lost.slice(0, 10).forEach((x, i, arr) => {
+    const a = -Math.PI / 2 + (2 * Math.PI * i) / Math.max(arr.length, 1) + 0.12;
+    const R = Math.min(W, H) * 0.455;
+    target.set("g" + x, [W / 2 + R * Math.cos(a), H / 2 + 6 + R * Math.sin(a)]);
+  });
+  for (const [k, v] of target) if (!layout.has(k)) layout.set(k, [W / 2, H / 2 + 6]);
+
+  const t0 = performance.now(), DUR = reduce ? 0 : 480;
+  if (anim) cancelAnimationFrame(anim);
+  const start = new Map([...layout].map(([k, v]) => [k, v.slice()]));
+  const step = () => {
+    const p = DUR ? Math.min(1, (performance.now() - t0) / DUR) : 1;
+    const e = 1 - Math.pow(1 - p, 3);
+    for (const [k, tv] of target) {
+      const sv = start.get(k) || [W / 2, H / 2 + 6];
+      layout.set(k, [sv[0] + (tv[0] - sv[0]) * e, sv[1] + (tv[1] - sv[1]) * e]);
+    }
+    paint(list, prev, lost);
+    if (p < 1) anim = requestAnimationFrame(step); else anim = null;
+  };
+  step();
+  panels(list, prev, lost);
+}
+
+function paint(list, prev, lost) {
+  const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+  cv._list = list; cv._prev = prev; cv._lost = lost;
+  const W = cv.width, H = cv.height;
+  ctx.clearRect(0, 0, W, H);
+  const maxP = Math.max(...list.map(e => e[2]), 0.001);
+  const pos = k => layout.get(k) || [W / 2, H / 2];
+
+  // neighbour-to-neighbour edges (the induced subgraph), recessive
+  ctx.lineWidth = 1; ctx.strokeStyle = cssv("--hair");
+  const ids = list.map(e => e[0]);
+  for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) {
+    if (!wEdge[wi].has(edgeKey(ids[i], ids[j]))) continue;
+    const a = pos(ids[i]), b = pos(ids[j]);
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+  }
+  // ghosts
+  ctx.setLineDash([3, 4]); ctx.strokeStyle = cssv("--lost");
+  for (const x of lost.slice(0, 10)) {
+    const p = pos("g" + x), c = pos(focal);
+    ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
+    ctx.fillStyle = cssv("--lost"); ctx.globalAlpha = .55;
+    ctx.beginPath(); ctx.arc(p[0], p[1], 3.5, 0, 7); ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.font = "400 9.5px " + cssv("--sans"); ctx.fillStyle = cssv("--lost");
+    ctx.textAlign = p[0] < W / 2 ? "right" : "left";
+    ctx.fillText(D.nodes[x][1].slice(0, 22), p[0] + (p[0] < W / 2 ? -6 : 6), p[1] + 3);
+  }
+  ctx.setLineDash([]);
+
+  // spokes
+  list.forEach((e, i) => {
+    const a = pos(focal), b = pos(e[0]);
+    const isNew = !prev.has(e[0]) && wi > 0;
+    ctx.lineWidth = 1 + 2.6 * (e[2] / maxP);
+    ctx.strokeStyle = isNew ? cssv("--new") : cssv("--rule");
+    ctx.globalAlpha = hoverIdx === -1 || hoverIdx === i ? 1 : .28;
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+    ctx.globalAlpha = 1;
+  });
+
+  // nodes
+  const glyph = (x, y, ti, r, ring) => {
+    ctx.fillStyle = colorOf(ti);
+    ctx.beginPath();
+    const sh = shapeOf(ti);
+    if (sh === "square") ctx.rect(x - r, y - r, 2 * r, 2 * r);
+    else if (sh === "diamond") { ctx.moveTo(x, y - r * 1.25); ctx.lineTo(x + r * 1.25, y); ctx.lineTo(x, y + r * 1.25); ctx.lineTo(x - r * 1.25, y); ctx.closePath(); }
+    else if (sh === "triangle") { ctx.moveTo(x, y - r * 1.25); ctx.lineTo(x + r * 1.15, y + r); ctx.lineTo(x - r * 1.15, y + r); ctx.closePath(); }
+    else ctx.arc(x, y, sh === "dot" ? r * .7 : r, 0, 7);
+    ctx.fill();
+    // 2px surface ring so overlapping marks stay separable
+    ctx.lineWidth = 2; ctx.strokeStyle = ring || cssv("--surface"); ctx.stroke();
+  };
+  list.forEach((e, i) => {
+    const p = pos(e[0]), n = D.nodes[e[0]];
+    const isNew = !prev.has(e[0]) && wi > 0;
+    ctx.globalAlpha = hoverIdx === -1 || hoverIdx === i ? 1 : .3;
+    glyph(p[0], p[1], n[0], 5 + 3.2 * (e[2] / maxP), isNew ? cssv("--new") : null);
+    ctx.font = (hoverIdx === i ? "600 " : "400 ") + "10.5px " + cssv("--sans");
+    ctx.fillStyle = cssv("--ink-2");
+    ctx.textAlign = p[0] < W / 2 ? "right" : "left";
+    ctx.fillText(n[1].slice(0, 26), p[0] + (p[0] < W / 2 ? -9 : 9), p[1] + 3.5);
+    ctx.globalAlpha = 1;
+  });
+  const c = pos(focal), fn = D.nodes[focal];
+  glyph(c[0], c[1], fn[0], 11, cssv("--brand"));
+  ctx.font = "700 13px " + cssv("--sans"); ctx.fillStyle = cssv("--ink");
+  ctx.textAlign = "center";
+  ctx.fillText(fn[1], c[0], c[1] - 19);
+}
+
+// hover + click on the canvas
+const cvEl = document.getElementById("cv");
+cvEl.addEventListener("mousemove", ev => {
+  const r = cvEl.getBoundingClientRect();
+  const x = (ev.clientX - r.left) * cvEl.width / r.width;
+  const y = (ev.clientY - r.top) * cvEl.height / r.height;
+  let hit = -1;
+  (cvEl._list || []).forEach((e, i) => {
+    const p = layout.get(e[0]); if (!p) return;
+    if (Math.hypot(p[0] - x, p[1] - y) < 14) hit = i;
+  });
+  if (hit !== hoverIdx) {
+    hoverIdx = hit; cvEl.style.cursor = hit >= 0 ? "pointer" : "default";
+    paint(cvEl._list || [], cvEl._prev || new Set(), cvEl._lost || []);
+  }
+});
+cvEl.addEventListener("mouseleave", () => {
+  if (hoverIdx !== -1) { hoverIdx = -1; draw(); }
+});
+cvEl.addEventListener("click", () => {
+  if (hoverIdx >= 0 && cvEl._list) showPair(cvEl._list[hoverIdx][0]);
+});
+
+// ---- side panels ----
+function panels(list, prev, lost) {
+  const now = new Set(list.map(e => e[0]));
+  const held = [...now].filter(x => prev.has(x)).length;
+  const isNew = list.length - held;
+  const jac = prev.size ? (held / (new Set([...prev, ...now])).size) : NaN;
+  document.getElementById("turn").innerHTML = `
+    <div><div class="v">${list.length}<span style="font-size:.62rem;color:var(--ink-3)"> / ${(adj[wi].get(focal)||[]).length}</span></div><div class="k">shown / all neighbours in ${D.windows[wi]}</div></div>
+    <div><div class="v new">${wi ? isNew : "—"}</div><div class="k">new since ${wi ? D.windows[wi-1] : "—"}</div></div>
+    <div><div class="v lost">${wi ? lost.length : "—"}</div><div class="k">gone since ${wi ? D.windows[wi-1] : "—"}</div></div>
+    <div><div class="v">${isFinite(jac) ? jac.toFixed(2) : "—"}</div><div class="k">Jaccard of the top ${RING} vs the previous window</div></div>`;
+
+  document.getElementById("gtitle").textContent =
+    `Neighbourhood — ${D.nodes[focal][1]}, ${D.windows[wi]}`;
+  document.getElementById("ncount").textContent =
+    `— top ${list.length} by PMI`;
+
+  const tb = document.querySelector("#ntab tbody");
+  tb.innerHTML = "";
+  for (const [j, c, pmi] of list) {
+    const n = D.nodes[j], nw = !prev.has(j) && wi > 0;
+    const rel = D.relpairs[edgeKey(focal, j)];
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="nm"><svg width="10" height="10" aria-hidden="true">${
+        glyphSvg(n[0], 5, 5, 4)}</svg> ${esc(n[1])}</td>` +
+      `<td style="font-family:var(--mono);font-size:.72rem">${typeName(n[0])}</td>` +
+      `<td class="n">${c.toLocaleString()}</td><td class="n">${pmi.toFixed(2)}</td>` +
+      `<td>${nw ? '<span class="chip new">NEW</span>' : ""}` +
+      `${rel ? ' <span class="chip rel">REL</span>' : ""}</td>` +
+      `<td>${spark(j)}</td>`;
+    tr.onclick = () => showPair(j);
+    tb.appendChild(tr);
+  }
+  trace();
+  contact();
+  degree();
+}
+
+function spark(j) {
+  const v = D.windows.map((_, w) => {
+    const e = (adj[w].get(focal) || []).find(x => x[0] === j);
+    return e ? e[1] : 0;
+  });
+  const mx = Math.max(...v, 1), W = 62, H = 14;
+  const pts = v.map((x, i) => `${(i * W / (v.length - 1)).toFixed(1)},${(H - 1 - (H - 3) * x / mx).toFixed(1)}`);
+  return `<svg width="${W}" height="${H}" aria-label="co-mention across windows">` +
+    `<polyline points="${pts.join(" ")}" fill="none" stroke="${cssv("--brand")}" stroke-width="1.4"/>` +
+    `<circle cx="${(wi * W / (v.length - 1)).toFixed(1)}" cy="${(H - 1 - (H - 3) * v[wi] / mx).toFixed(1)}" r="2" fill="${cssv("--brand")}"/></svg>`;
+}
+
+function trace() {
+  const cv = document.getElementById("tr"), ctx = cv.getContext("2d");
+  const W = cv.width, H = cv.height, L = 34, B = 18, T = 8;
+  ctx.clearRect(0, 0, W, H);
+  const s = D.series[focal], mx = D.series_max[focal], ys = D.years;
+  const px = i => L + i * (W - L - 8) / (ys.length - 1);
+  const py = v => T + (H - T - B) * (1 - v / 255);
+  // burst bands
+  ctx.fillStyle = cssv("--tint");
+  for (const [a, b] of (D.bursts[focal] || [])) {
+    const i0 = ys.indexOf(a), i1 = ys.indexOf(b);
+    if (i0 < 0) continue;
+    ctx.fillRect(px(i0), T, Math.max(px(i1 < 0 ? ys.length - 1 : i1) - px(i0), 2), H - T - B);
+  }
+  // current window marker
+  const wlab = D.windows[wi].split("-").map(Number);
+  const a0 = ys.indexOf(wlab[0]), a1 = ys.indexOf(Math.min(wlab[1], ys[ys.length - 1]));
+  if (a0 >= 0) {
+    ctx.fillStyle = cssv("--surface-2");
+    ctx.globalAlpha = .85;
+    ctx.fillRect(px(a0), T, Math.max(px(a1 < 0 ? ys.length - 1 : a1) - px(a0), 3), H - T - B);
+    ctx.globalAlpha = 1;
+  }
+  ctx.strokeStyle = cssv("--hair"); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(L, H - B); ctx.lineTo(W - 8, H - B); ctx.stroke();
+  ctx.strokeStyle = colorOf(D.nodes[focal][0]); ctx.lineWidth = 2;
+  ctx.beginPath();
+  s.forEach((v, i) => i ? ctx.lineTo(px(i), py(v)) : ctx.moveTo(px(i), py(v)));
+  ctx.stroke();
+  ctx.font = "400 9px " + cssv("--mono"); ctx.fillStyle = cssv("--ink-3");
+  ctx.textAlign = "center";
+  for (const y of [1960, 1980, 2000, 2020]) {
+    const i = ys.indexOf(y); if (i >= 0) ctx.fillText(y, px(i), H - 6);
+  }
+  ctx.textAlign = "right";
+  ctx.fillText(mx ? (mx * 100).toFixed(1) + "%" : "0", L - 4, T + 7);
+  ctx.fillText("0", L - 4, H - B);
+}
+
+function contact() {
+  const box = document.getElementById("sheet");
+  box.innerHTML = "";
+  D.windows.forEach((w, k) => {
+    const f = document.createElement("figure");
+    f.setAttribute("aria-current", String(k === wi));
+    const list = neigh(focal, k).slice(0, 14);
+    // same like-with-like rule as the main ring
+    const prev = new Set(k > 0 ? neigh(focal, k - 1).slice(0, 14).map(e => e[0]) : []);
+    const S = 96, c = S / 2, R = S * 0.36, mx = Math.max(...list.map(e => e[2]), .001);
+    let g = "";
+    list.forEach((e, i) => {
+      const a = -Math.PI / 2 + 2 * Math.PI * i / Math.max(list.length, 1);
+      const x = c + R * Math.cos(a), y = c + R * Math.sin(a);
+      const nw = k > 0 && !prev.has(e[0]);
+      g += `<line x1="${c}" y1="${c}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${
+        nw ? cssv("--new") : cssv("--rule")}" stroke-width="${(0.6 + 1.4 * e[2] / mx).toFixed(2)}"/>`;
+      g += glyphSvg(D.nodes[e[0]][0], +x.toFixed(1), +y.toFixed(1), 2.6);
+    });
+    g += glyphSvg(D.nodes[focal][0], c, c, 4.4);
+    f.innerHTML = `<svg viewBox="0 0 ${S} ${S}" width="100%" aria-label="${w}: ${list.length} neighbours">${g}</svg>` +
+      `<figcaption>${w}</figcaption>`;
+    f.onclick = () => { wi = k; stop(); draw(); };
+    box.appendChild(f);
+  });
+}
+
+function degree() {
+  const rows = [];
+  for (const [i, es] of adj[wi]) rows.push([i, es.length,
+    es.reduce((a, e) => a + e[1], 0)]);
+  rows.sort((a, b) => b[1] - a[1]);
+  const tb = document.querySelector("#dtab tbody"); tb.innerHTML = "";
+  for (const [i, deg, pap] of rows.slice(0, 40)) {
+    const n = D.nodes[i], tr = document.createElement("tr");
+    tr.innerHTML = `<td class="nm"><svg width="10" height="10" aria-hidden="true">${
+        glyphSvg(n[0], 5, 5, 4)}</svg> ${esc(n[1])}${i === focal ? " ←" : ""}</td>` +
+      `<td style="font-family:var(--mono);font-size:.72rem">${typeName(n[0])}</td>` +
+      `<td class="n">${deg}</td><td class="n">${pap.toLocaleString()}</td>`;
+    tr.onclick = () => pick(i);
+    tb.appendChild(tr);
+  }
+}
+
+function showPair(j) {
+  const key = edgeKey(focal, j), rel = D.relpairs[key];
+  let first = null;
+  for (let w = 0; w < D.windows.length; w++) if (wEdge[w].has(key)) { first = w; break; }
+  const nA = D.nodes[focal], nB = D.nodes[j];
+  const per = D.windows.map((w, k) => {
+    const e = wEdge[k].get(key);
+    return `<tr><td style="font-family:var(--mono);font-size:.74rem">${w}</td>` +
+      `<td class="n">${e ? e[0].toLocaleString() : "—"}</td>` +
+      `<td class="n">${e ? e[1].toFixed(2) : "—"}</td></tr>`;
+  }).join("");
+  document.getElementById("pair").innerHTML =
+    `<p style="margin:0 0 8px"><b>${esc(nA[1])}</b> &nbsp;—&nbsp; <b>${esc(nB[1])}</b></p>` +
+    `<p style="margin:0 0 10px;font-size:.82rem">First window with a co-mention above ` +
+    `threshold: <b>${first === null ? "none" : D.windows[first]}</b>. ` +
+    (rel ? `First extracted relation: <b>${rel[0]}</b> (${esc(rel[1])}).`
+         : `<b>No extracted relation.</b> For a ${typeName(nA[0]).toLowerCase()}–` +
+           `${typeName(nB[0]).toLowerCase()} pair that may mean the extractor does not ` +
+           `cover the combination rather than that nothing was asserted — ` +
+           `disease–disease has zero relations corpus-wide.`) + `</p>` +
+    `<table><thead><tr><th>window</th><th class="n">papers</th><th class="n">PMI</th>` +
+    `</tr></thead><tbody>${per}</tbody></table>`;
+}
+
+function pick(i) {
+  focal = i; hoverIdx = -1; layout = new Map();
+  q.value = D.nodes[i][1];
+  draw();
+}
+
+// ---- legend, footer, boot ----
+document.getElementById("leg").innerHTML =
+  ["Gene", "Disease", "Chemical", "Species", "Other"].map(t => {
+    const ti = D.types.indexOf(t) >= 0 ? D.types.indexOf(t) : D.types.length - 1;
+    return `<span><svg width="12" height="12" aria-hidden="true">${glyphSvg(ti, 6, 6, 4.5)}</svg>${t}</span>`;
+  }).join("") +
+  `<span><svg width="22" height="12" aria-hidden="true"><line x1="1" y1="6" x2="21" y2="6" stroke="${cssv("--new")}" stroke-width="2.4"/></svg>new this window</span>` +
+  `<span><svg width="22" height="12" aria-hidden="true"><line x1="1" y1="6" x2="21" y2="6" stroke="${cssv("--lost")}" stroke-width="1.4" stroke-dasharray="3 3"/></svg>gone since last</span>` +
+  `<span style="color:var(--ink-3)">edge width = PMI · node size = PMI</span>`;
+
+document.getElementById("snap").textContent =
+  `snapshot ${D.snapshot} · ${D.nodes.length.toLocaleString()} entities · ${D.edges.length.toLocaleString()} window-edges`;
+document.getElementById("foot").innerHTML =
+  `Entities need at least ${D.thresholds.entity_min_papers_per_window} papers in a window and pairs at least ` +
+  `${D.thresholds.pair_min_papers_per_window}, so this is a filtered view of the full 1.85M-row co-mention table — ` +
+  `counts here are not corpus totals.<br>` +
+  `Edge weight is pointwise mutual information, which is why the type 1 diabetes node does not ` +
+  `dominate every ring. 2026 is excluded as a partial year.<br>` +
+  `Extracted relations exist only for BioRED's eight entity pairs; a missing relation is not evidence that none was asserted.`;
+
+const first = search("diabetes mellitus type 1");
+pick(first.length ? first[0] : 0);
+};
+
+// Streamed, so the bar means something. Content-Length is the transferred size, so
+// with gzip on the wire the numbers are smaller than the file - the ratio is still
+// right, and the counter says "transferred" rather than pretending otherwise.
+(async () => {
+  const box = document.getElementById("boot");
+  const fill = document.getElementById("bootfill");
+  const msg = document.getElementById("bootmsg");
+  const num = document.getElementById("bootn");
+  const mb = b => (b / 1048576).toFixed(1) + " MB";
+  try {
+    const res = await fetch("graph_data.json", { cache: "force-cache" });
+    if (!res.ok) throw new Error("HTTP " + res.status + " " + res.statusText);
+    const total = Number(res.headers.get("content-length")) || 0;
+    let text;
+    if (res.body && res.body.getReader) {
+      if (!total) fill.classList.add("spin");    // no length: honest indeterminate
+      const reader = res.body.getReader();
+      const parts = [];
+      let got = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        parts.push(value);
+        got += value.length;
+        if (total) {
+          fill.style.width = (Math.min(1, got / total) * 100).toFixed(1) + "%";
+          num.textContent = mb(got) + " of " + mb(total) + " transferred";
+        } else {
+          num.textContent = mb(got) + " transferred";
+        }
+      }
+      const buf = new Uint8Array(got);
+      let o = 0;
+      for (const part of parts) { buf.set(part, o); o += part.length; }
+      text = new TextDecoder().decode(buf);
+    } else {
+      fill.classList.add("spin");                // no streams: no bar, still works
+      text = await res.text();
+    }
+    msg.textContent = "Building the graph\u2026";
+    fill.classList.remove("spin");
+    fill.style.width = "100%";
+    // one frame, so a finished bar is actually seen before parsing blocks the thread
+    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+    window.T1DBoot(JSON.parse(text));
+    box.classList.add("gone");
+    setTimeout(() => box.remove(), 400);
+  } catch (e) {
+    fill.classList.remove("spin");
+    fill.style.width = "100%";
+    fill.style.background = "#9B3724";
+    msg.className = "boot__s boot__err";
+    msg.textContent = "The graph data could not be loaded.";
+    num.textContent = String(e && e.message ? e.message : e);
+  }
+})();
+</script>
+<!-- analytics --><script>(function(){var k='gcskip';function set(){var h=location.hash;try{if(h==='#gc-off'){localStorage.setItem(k,'1');alert('Visits from this browser are no longer counted.');return 1;}if(h==='#gc-on'){localStorage.removeItem(k);alert('Visits from this browser are counted again.');}}catch(e){}return 0;}addEventListener('hashchange',set);if(set())return;try{if(localStorage.getItem(k))return;}catch(e){}var s=document.createElement('script');s.async=true;s.src='//gc.zgo.at/count.js';s.setAttribute('data-goatcounter','https://ryan-tang.goatcounter.com/count');document.head.appendChild(s);})();</script><!-- /analytics -->
+</body>
+</html>

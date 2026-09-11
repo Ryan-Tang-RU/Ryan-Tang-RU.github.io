@@ -1,0 +1,35 @@
+# Software page. Each entry becomes one card, newest first; `url` may be a page in
+# this site or an external link. Keep `summary` to a few sentences - the detail
+# belongs on the project's own page. Use `>-` for any text containing a colon,
+# which YAML would otherwise read as a mapping key.
+heading: Software
+intro: >-
+  Tools built in the course of research, kept in a state where someone else can run
+  them. Each one links to something you can open and use, not only to a repository.
+projects:
+- title: T1D Knowledge Graph Explorer
+  url: software/t1d-kg/
+  date: 2026
+  status: in development
+  tags:
+  - knowledge graph
+  - literature mining
+  - PubTator
+  summary: >-
+    A temporally evolving knowledge graph of the type 1 diabetes literature -
+    131,511 PubMed records from 1960 to 2026, with 26,185 normalised entities and
+    262,510 extracted relations. The explorer shows co-mention neighbourhoods over
+    ten time windows, the papers behind every edge, and Kleinberg burst intervals
+    per entity. Built for the PanKbase AI Pilot with the TRAIL Lab at Rutgers.
+  notes:
+  - >-
+    Counts are shown as a share of the papers carrying an identified mention of the
+    same entity type, not of the whole corpus, because annotation coverage roughly
+    triples across the range and almost everything rises against a raw denominator.
+  - >-
+    MeSH indexing lags about four years, so the last few years are under-indexed
+    rather than quiet.
+  - >-
+    PubTator's normalisation is occasionally wrong in ways worth knowing. The string
+    NOD resolves to Myoclonic Epilepsies, and A1C is read as the coding substitution
+    c.1A&gt;C - the corpus's two largest "variants" are both that artifact.
