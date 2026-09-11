@@ -61,7 +61,7 @@ bio:
 - TRAIL works on <b>Trustworthy AI</b>, with the goal of infusing trust throughout the AI lifecycle. We pursue this goal by <b>formalizing trustworthiness objectives</b> (e.g., robustness, interpretability, and safety) and developing principled algorithms with <b>measurable guarantees and transparent failure modes</b>. We also collaborate closely with biologists and health informaticians to translate trustworthy learning methods to high-impact problems in biology and medicine.
 - Large Foundation Models introduce new and complex trustworthiness challenges. Our long-term objective is to develop learning algorithms that improve <b>reasoning reliability</b> under distribution shift and adversarial manipulation, supported by <b>theoretical frameworks that connect representation, optimization, and uncertainty to trust outcomes</b>. By advancing the underlying reasoning mechanisms, we aim to make these models more reliable, transparent, and resistant to misuse.
 # Closing line on the home page, under Services.
-joining: I am always glad to work with outstanding students. If you are interested in joining the lab, please send me an email at <a href="mailto:ruixiang.tang@rutgers.edu">ruixiang.tang@rutgers.edu</a> — I read every message and will consider it carefully.
+joining: I am always glad to work with outstanding students. If you are interested in collaborating with me, please send me an email at <a href="mailto:ruixiang.tang@rutgers.edu">ruixiang.tang@rutgers.edu</a>. I read every message and will consider it carefully.
 
 research:
 - title: Operational Interpretability
