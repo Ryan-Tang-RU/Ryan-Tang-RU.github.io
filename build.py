@@ -311,6 +311,7 @@ def build_home():
     joining = (f'<p class="joining">{site["joining"]}</p>'
                if site.get("joining") else "")
 
+    n_news = len(news)
     body = f"""<div class="ident">
   <div class="ident__body">
     <h1 class="h-item">{site['name_full']}</h1>
@@ -331,7 +332,14 @@ def build_home():
 
 <h2 class="h-sec">News</h2>
 <div class="newsband">
-  <ul class="news" tabindex="0" aria-label="News">{items}</ul>
+  <div class="newscol">
+    <input type="checkbox" id="news-all" class="news-toggle">
+    <div class="newslist"><ul class="news">{items}</ul></div>
+    <label class="news-more" for="news-all">
+      <span class="news-more__open">Show all {n_news} news items &darr;</span>
+      <span class="news-more__shut">Show fewer &uarr;</span>
+    </label>
+  </div>
   <ul class="press">{press}</ul>
 </div>
 
