@@ -361,28 +361,40 @@ window.T1DApi = {
     const rows = await run("evidence_sentences",
                            { a: a, b: b, y0: y0, y1: y1, scan: PAPER_SCAN });
     const sents = [], seen = new Set(), hit = new Set();
+    let nPairs = 0;
+    // Each row is one passage carrying both sides' offsets as lists; the pairs the
+    // query used to return are rebuilt here, in the same order, so which sentence
+    // is found first is unchanged. `plain` has already turned the Arrow list
+    // columns into ordinary arrays.
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i];
-      const ra = Number(r.oa) - Number(r.po), rb = Number(r.ob) - Number(r.po);
-      const text = String(r.ptext);
-      SENT_RE.lastIndex = 0;
-      let m;
-      while ((m = SENT_RE.exec(text)) !== null) {
-        if (m[0].length === 0) break;      // a zero-width match would not advance
-        const s0 = m.index, e0 = s0 + m[0].length;
-        if (s0 <= ra && ra < e0 && s0 <= rb && rb < e0) {
-          const key = r.pmid + ":" + s0;
-          if (seen.has(key)) break;
-          seen.add(key);
-          const raw = text.slice(s0, e0);
-          const lead = raw.length - raw.replace(/^\s+/, "").length;
-          const spans = [[ra, Number(r.la)], [rb, Number(r.lb)]]
-            .sort((x, y) => x[0] - y[0])
-            .map(p => [p[0] - s0 - lead, p[0] - s0 - lead + p[1]]);
-          sents.push({ pmid: Number(r.pmid), year: Number(r.year),
-                       sentence: raw.trim(), spans: spans });
-          hit.add(String(r.pmid));
-          break;
+      const text = String(r.ptext), po = Number(r.po);
+      const oas = r.oas || [], las = r.las || [];
+      const obs = r.obs || [], lbs = r.lbs || [];
+      nPairs += oas.length * obs.length;
+      for (let x = 0; x < oas.length; x++) {
+        for (let y = 0; y < obs.length; y++) {
+          const ra = Number(oas[x]) - po, rb = Number(obs[y]) - po;
+          SENT_RE.lastIndex = 0;
+          let m;
+          while ((m = SENT_RE.exec(text)) !== null) {
+            if (m[0].length === 0) break;  // a zero-width match would not advance
+            const s0 = m.index, e0 = s0 + m[0].length;
+            if (s0 <= ra && ra < e0 && s0 <= rb && rb < e0) {
+              const key = r.pmid + ":" + s0;
+              if (seen.has(key)) break;
+              seen.add(key);
+              const raw = text.slice(s0, e0);
+              const lead = raw.length - raw.replace(/^\s+/, "").length;
+              const spans = [[ra, Number(las[x])], [rb, Number(lbs[y])]]
+                .sort((u, v) => u[0] - v[0])
+                .map(p => [p[0] - s0 - lead, p[0] - s0 - lead + p[1]]);
+              sents.push({ pmid: Number(r.pmid), year: Number(r.year),
+                           sentence: raw.trim(), spans: spans });
+              hit.add(String(r.pmid));
+              break;
+            }
+          }
         }
       }
     }
@@ -397,7 +409,7 @@ window.T1DApi = {
              n_sentences: sents.length, offset: off,
              papers: papers, n_papers: nPapers,
              scanned_papers: Math.min(nPapers, PAPER_SCAN),
-             scanned_rows: rows.length,
+             scanned_rows: nPairs,
              scan_capped: nPapers > PAPER_SCAN };
   }),
 

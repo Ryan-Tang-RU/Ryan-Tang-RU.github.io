@@ -355,6 +355,19 @@ window.T1DSQL = {
 
   // Bounded by papers, not by join rows: ordering 106,848 mention-passage rows and
   // then cutting cost six seconds a click.
+  // One row per passage, with each side's offsets collected, rather than one row
+  // per pair of offsets. The pair form repeated the whole abstract once for every
+  // combination, so a single click had to materialise 8.27 MB of text for INS -
+  // type 1 diabetes of which 0.70 MB was distinct, and 11.59 MB for HLA-DQB1 - an
+  // 18x amplification, to display eight sentences. Every pair survives: the client
+  // builds them from the two lists, and the sentences and the same-sentence paper
+  // set are identical, checked pair by pair on five edges.
+  //
+  // The offsets are deliberately not truncated to the closest pair. That was the
+  // obvious shortcut and it is wrong - keeping only the nearest lost 24 of 243
+  // same-sentence papers on INS and 26 of 194 on HLA-DQB1, because two mentions can
+  // sit close together across a sentence boundary while a farther pair falls inside
+  // one sentence.
   evidence_sentences: `
     WITH cand AS (
       SELECT p.pmid, p.year
@@ -365,16 +378,29 @@ window.T1DSQL = {
       GROUP BY 1, 2
       ORDER BY p.year DESC, p.pmid DESC
       LIMIT $scan
-    )
-    SELECT c.pmid, c.year, ma."offset" AS oa, ma."length" AS la,
-           mb."offset" AS ob, mb."length" AS lb, pg."offset" AS po, pg.text AS ptext
-    FROM cand c
-    JOIN mentions ma ON ma.pmid = c.pmid AND ma.eid = $a
-    JOIN mentions mb ON mb.pmid = c.pmid AND mb.eid = $b
-    JOIN passages pg ON pg.pmid = c.pmid
-         AND ma."offset" >= pg."offset"
-         AND ma."offset" <  pg."offset" + length(pg.text)
-         AND mb."offset" >= pg."offset"
-         AND mb."offset" <  pg."offset" + length(pg.text)
-    ORDER BY c.year DESC, c.pmid DESC, ma."offset", mb."offset"`,
+    ),
+    pg AS (
+      SELECT c.pmid, c.year, p."offset" AS po, p.text AS ptext
+      FROM cand c JOIN passages p ON p.pmid = c.pmid
+    ),
+    am AS (SELECT DISTINCT pmid, "offset" AS o, "length" AS l
+           FROM mentions WHERE eid = $a),
+    bm AS (SELECT DISTINCT pmid, "offset" AS o, "length" AS l
+           FROM mentions WHERE eid = $b),
+    ai AS (SELECT pg.pmid, pg.po,
+                  list(a.o ORDER BY a.o, a.l) AS oas,
+                  list(a.l ORDER BY a.o, a.l) AS las
+           FROM pg JOIN am a ON a.pmid = pg.pmid
+                AND a.o >= pg.po AND a.o < pg.po + length(pg.ptext)
+           GROUP BY 1, 2),
+    bi AS (SELECT pg.pmid, pg.po,
+                  list(b.o ORDER BY b.o, b.l) AS obs,
+                  list(b.l ORDER BY b.o, b.l) AS lbs
+           FROM pg JOIN bm b ON b.pmid = pg.pmid
+                AND b.o >= pg.po AND b.o < pg.po + length(pg.ptext)
+           GROUP BY 1, 2)
+    SELECT pg.pmid, pg.year, pg.po, pg.ptext,
+           ai.oas, ai.las, bi.obs, bi.lbs
+    FROM pg JOIN ai USING (pmid, po) JOIN bi USING (pmid, po)
+    ORDER BY pg.year DESC, pg.pmid DESC, pg.po`,
 };
