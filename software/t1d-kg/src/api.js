@@ -164,6 +164,34 @@ window.T1DApi = {
     rows: await run("vocab", { toks: toks }),
   })),
 
+  /* Entities whose detected burst overlaps a window, largest first.
+
+     The intervals ship inside the manifest - 1,548 of them, re-keyed canonically at
+     publish time - so this costs one small query for the names. The bridge answers
+     the same question from the Step 5b table; the shape is identical on purpose,
+     because a tool that returns different fields in the two builds is a tool the
+     assistant answers differently in each. */
+  bursts: (y0, y1, limit) => timed("bursts", async () => {
+    const all = (manifest && manifest.bursts) || {};
+    const hit = {};
+    Object.keys(all).forEach(eid => {
+      // Any overlap, not containment: a burst that began before the window and ran
+      // into it is what the reader is asking about.
+      const spans = (all[eid] || []).filter(s => s[0] <= y1 && s[1] >= y0);
+      if (spans.length) hit[eid] = spans.slice().sort((a, b) => a[0] - b[0]);
+    });
+    const eids = Object.keys(hit);
+    if (!eids.length) return { rows: [] };
+    const named = await run("entities_sized", { eids: eids });
+    const cap = Math.max(1, Math.min(limit || 25, 60));
+    return {
+      rows: named.slice(0, cap).map(r => ({
+        eid: r.eid, name: r.name, type: r.type,
+        n_papers: Number(r.n_papers), intervals: hit[r.eid],
+      })),
+    };
+  }),
+
   neighbours: (eid, y0, y1, limit, exclude, types, rank) =>
     timed("neighbours", async () => {
       const p = { eid: eid, y0: y0, y1: y1, minc: MINC, limit: limit || 30,

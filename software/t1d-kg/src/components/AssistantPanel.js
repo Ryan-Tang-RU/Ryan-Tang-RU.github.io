@@ -74,8 +74,9 @@ Vue.component("assistant-panel", {
           // No key, so no prose - but the retrieval is local and still answers
           // part of the question. Whatever the graph knows about the entities
           // named in it is shown, and the panel says why there is no more.
-          const found = await window.T1DAssistant.lookup(q, ctx);
-          this.turns.push({ role: "lookup", found: found });
+          const res = await window.T1DAssistant.lookup(q, ctx);
+          this.turns.push({ role: "lookup", found: res.found,
+                            untagged: res.untagged });
         } else {
           const res = await window.T1DAssistant.ask(q, this.history, ctx, ev => {
             if (ev.kind === "text") this.turns.push({ role: "ai", text: ev.text });
@@ -208,23 +209,32 @@ Vue.component("assistant-panel", {
           </details>
 
           <div class="aslookup" :key="'l'+i" v-else-if="t.role === 'lookup'">
-            <p class="hint" v-if="!t.found.length">No entity in this graph matches a
-              word in that question. Searching the abstracts for the word itself may
-              still find papers &mdash; the search box reports that.</p>
-            <template v-else>
-              <div class="asfact" v-for="f in t.found" :key="f.row.eid">
-                <b>{{ f.row.name }}</b> <span class="hint">{{ f.row.type }}</span>
-                <span v-if="f.facts"> &middot;
-                  {{ f.facts.n_papers_corpus.toLocaleString() }} papers,
-                  {{ f.facts.first_year }}&ndash;{{ f.facts.last_year }},
-                  appears with {{ f.facts.partners_all.toLocaleString() }} entities</span>
-                <button class="ghost tiny"
-                        @click="$store.dispatch('focusOn', {eid: f.row.eid})">
-                  Show</button>
-              </div>
-              <p class="hint">That is what the graph holds for the names in your
-                question. Add a key for an answer written from it.</p>
-            </template>
+            <!-- Worded as what it is. Matching is by word, so a question can land
+                 on an entity whose name merely shares one: "why is the sky blue"
+                 finds Blue cone monochromatism. Calling these "the answer" would
+                 overclaim; calling them what was recognised does not. -->
+            <p class="hint" v-if="t.found.length">Entities in this graph whose names
+              match words in your question:</p>
+            <div class="asfact" v-for="f in t.found" :key="f.row.eid">
+              <b>{{ f.row.name }}</b> <span class="hint">{{ f.row.type }}</span>
+              <span v-if="f.facts"> &middot;
+                {{ f.facts.n_papers_corpus.toLocaleString() }} papers,
+                {{ f.facts.first_year }}&ndash;{{ f.facts.last_year }},
+                appears with {{ f.facts.partners_all.toLocaleString() }} entities</span>
+              <button class="ghost tiny"
+                      @click="$store.dispatch('focusOn', {eid: f.row.eid})">
+                Show</button>
+            </div>
+            <!-- The tagging gap, which for a drug is the whole answer. -->
+            <p class="hint" v-for="u in t.untagged" :key="'u'+u.tok">
+              <b>&ldquo;{{ u.tok }}&rdquo; is in {{ u.n_papers.toLocaleString() }}
+              abstracts here but has no node</b> &mdash; it was never tagged as an
+              entity, so nothing in the graph can be said about it. That is a fact
+              about the labelling, not about the literature.</p>
+            <p class="hint" v-if="!t.found.length && !t.untagged.length">Nothing in
+              that question matched an entity or a word in the abstracts.</p>
+            <p class="hint" v-if="t.found.length || t.untagged.length">Add a key for
+              an answer written from this.</p>
           </div>
 
           <div class="aserr" :key="'e'+i" v-else>{{ t.text }}</div>

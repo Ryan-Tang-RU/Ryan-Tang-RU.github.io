@@ -288,6 +288,72 @@ window.T1DAssistant = (function () {
       },
     },
 
+    {
+      name: "surges_in_window",
+      acts: false,
+      description:
+        "Which entities surged during a stretch of years, largest first, with the " +
+        "intervals themselves. This is the one temporal question a single entity's " +
+        "series cannot answer - what rose in the 1990s - and the intervals come " +
+        "from a two-state Kleinberg model over each normalised series, not from a " +
+        "threshold. An interval overlapping the window counts, so a surge that " +
+        "began earlier and ran into it is included.",
+      schema: {
+        type: "object",
+        properties: {
+          y0: { type: "integer" }, y1: { type: "integer" },
+          limit: { type: "integer", description: "1-60, default 25" },
+        },
+        required: ["y0", "y1"],
+      },
+      run: async (i, c) => ({
+        window: [i.y0, i.y1],
+        rows: short(ok(await c.api.bursts(i.y0, i.y1, i.limit || 25)).rows, 60),
+      }),
+    },
+    {
+      name: "canvas_state",
+      acts: false,
+      description:
+        "What the reader is currently looking at: the year window, the focused " +
+        "entity, what is on the canvas, and what is selected. Call this first for " +
+        "any question phrased about the present view - \"this edge\", \"these " +
+        "nodes\", \"what am I looking at\" - because none of the other tools can " +
+        "see the screen.",
+      schema: { type: "object", properties: {} },
+      run: async (i, c) => {
+        const st = c.store.state;
+        const nodes = Object.keys(st.nodes).map(k => st.nodes[k]);
+        const sel = st.selection;
+        let selected = null;
+        if (sel && sel.kind === "node" && st.nodes[sel.eid]) {
+          selected = { kind: "entity", eid: sel.eid, name: st.nodes[sel.eid].name };
+        } else if (sel && sel.kind === "edge" && st.links[sel.key]) {
+          const l = st.links[sel.key];
+          selected = {
+            kind: "pair", a: l.a, b: l.b,
+            a_name: (st.nodes[l.a] || {}).name, b_name: (st.nodes[l.b] || {}).name,
+            co_mention_papers: l.comention_papers,
+            assertions: (l.rel_dist && l.rel_dist.total) || 0,
+          };
+        }
+        return {
+          year_window: [st.y0, st.y1],
+          focus: st.focus
+            ? { eid: st.focus, name: (st.nodes[st.focus] || {}).name } : null,
+          selected: selected,
+          nodes_on_canvas: nodes.length,
+          // Capped: a full canvas holds 150 and the model needs to know what is
+          // there, not every field of every node.
+          canvas: short(nodes.map(n => ({ eid: n.eid, name: n.name, type: n.type })),
+                        60),
+          hidden_types: (st.hiddenTypes || []).slice(),
+          path_ends: [st.pathA ? st.pathA.name : null,
+                      st.pathB ? st.pathB.name : null],
+        };
+      },
+    },
+
     // ---- the actions ---------------------------------------------------------
     {
       name: "show_on_canvas",
@@ -368,6 +434,10 @@ window.T1DAssistant = (function () {
     "relations are BioRED types with scores.",
     "",
     "How to work:",
+    "- If the question is about the present view - \"this edge\", \"these nodes\",",
+    "  \"what am I looking at\" - call canvas_state first. No other tool can see",
+    "  the screen, and the year window it reports is the window every other tool",
+    "  reads.",
     "- Resolve every name with find_entity before using any other tool. Names are",
     "  not what they look like: searching \"abatacept\" returns the gene ABAT,",
     "  because this corpus never tagged the drug at all.",
@@ -478,30 +548,129 @@ window.T1DAssistant = (function () {
     return { messages: messages, text: "", capped: true };
   }
 
+  // Words that are never the subject of a question. Without this list the
+  // no-key path answered "what does the graph say about vitamin D" with Graphite
+  // and Say Meyer syndrome, and "is liraglutide in this graph" with Micrognathism:
+  // every one of them a real entity whose name contains a function word.
+  const STOP = ("a about above after again against all also am an and any are as " +
+    "at be because been before being below between both but by can cannot could " +
+    "did do does doing down during each few for from further had has have having " +
+    "he her here hers him his how i if in into is it its itself just me more most " +
+    "much must my no nor not now of off on once only or other our out over own " +
+    "same she should so some such than that the their them then there these they " +
+    "this those through to too under until up very was we were what when where " +
+    "which while who whom why will with would you your " +
+    // asked of this tool constantly, and none of them is the subject
+    "graph graphs data dataset show tell say says said give list find search " +
+    "many much often when time times year years paper papers study studies " +
+    "know anything something between related relation relationship link linked " +
+    // structural in this domain and never the subject: "type 1", "type 2",
+    // "type I hypersensitivity". Left in, "type" resolved to Hypersensitivity
+    // Immediate beside the Diabetes Mellitus that "diabetes" had already found.
+    "type types level levels risk rate effect effects role patient patients"
+    ).split(" ");
+
+  // Alphanumeric pieces of a string, lowercased. Compared as sets rather than by
+  // substring: "graph" is inside "graphite" and is not that entity, while
+  // "HLA-DQB1" and "hla dqb1" are the same name written two ways.
+  function pieces(t) {
+    return String(t || "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  }
+  // No RegExp built from the reader's text: a name in this corpus can carry a
+  // backslash ("C57BL\\6", "type \\1 diabetes") and compiling one as a pattern
+  // throws on an invalid escape.
+  function names_match(word, row) {
+    const w = pieces(word);
+    if (!w.length) return false;
+    const inside = set => w.every(x => set.indexOf(x) !== -1);
+    // `via` is the server saying which string it matched on, so a hit there is a
+    // hit by definition. It is also the only one that works for a variant: the
+    // node for rs2476601 is named c.1858C>T and its id is the raw composite
+    // "tmVar:p|SUB|R|620|W;HGVS:p.R620W;...;RS#:2476601;...", which contains
+    // "2476601" but never "rs2476601" - so asking about it was answered with
+    // "no node", about a node that is right there.
+    // The eid's own tail is the canonical key, which for a variant is the rs
+    // number itself.
+    return inside(pieces(row.name)) || inside(pieces(row.id))
+      || (row.via && inside(pieces(row.via)))
+      || inside(pieces(String(row.eid).split("|").slice(1).join("|")));
+  }
+
   /* What the panel can still answer with no key at all.
 
      Retrieval is local, so a question without a key is not useless: the entities
-     named in it can be resolved and their facts shown. The prose is what needs the
-     model, and the prose was never the evidence. */
+     named in it can be resolved and their facts shown, and a word that names no
+     entity can still be counted in the abstracts - which for a drug is the whole
+     answer. The prose is what needs the model, and the prose was never the
+     evidence. */
   async function lookup(question, ctx) {
-    const words = String(question || "")
-      .replace(/[^A-Za-z0-9\-]+/g, " ").split(" ")
-      .filter(w => w.length >= 3);
-    const seen = {}, found = [];
-    for (const w of words.slice(0, 12)) {
+    const words = [];
+    pieces(question).forEach(w => {
+      if (w.length >= 4 && STOP.indexOf(w) === -1 && words.indexOf(w) === -1)
+        words.push(w);
+    });
+    // Names carrying a hyphen, a dot or a slash survive as one token too, so
+    // "HLA-DQB1", "rs2476601" and "C57BL/6" are looked up whole rather than only as
+    // their pieces. The slash matters: split on it, "C57BL" ranked C57BL/KsJ - 50
+    // papers - above the C57BL/6 with 546 that was actually asked about.
+    String(question || "").split(/[^A-Za-z0-9./\-]+/).forEach(w => {
+      if (w.length >= 4 && /[-./]/.test(w) && words.indexOf(w) === -1)
+        words.unshift(w);
+    });
+
+    const seen = {}, found = [], unmatched = [], claimed = {};
+    for (const w of words.slice(0, 8)) {
       if (found.length >= 3) break;
+      // Already explained by something found. "C-peptide" resolves, and then its
+      // piece "peptide" was searched separately and landed on the generic Peptides
+      // node - two answers to one phrase, the second of them noise.
+      if (pieces(w).every(x => claimed[x])) continue;
       const row = (ok(await ctx.api.search(w, 1)).rows || [])[0];
-      if (!row || seen[row.eid]) continue;
-      // Only a hit the reader would recognise as the word they typed, so a fuzzy
-      // match on a stray preposition does not become "the entity you asked about".
-      if (String(row.name).toLowerCase().indexOf(w.toLowerCase()) === -1
-          && String(row.id).toLowerCase() !== w.toLowerCase()) continue;
+      if (!row || seen[row.eid] || !names_match(w, row)) {
+        unmatched.push(w.toLowerCase());
+        continue;
+      }
       seen[row.eid] = true;
+      pieces(row.name).forEach(x => { claimed[x] = true; });
+      pieces(w).forEach(x => { claimed[x] = true; });
       const facts = ok(await ctx.api.node(row.eid,
                                           ctx.store.state.y0, ctx.store.state.y1));
       found.push({ row: row, facts: (facts.rows || [])[0] || null });
     }
-    return found;
+
+    // A word that resolved to nothing may still be all over the abstracts. This is
+    // the tagging gap, and for a drug it is the answer: liraglutide is written in
+    // 159 abstracts here and was never tagged, so "no entity" is a fact about the
+    // labelling and not about the field.
+    //
+    // Two filters, both from measurement rather than taste.
+    //
+    // A word already accounted for by something that did resolve is dropped:
+    // "peptide" out of C-Peptide and "dqb1" out of HLA-DQB1 were being reported as
+    // having no node, next to the node they came from.
+    //
+    // And an upper bound on how common the word is. Every untagged entity this
+    // project found is rare - insulin degludec 285 abstracts, pramlintide 169,
+    // liraglutide 159, semaglutide 87 - because anything more central than that
+    // was tagged. The function words that slip through the stop list are an order
+    // of magnitude commoner: "start" 1,075, "together" 3,012, "peptide" 7,271. A
+    // ceiling separates them on that evidence, where frequency alone would have
+    // cut liraglutide and kept "together".
+    found.forEach(f => pieces(f.row.id).forEach(x => { claimed[x] = true; }));
+    const candidates = unmatched.filter(w => !pieces(w).every(x => claimed[x]));
+    let untagged = [];
+    if (candidates.length) {
+      const rows = ok(await ctx.api.vocab(candidates.slice(0, 8))).rows || [];
+      // No inflected English word is an entity name. "appearing" slips past both
+      // the stop list and the ceiling at 138 abstracts; no drug, gene or disease
+      // in this corpus ends in -ing, -ed, -ly or -est.
+      const inflected = w => /(ing|ed|ly|est)$/.test(w);
+      untagged = rows
+        .filter(r => r.n_papers >= 5 && r.n_papers <= 600 && !inflected(r.tok))
+        .sort((a, b) => a.n_papers - b.n_papers)   // rarest first: the likeliest term
+        .slice(0, 2);
+    }
+    return { found: found, untagged: untagged };
   }
 
   return { TOOLS: TOOLS, SYSTEM: SYSTEM, MODEL: MODEL,

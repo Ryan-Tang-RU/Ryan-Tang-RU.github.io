@@ -260,6 +260,13 @@ window.T1DSQL = {
     SELECT eid, type, name FROM entities
     WHERE list_contains(string_split($eids, chr(31)), eid)`,
 
+  // Same set, with the size, ordered: the burst tool ranks by how much literature
+  // is behind an entity, so "what surged" is not led by a node with four papers.
+  entities_sized: `
+    SELECT eid, type, name, n_papers FROM entities
+    WHERE list_contains(string_split($eids, chr(31)), eid)
+    ORDER BY n_papers DESC, eid`,
+
   node_window: `
     SELECT count(DISTINCT m.pmid) AS n
     FROM mentions m JOIN papers p USING (pmid)
