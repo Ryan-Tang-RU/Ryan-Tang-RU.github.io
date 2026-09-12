@@ -99,6 +99,9 @@ window.App = {
       <div class="brand" title="A Multi-Agent Framework for Constructing Temporally Evolving T1D Knowledge Graphs"><span class="dot"></span> A Multi-Agent Framework for Constructing Temporally Evolving T1D Knowledge Graphs</div>
       <div class="bspacer"></div>
       <div class="status">{{ status }}</div>
+      <!-- The toggle lives in the header; the window itself is fixed-position and
+           floats over the whole shell, so the component is mounted here once. -->
+      <assistant-panel></assistant-panel>
       <button class="ghost" @click="showHelp=true" title="Shortcuts">?</button>
     </header>
 

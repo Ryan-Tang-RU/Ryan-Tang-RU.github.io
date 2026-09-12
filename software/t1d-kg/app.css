@@ -543,3 +543,59 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
   font-size:.76rem;color:var(--ink-2)}
 .undobar span{flex:1}
 .undobar .ghost{flex:none}
+
+/* --- the assistant ------------------------------------------------------- */
+/* A floating window, not a dock and not a modal: a question is usually about what
+   is on the canvas right now, so it must not take width from the graph and must
+   not cover the thing being asked about. z-index above the tooltip (30) and the
+   modal sheet (60), because it stays open while the reader works. */
+.asktoggle{margin-left:6px}
+.asktoggle.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.aswin{position:fixed;right:16px;bottom:16px;z-index:80;width:min(420px,94vw);
+  max-height:min(70vh,620px);display:flex;flex-direction:column;
+  background:var(--surface);border:1px solid var(--rule);border-radius:10px;
+  box-shadow:0 10px 34px rgba(22,50,79,.18)}
+.asbar{display:flex;align-items:center;gap:6px;padding:7px 8px 7px 12px;
+  border-bottom:1px solid var(--hair);cursor:move;user-select:none;
+  background:var(--ground);border-radius:10px 10px 0 0}
+.asbar b{font:600 .84rem var(--sans);color:var(--navy)}
+.asmodel{font:400 10px var(--mono);color:var(--ink-3)}
+.askey{padding:10px 12px;border-bottom:1px solid var(--hair);background:var(--ground)}
+.askeyin{flex:1;min-width:0;font:400 .78rem var(--mono);padding:5px 8px;
+  border:1px solid var(--rule);border-radius:5px;background:var(--surface);
+  color:var(--ink)}
+.asbody{flex:1;overflow-y:auto;padding:10px 12px;display:flex;
+  flex-direction:column;gap:7px}
+.asempty{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.asyou{align-self:flex-end;max-width:88%;background:var(--tint);
+  border:1px solid var(--rule);border-radius:9px 9px 2px 9px;padding:6px 10px;
+  font-size:.84rem;white-space:pre-wrap}
+.asai{max-width:95%;font-size:.86rem;line-height:1.5;white-space:pre-wrap;
+  color:var(--ink)}
+/* Collapsed by default and quiet, but always present: an answer with no retrieval
+   visible behind it should look incomplete. */
+.astool{font-size:.74rem;border:1px solid var(--hair);border-radius:6px;
+  background:var(--ground);padding:4px 8px}
+.astool summary{cursor:pointer;display:flex;gap:6px;align-items:baseline;
+  font:500 .74rem var(--mono);color:var(--ink-2)}
+.astool summary .hint{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.astool pre{margin:6px 0 2px;font:400 10.5px var(--mono);white-space:pre-wrap;
+  word-break:break-word;color:var(--ink-2);max-height:170px;overflow:auto}
+.astag{font:700 9px var(--mono);text-transform:uppercase;letter-spacing:.05em;
+  padding:1px 5px;border-radius:3px;background:var(--surface-2);color:var(--ink-3);
+  flex:none}
+/* An action that changed the reader's view is marked differently from a read: a
+   question should never move the canvas without saying so. */
+.astag.acts{background:color-mix(in oklab,var(--brand) 20%,transparent);
+  color:var(--brand)}
+.aslookup{font-size:.82rem;display:flex;flex-direction:column;gap:5px}
+.asfact{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;
+  border-left:2px solid var(--rule);padding-left:8px}
+.aserr{font-size:.8rem;color:var(--ink);background:color-mix(in oklab,
+  var(--warn) 14%,transparent);border:1px solid color-mix(in oklab,
+  var(--warn) 40%,transparent);border-radius:6px;padding:6px 9px}
+.asfoot{display:flex;gap:7px;align-items:flex-end;padding:8px 10px;
+  border-top:1px solid var(--hair)}
+.asinput{flex:1;min-width:0;resize:none;font:400 .84rem var(--sans);
+  padding:6px 8px;border:1px solid var(--rule);border-radius:6px;
+  background:var(--surface);color:var(--ink)}
