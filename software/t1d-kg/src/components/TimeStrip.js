@@ -23,7 +23,8 @@
    appearing that belonged to a state the strip was no longer in. */
 Vue.component("time-strip", {
   data: () => ({ data: null, mode: "count", drag: null, hoverYear: null,
-                 loadKey: null, err: "", denom: "cov" }),
+                 loadKey: null, err: "", denom: "cov",
+                 grab: null, pending: null }),
   computed: {
     // One accessor for the chosen denominator: the geometry, the burst test, the
     // hover box and the caption all have to agree about which share they mean.
@@ -54,14 +55,26 @@ Vue.component("time-strip", {
       if (this.focus && S.nodes[this.focus]) return S.nodes[this.focus].name;
       return "";
     },
+    // While a handle is held, the band follows the pointer without committing:
+    // committing on every mousemove would refetch the whole neighbourhood.
+    selY0() { return this.pending ? this.pending.y0 : this.y0; },
+    selY1() { return this.pending ? this.pending.y1 : this.y1; },
+    handleX() {
+      if (!this.data) return null;
+      const ys = this.data.years;
+      const i0 = Math.max(0, ys.indexOf(this.selY0));
+      const i1 = ys.indexOf(this.selY1) === -1 ? ys.length - 1 : ys.indexOf(this.selY1);
+      return { a: this.x(i0), b: this.x(i1) };
+    },
     windowBand() {
       // one rect for the selected window rather than a v-if inside a v-for over 66
       // years: v-for has the higher priority in Vue 2, so the condition is evaluated
       // per item and the DOM carries every element anyway
       if (!this.data) return { x: 0, w: 0 };
       const ys = this.data.years;
-      const i0 = Math.max(0, ys.indexOf(this.y0));
-      const i1 = ys.indexOf(this.y1) === -1 ? ys.length - 1 : ys.indexOf(this.y1);
+      const i0 = Math.max(0, ys.indexOf(this.selY0));
+      const i1 = ys.indexOf(this.selY1) === -1 ? ys.length - 1
+        : ys.indexOf(this.selY1);
       return { x: this.x(i0) - 0.5, w: Math.max(this.x(i1) - this.x(i0) + 1, 1) };
     },
     // Where the series stops being comparable with itself. MeSH indexing lags about
@@ -119,13 +132,7 @@ Vue.component("time-strip", {
       }
       return out.join(" ");
     },
-    dragBand() {
-      if (!this.drag || !this.data) return null;
-      const ys = this.data.years;
-      const a = this.x(ys.indexOf(this.drag.from));
-      const b = this.x(ys.indexOf(this.drag.to));
-      return { x: Math.min(a, b), w: Math.abs(b - a) };
-    },
+
     bursty() {
       // The actual Kleinberg intervals from Step 5b, not a stand-in. This used to
       // mark any year whose share exceeded twice its own median - a rule invented
@@ -171,29 +178,54 @@ Vue.component("time-strip", {
       if (!t) return 0;
       return ((which === "pos" ? p.pos[i] : p.neg[i]) / t) * 100;
     },
-    inWindow(y) { return y >= this.y0 && y <= this.y1; },
+    inWindow(y) { return y >= this.selY0 && y <= this.selY1; },
     yearAt(ev) {
       const b = this.$refs.plot.getBoundingClientRect();
       const f = Math.min(1, Math.max(0, (ev.clientX - b.left) / b.width));
       const ys = this.data.years;
       return ys[Math.round(f * (ys.length - 1))];
     },
-    down(ev) {
+    // Two handles and a band, the way a clip is trimmed: grab an end to move that
+    // end, grab the middle to slide the whole window, drag the empty strip to draw a
+    // new one. Dragging out a fresh range every time made a small adjustment - "the
+    // same window but two years later" - into a movement you had to get right in one
+    // go.
+    down(ev, part) {
       if (!this.data) return;
-      this.drag = { from: this.yearAt(ev), to: this.yearAt(ev) };
+      const y = this.yearAt(ev);
+      this.grab = part
+        ? { part: part, y0: this.y0, y1: this.y1, at: y }
+        : { part: "new", y0: y, y1: y, at: y };
       window.addEventListener("mousemove", this.move);
       window.addEventListener("mouseup", this.up);
+      ev.preventDefault();
+      ev.stopPropagation();
     },
-    move(ev) { if (this.drag) this.drag = { from: this.drag.from, to: this.yearAt(ev) }; },
+    move(ev) {
+      const g = this.grab;
+      if (!g) return;
+      const y = this.yearAt(ev);
+      const lo = this.data.years[0], hi = this.data.years[this.data.years.length - 1];
+      if (g.part === "left") this.pending = { y0: Math.min(y, g.y1), y1: g.y1 };
+      else if (g.part === "right") this.pending = { y0: g.y0, y1: Math.max(y, g.y0) };
+      else if (g.part === "band") {
+        // slide, keeping the width, without running off either end
+        const w = g.y1 - g.y0;
+        let a = g.y0 + (y - g.at);
+        a = Math.max(lo, Math.min(a, hi - w));
+        this.pending = { y0: a, y1: a + w };
+      } else {
+        this.pending = { y0: Math.min(g.y0, y), y1: Math.max(g.y0, y) };
+      }
+    },
     up() {
       window.removeEventListener("mousemove", this.move);
       window.removeEventListener("mouseup", this.up);
-      if (!this.drag) return;
-      const a = Math.min(this.drag.from, this.drag.to);
-      const b = Math.max(this.drag.from, this.drag.to);
-      this.drag = null;
-      // a click, not a drag, selects that single year
-      this.$store.commit("setYears", { y0: a, y1: b });
+      const p = this.pending;
+      this.grab = null;
+      this.pending = null;
+      if (!p) return;
+      this.$store.commit("setYears", { y0: p.y0, y1: p.y1 });
       this.$store.dispatch("reloadYears");
     },
     reset() {
@@ -256,8 +288,6 @@ Vue.component("time-strip", {
               :class="['bar', {out: !inWindow(y), burst: bursty[y]}]"></rect>
         <path v-if="mode === 'count'" :d="linePath()" class="shareline"
               vector-effect="non-scaling-stroke"></path>
-        <rect v-if="dragBand" :x="dragBand.x" y="0" :width="dragBand.w"
-              height="100" class="dragband"></rect>
       </svg>
       <!-- always present, empty when the pair has no assertions: a band that comes
            and goes changes the strip's height, and the strip is the canvas's
@@ -271,6 +301,18 @@ Vue.component("time-strip", {
                 :height="polH(i,'pos')" width="0.84" class="ppos"></rect>
         </template>
       </svg>
+      <div class="trim" v-if="handleX">
+        <div class="trim__band" :style="{left: handleX.a + '%',
+             width: Math.max(handleX.b - handleX.a, 0.4) + '%'}"
+             @mousedown="down($event, 'band')"
+             title="drag to slide the whole span"></div>
+        <div class="trim__h left" :style="{left: handleX.a + '%'}"
+             @mousedown="down($event, 'left')"
+             :title="'from ' + selY0"><i></i><span>{{ selY0 }}</span></div>
+        <div class="trim__h right" :style="{left: handleX.b + '%'}"
+             @mousedown="down($event, 'right')"
+             :title="'to ' + selY1"><i></i><span>{{ selY1 }}</span></div>
+      </div>
       <div class="ticks">
         <span v-for="y in [1960,1975,1990,2005,2020]" :key="y"
               :style="{left: x(data.years.indexOf(y)) + '%'}">{{ y }}</span>

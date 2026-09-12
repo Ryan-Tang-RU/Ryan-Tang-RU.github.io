@@ -382,8 +382,26 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 .bar.out{opacity:.2}
 .bar.burst{fill:var(--warn)}
 .wband{fill:var(--tint)}
-.dragband{fill:var(--brand);opacity:.18}
 .shareline{fill:none;stroke:var(--brand);stroke-width:1.5;opacity:.85}
+/* the two ends of the span, dragged like the ends of a clip */
+.trim{position:absolute;inset:0 0 12px 0;pointer-events:none}
+.trim__band{position:absolute;top:0;bottom:0;pointer-events:auto;cursor:grab;
+  border-top:2px solid var(--brand);border-bottom:2px solid var(--brand);
+  background:color-mix(in oklab,var(--brand) 7%,transparent)}
+.trim__band:active{cursor:grabbing}
+.trim__h{position:absolute;top:0;bottom:0;width:14px;margin-left:-7px;
+  pointer-events:auto;cursor:ew-resize;display:flex;align-items:flex-start;
+  justify-content:center}
+.trim__h i{display:block;width:3px;height:100%;border-radius:2px;
+  background:var(--brand)}
+.trim__h span{position:absolute;top:-1px;font:500 9.5px var(--mono);color:#fff;
+  background:var(--brand);border-radius:3px;padding:0 4px;white-space:nowrap;
+  opacity:0;transition:opacity .12s}
+.trim__h:hover span,.trim__h:active span{opacity:1}
+.trim__h.left span{left:6px}
+.trim__h.right span{right:6px}
+.trim__h:hover i,.trim__h:active i{width:5px}
+
 .ticks{position:relative;height:12px}
 .ticks span{position:absolute;transform:translateX(-50%);font:400 9.5px var(--mono);
   color:var(--ink-3);top:1px}
