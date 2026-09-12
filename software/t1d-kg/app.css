@@ -361,7 +361,7 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
    it is sized to add up to this number. */
 /* 11 padding + 22 head + 70 plot + 15 caption. The caption sat outside a 106px
    box and was clipped by overflow:hidden - present in the DOM, invisible. */
-.tstrip{flex:0 0 auto;height:120px;box-sizing:border-box;overflow:hidden;
+.tstrip{flex:0 0 auto;height:124px;box-sizing:border-box;overflow:hidden;
   border-top:1px solid var(--hair);background:var(--surface);padding:7px 12px 4px}
 .thead{display:flex;align-items:baseline;gap:10px;margin-bottom:5px}
 /* The name is what the strip is about, so it gets the room. A 40% cap truncated
@@ -376,7 +376,10 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 .thead .tsub{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
   white-space:nowrap}
 .ghost.tiny{padding:2px 8px;font-size:.72rem;border-radius:4px}
-.plot{position:relative;height:70px;cursor:crosshair;user-select:none}
+/* 44 bars + 1 + 13 band + 16 years. The trim overlay stops above the year
+   row and the row sits on top of everything, because the overlay covered the
+   labels it was drawn beside. */
+.plot{position:relative;height:74px;cursor:crosshair;user-select:none}
 .plot .bars{width:100%;height:44px;display:block;overflow:visible}
 .bar{fill:var(--ink-3);opacity:.75}
 .bar.out{opacity:.2}
@@ -384,7 +387,7 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 .wband{fill:var(--tint)}
 .shareline{fill:none;stroke:var(--brand);stroke-width:1.5;opacity:.85}
 /* the two ends of the span, dragged like the ends of a clip */
-.trim{position:absolute;inset:0 0 12px 0;pointer-events:none}
+.trim{position:absolute;inset:0 0 16px 0;pointer-events:none;z-index:2}
 .trim__band{position:absolute;top:0;bottom:0;pointer-events:auto;cursor:grab;
   border-top:2px solid var(--brand);border-bottom:2px solid var(--brand);
   background:color-mix(in oklab,var(--brand) 7%,transparent)}
@@ -402,8 +405,9 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 .trim__h.right span{right:6px}
 .trim__h:hover i,.trim__h:active i{width:5px}
 
-.ticks{position:relative;height:12px}
-.ticks span{position:absolute;transform:translateX(-50%);font:400 9.5px var(--mono);
+.ticks{position:relative;height:16px;z-index:3;pointer-events:none}
+.ticks span{position:absolute;transform:translateX(-50%);font:400 10px var(--mono);
+  background:var(--surface);padding:0 3px;border-radius:2px;
   color:var(--ink-3);top:1px}
 .tcursor{position:absolute;top:0;bottom:16px;width:1px;background:var(--brand);
   pointer-events:none}
