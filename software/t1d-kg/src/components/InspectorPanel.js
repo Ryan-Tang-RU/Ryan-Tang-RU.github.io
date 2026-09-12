@@ -146,6 +146,19 @@ Vue.component("inspector-panel", {
     } }
   },
   methods: {
+    // Which path end this entity currently is, if any. Read by the two tags so a
+    // node already chosen looks chosen.
+    isEnd(which) {
+      const e = this.$store.state[which === "A" ? "pathA" : "pathB"];
+      return !!(e && this.node && e.eid === this.node.eid);
+    },
+    // A toggle, not a set: pressing the tag of an end this node already holds
+    // clears it, which is the only way to undo the choice from here. The left-hand
+    // panel's own × commits exactly the same thing.
+    toggleEnd(which) {
+      this.$store.commit("setEndpoint",
+        { which: which, node: this.isEnd(which) ? null : this.node });
+    },
     glyph: (t, r) => T1DGlyphs.path(t, r),
     color: t => T1DGlyphs.color(t),
     hasRel: l => (l.relation_types || []).filter(Boolean).length > 0,
@@ -280,12 +293,24 @@ Vue.component("inspector-panel", {
 
     <div v-else-if="node">
       <div class="ihead">
-        <svg width="18" height="18" viewBox="-9 -9 18 18" aria-hidden="true">
-          <path :d="glyph(node.type,7)" :fill="color(node.type)"></path></svg>
+        <!-- The same mark the canvas draws, on the same tinted disc, and wearing the
+             focus ring when it is the focus - a navy stroke, as on the canvas. The
+             header then reads as the node the reader clicked rather than as a
+             decoration that happens to share its colour. -->
+        <span class="iglyph" :class="{focused: isFocus}"
+              :style="{background: 'color-mix(in oklab, ' + color(node.type)
+                                   + ' 14%, transparent)'}">
+          <svg width="17" height="17" viewBox="-9 -9 18 18" aria-hidden="true">
+            <path :d="glyph(node.type,6.6)" :fill="color(node.type)"></path></svg>
+        </span>
         <h2>{{ node.name }}</h2>
       </div>
       <div class="imeta">
         <span>{{ node.type }}</span><span>{{ node.id }}</span>
+        <!-- States, as states. "Is the focus" used to be a disabled button, which
+             reads as a control that has stopped working rather than as a fact. -->
+        <span class="pill focus" v-if="isFocus"
+              title="the canvas is drawn around this entity">focus</span>
         <button class="pill unpin" v-if="node.pinned"
                 @click="$store.commit('unpinNode', node.eid)"
                 title="release this node so the layout can move it again">pinned
@@ -295,24 +320,36 @@ Vue.component("inspector-panel", {
         <a v-for="l in links" :key="l[1]" :href="l[1]" target="_blank"
            rel="noopener">{{ l[0] }}</a>
       </div>
-      <div class="row" style="margin:0 0 6px">
-        <button class="primary" @click="$emit('expand', {eid: node.eid})"
-                :disabled="!nextBatch"
-                :title="nextBatch ? 'add the ' + nextBatch + ' strongest partners '
-                        + 'that are not on the canvas yet'
-                      : 'every partner this graph has for it is already shown'">
-          {{ !nextBatch ? 'All partners shown'
-             : lastBatch ? 'Show the last ' + nextBatch + ' partners'
+      <div class="row iacts">
+        <button class="primary" v-if="nextBatch"
+                @click="$emit('expand', {eid: node.eid})"
+                :title="'add the ' + nextBatch + ' strongest partners that are not '
+                      + 'on the canvas yet'">
+          {{ lastBatch ? 'Show the last ' + nextBatch + ' partners'
              : 'Show ' + nextBatch + ' more partners' }}
         </button>
-        <button class="ghost" @click="$emit('focus', node)"
-                :disabled="isFocus"
-                :title="isFocus ? 'this is already the focus'
-                      : 'reload the canvas around this entity and put it on the trail'">
-          {{ isFocus ? 'Is the focus' : 'Focus' }}</button>
-        <button class="ghost" @click="$store.commit('setEndpoint',{which:'A',node:node})">A</button>
-        <button class="ghost" @click="$store.commit('setEndpoint',{which:'B',node:node})">B</button>
+        <button class="ghost" v-if="!isFocus" @click="$emit('focus', node)"
+                title="redraw the canvas around this entity and add it to the trail">
+          Focus here</button>
+        <!-- The two path ends, carrying the A and B tags the left-hand panel uses,
+             so it is visible where they land. They were bare letters with no label,
+             no tooltip and no state: a node already set as A looked exactly like one
+             that was not. Setting is now a toggle - press it again to clear. -->
+        <span class="ends" title="pick two entities, then find the shortest path
+between them in the left-hand panel">
+          <span class="endslabel">path</span>
+          <button class="endbtn" :class="{on: isEnd('A')}"
+                  @click="toggleEnd('A')"
+                  :title="isEnd('A') ? 'clear end A'
+                        : 'make this end A of the path'">A</button>
+          <button class="endbtn" :class="{on: isEnd('B')}"
+                  @click="toggleEnd('B')"
+                  :title="isEnd('B') ? 'clear end B'
+                        : 'make this end B of the path'">B</button>
+        </span>
       </div>
+      <p class="hint allshown" v-if="!nextBatch && nTotal">
+        Every partner this graph has for it is on the canvas.</p>
       <p class="hint" style="margin:0 0 8px" v-if="rem && rem.total">
         {{ rem.total.toLocaleString() }} more partners are not on the canvas.
         <template v-if="remTypes.length > 1">Add one kind at a time:</template>

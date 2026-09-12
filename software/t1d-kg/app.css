@@ -243,7 +243,40 @@ a{color:var(--link)}
 /* inspector */
 .insEmpty{color:var(--ink-3);font-size:.85rem}
 .keys{margin:10px 0 0;padding-left:16px;line-height:1.9;font-size:.8rem}
-.ihead{display:flex;gap:9px;align-items:flex-start;margin-bottom:3px}
+.ihead{display:flex;gap:9px;align-items:center;margin-bottom:4px}
+/* The entity's own mark, on a disc tinted with its own colour, so the top of the
+   panel reads as the node that was clicked. `.focused` wears the canvas's focus
+   ring - the same navy stroke the canvas draws at 2.5px - which is how the panel
+   and the graph say "this one" in the same way. */
+.iglyph{flex:none;width:28px;height:28px;border-radius:50%;display:grid;
+  place-items:center;box-shadow:inset 0 0 0 1px rgba(22,50,79,.07)}
+.iglyph.focused{box-shadow:0 0 0 2px var(--navy), 0 0 0 5px
+  color-mix(in oklab,var(--navy) 14%,transparent)}
+/* --- the entity's actions ------------------------------------------------ */
+/* Grouped, because the row mixes three unrelated things: one primary action, one
+   navigation, and the two ends of a path search that lives in the other panel. */
+/* `.row` carries margin-top; this row also needs the bottom gap the inline style
+   it replaced used to give it. */
+.iacts{flex-wrap:wrap;row-gap:6px;margin:0 0 8px}
+.iacts .ends{display:inline-flex;align-items:center;gap:4px;margin-left:auto;
+  padding:2px 4px 2px 7px;border:1px solid var(--rule);border-radius:6px;
+  background:var(--ground)}
+.endslabel{font:400 10px var(--mono);color:var(--ink-3);letter-spacing:.04em;
+  text-transform:uppercase}
+/* The A and B tags, in the left-hand panel's own type, so it is obvious which two
+   slots they fill. `.on` is the state that was missing entirely: a node already
+   chosen as an end used to look exactly like one that was not. */
+.endbtn{font:700 10px var(--mono);width:20px;height:20px;padding:0;border-radius:4px;
+  border:1px solid var(--rule);background:var(--surface);color:var(--ink-3);
+  cursor:pointer;line-height:1}
+.endbtn:hover{border-color:var(--brand);color:var(--brand);background:var(--tint)}
+.endbtn.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.endbtn.on:hover{background:color-mix(in oklab,var(--brand) 82%,#000)}
+/* Said once, as a sentence, instead of as a primary button that cannot be pressed. */
+.allshown{margin:0 0 8px}
+.pill.focus{background:color-mix(in oklab,var(--navy) 13%,transparent);
+  color:var(--navy);font-weight:600}
+
 .ihead h2{font-size:1.06rem;margin:0;line-height:1.25;word-break:break-word}
 .imeta{font:400 11px var(--mono);color:var(--ink-3);margin-bottom:9px;
   display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
