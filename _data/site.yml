@@ -48,14 +48,14 @@ nav:
   href: publications.html
 - label: Blog
   href: blog.html
-- label: Software
-  href: software.html
 - label: Group
   href: group.html
 - label: Teaching
   href: teaching.html
 - label: Awards
   href: awards.html
+- label: Software
+  href: software.html
 - label: Misc
   href: misc.html
 bio:
