@@ -180,8 +180,16 @@ window.T1DApi = {
       });
       rows.forEach(r => { r.rel_dist = dist[r.eid] || null; });
       const byType = {};
+      // Minus what this response is delivering. `exclude` is the canvas as it was
+      // before the call, so counting only against it kept the batch just returned
+      // inside "remaining" and the button promised one whole batch too many.
+      const shown = {};
+      rows.forEach(r => { shown[r.type] = (shown[r.type] || 0) + 1; });
       let remaining = 0;
-      rem.forEach(r => { byType[r.type] = Number(r.n); remaining += Number(r.n); });
+      rem.forEach(r => {
+        const left = Number(r.n) - (shown[r.type] || 0);
+        if (left > 0) { byType[r.type] = left; remaining += left; }
+      });
       return { fields: Object.keys(rows[0] || {}), rows: rows,
                total_neighbours: Number((tot[0] || {}).total || 0),
                remaining: remaining, remaining_by_type: byType };

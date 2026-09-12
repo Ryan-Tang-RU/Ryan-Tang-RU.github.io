@@ -45,7 +45,15 @@ Vue.component("search-box", {
           if (this.state === "empty") {
             const toks = q.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
                           .split(" ").filter(t => t.length >= 4);
-            if (toks.length) {
+            // Exactly one word, or nothing is claimed. The message asserts that the
+            // word was never tagged, and that is only sound for a single-word query:
+            // there, "the search found nothing" proves it, because an exact match on
+            // a name or a written form outscores everything and would have come
+            // back. Pick the commonest word out of a phrase instead and the sentence
+            // inverts - "insulin foobarbaz" found no entity, and reporting the
+            // biggest word said insulin appears in 58,355 abstracts and "was never
+            // marked as an entity", about one of the largest nodes in the graph.
+            if (toks.length === 1) {
               const v = await T1DApi.vocab(toks);
               if (q !== this.q.trim()) return;
               // A failed count stays silent rather than becoming a number. The
