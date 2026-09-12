@@ -18,7 +18,8 @@
      and filled the screen with two enormous nodes. */
 Vue.component("graph-canvas", {
   data: () => ({ tipHtml: "", tipX: 0, tipY: 0,
-                 clickTimer: null, clickEid: null, clickNode: null }),
+                 clickTimer: null, clickEid: null, clickNode: null,
+                 seeds: window.T1D_SEEDS }),
   computed: {
     version() { return this.$store.state.version; },
     nodes() { return this.$store.getters.visibleNodes; },
@@ -88,6 +89,9 @@ Vue.component("graph-canvas", {
     if (this.ro) this.ro.disconnect();
   },
   methods: {
+    // the same scale the nodes are drawn with, so the dot beside
+    // a group matches the colour those entities will appear in
+    color: t => T1DGlyphs.color(t),
     box() { return this.$refs.svg.getBoundingClientRect(); },
     viewport() {
       const b = this.box();
@@ -454,13 +458,16 @@ Vue.component("graph-canvas", {
       <div class="start">
         <h2>Start from an entity</h2>
         <p>Search on the left, or open one of these:</p>
-        <div class="startrow">
-          <button class="seedbtn" @click="$emit('seed','Diabetes Mellitus Type 1')">
-            type 1 diabetes</button>
-          <button class="seedbtn" @click="$emit('seed','teplizumab')">
-            teplizumab</button>
-          <button class="seedbtn" @click="$emit('seed','HLA-DQB1')">
-            HLA-DQB1</button>
+        <div class="startgrid">
+          <template v-for="g in seeds">
+            <div class="stype" :key="'t'+g.type">
+              <span class="sdot" :style="{background: color(g.type)}"></span>{{ g.type }}
+            </div>
+            <div class="startrow" :key="'r'+g.type">
+              <button class="seedbtn" v-for="s in g.items" :key="s.q"
+                      @click="$emit('seed', s.q)">{{ s.label }}</button>
+            </div>
+          </template>
         </div>
         <p class="hint">Nodes are entities, edges are papers that mention both.
           Drag a node to move it, click an edge for the sentences behind it.</p>

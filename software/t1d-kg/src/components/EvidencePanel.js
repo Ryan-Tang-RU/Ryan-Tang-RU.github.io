@@ -118,8 +118,8 @@ Vue.component("evidence-panel", {
     <div v-else-if="failed" class="evidscroll">
       <p class="hint">Could not load evidence for this pair &mdash;
         {{ ev.error }}.<br>The counts and sentences below would all read as zero,
-        which is why nothing is shown instead. The local bridge may have stopped;
-        restart it and click the edge again.</p>
+        which is why nothing is shown instead. Click the edge again, or reload
+        the page.</p>
     </div>
 
     <div v-else-if="tab==='relations'" class="evidscroll">

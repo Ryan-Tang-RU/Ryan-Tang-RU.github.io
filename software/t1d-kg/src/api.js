@@ -148,8 +148,14 @@ window.T1DApi = {
   search: (q, limit) => timed("search", async () => {
     const n = norm(q);
     if (n.length < 2) return { fields: [], rows: [] };
+    // `raw` is the query as typed. The SQL prefers an exact spelling only when
+    // the reader used a capital, which is the signal that the case was deliberate:
+    // "CD4" is the human gene and "Cd4" the mouse one. Leaving it unbound did not
+    // raise - it bound NULL, the comparison was never true, and the published
+    // build quietly answered "CD4" with the mouse gene while the bridge answered
+    // with the human one.
     return { fields: ["eid", "type", "id", "name", "n_papers", "species", "via"],
-             rows: await run("search", { q: n, toks: n.split(" "),
+             rows: await run("search", { q: n, toks: n.split(" "), raw: q,
                                          limit: limit || 25 }) };
   }),
 

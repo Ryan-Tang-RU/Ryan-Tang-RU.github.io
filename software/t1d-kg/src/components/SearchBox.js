@@ -115,7 +115,7 @@ Vue.component("search-box", {
     <div class="hits" id="hits" role="listbox" v-show="open" :style="box">
       <p class="hint pad" v-if="state==='loading'">searching&hellip;</p>
       <p class="hint pad" v-else-if="state==='error'">Search failed &mdash;
-        {{ error }}. The local bridge may have stopped; restart it and try again.</p>
+        {{ error }}. Try again, or reload the page.</p>
       <p class="hint pad" v-else-if="state==='empty'">Nothing matches
         &ldquo;{{ q.trim() }}&rdquo;. The graph keeps entities above the export
         thresholds, so a real but rarely studied one can be missing here while still

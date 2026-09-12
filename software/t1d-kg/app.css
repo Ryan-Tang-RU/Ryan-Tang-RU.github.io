@@ -192,12 +192,20 @@ a{color:var(--link)}
    than as a graph that failed to draw - which is how a bare canvas was read. */
 .empty .start{pointer-events:auto;background:var(--surface);
   border:1px solid var(--hair);border-radius:10px;padding:20px 22px;
-  max-width:min(460px,86vw);box-shadow:0 6px 24px rgba(22,50,79,.08)}
+  max-width:min(540px,90vw);box-shadow:0 6px 24px rgba(22,50,79,.08)}
 .empty .start h2{margin:0 0 4px;font:700 1rem var(--sans);color:var(--navy)}
 .empty .start p{margin:0;font-size:.84rem;color:var(--ink-2)}
 .empty .start .hint{margin-top:12px;padding-top:11px;
   border-top:1px solid var(--hair);line-height:1.5}
-.startrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+/* label column / buttons column, so the chips line up across groups instead of
+   each row starting at its own label's width */
+.startgrid{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;
+  margin-top:12px;text-align:left;align-items:start}
+.stype{display:flex;align-items:center;gap:6px;font:600 .72rem var(--sans);
+  color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;
+  padding-top:7px;white-space:nowrap}
+.sdot{width:8px;height:8px;border-radius:50%;flex:none}
+.startrow{display:flex;flex-wrap:wrap;gap:6px}
 .seedbtn{font:600 .82rem var(--sans);padding:6px 12px;border-radius:6px;
   border:1px solid var(--brand);background:var(--surface);color:var(--brand);
   cursor:pointer}
@@ -423,6 +431,7 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
   background:color-mix(in oklab,#9B3724 12%,var(--surface));
   border-bottom:1px solid color-mix(in oklab,#9B3724 40%,transparent);
   font-size:.82rem}
+.ewhere{font-weight:500;opacity:.8}
 .errbar .ei{width:18px;height:18px;border-radius:50%;flex:none;display:grid;
   place-items:center;background:#9B3724;color:#fff;font:700 12px var(--sans)}
 .errbar .etext{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
