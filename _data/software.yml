@@ -10,4 +10,12 @@
 #      One or two sentences.
 heading: Software
 intro: Tools built in the course of research.
-projects: []
+projects:
+- title: Temporally Evolving T1D Knowledge Graph
+  url: software/t1d-kg/
+  date: 2026
+  status: in development
+  summary: >-
+    An interactive knowledge graph of the type 1 diabetes literature - 131,511
+    PubMed records from 1960 to 2026, with the papers and sentences behind every
+    edge. Runs entirely in the browser.
