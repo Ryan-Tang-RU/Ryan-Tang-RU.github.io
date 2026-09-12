@@ -25,7 +25,7 @@ const SENT_PAGE = 8;
 const SENT_RE = /[^.!?]*[.!?]+(?:\s|$)|[^.!?]+$/g;
 
 const TABLES = ["entities", "entity_year", "pair_year", "corpus_year", "papers",
-                "passages", "mentions", "relations", "search", "coverage"];
+                "passages", "mentions", "relations", "search", "coverage", "vocab"];
 
 let conn = null;
 let manifest = null;
@@ -158,6 +158,11 @@ window.T1DApi = {
              rows: await run("search", { q: n, toks: n.split(" "), raw: q,
                                          limit: limit || 25 }) };
   }),
+
+  // What the abstracts say, for a query the entity index could not answer.
+  vocab: toks => timed("vocab", async () => ({
+    rows: await run("vocab", { toks: toks }),
+  })),
 
   neighbours: (eid, y0, y1, limit, exclude, types, rank) =>
     timed("neighbours", async () => {

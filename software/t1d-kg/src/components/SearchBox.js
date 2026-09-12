@@ -15,7 +15,7 @@
       information the reader needs, not noise to hide. */
 Vue.component("search-box", {
   data: () => ({ q: "", rows: [], ix: -1, open: false, timer: null,
-                 state: "idle", error: "", box: null }),
+                 state: "idle", error: "", box: null, inText: null }),
   computed: {
     hasRows() { return this.state === "hits" && this.rows.length > 0; }
   },
@@ -34,6 +34,28 @@ Vue.component("search-box", {
         } else {
           this.rows = res.rows || [];
           this.state = this.rows.length ? "hits" : "empty";
+          // Nothing matched. Before saying so, ask what the abstracts contain:
+          // "no node" and "not studied" read the same and are not the same claim.
+          // The tagger behind this graph covers small molecules and monoclonal
+          // antibodies almost completely and misses most peptide and
+          // fusion-protein drugs, so liraglutide is in 159 abstracts here and
+          // tagged in none of them. Saying only "nothing matches" would make the
+          // reader draw a conclusion about the field from a gap in the tagging.
+          this.inText = null;
+          if (this.state === "empty") {
+            const toks = q.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
+                          .split(" ").filter(t => t.length >= 4);
+            if (toks.length) {
+              const v = await T1DApi.vocab(toks);
+              if (q !== this.q.trim()) return;
+              // A failed count stays silent rather than becoming a number. The
+              // generic message below is still true; "appears in 0 abstracts"
+              // would not be, and is exactly the shape of answer that has made
+              // this project report confident zeros before.
+              const best = v.error ? null : (v.rows || [])[0];
+              if (best) this.inText = { word: best.tok, n: Number(best.n_papers) };
+            }
+          }
         }
         this.place();
       }, 180);
@@ -117,9 +139,15 @@ Vue.component("search-box", {
       <p class="hint pad" v-else-if="state==='error'">Search failed &mdash;
         {{ error }}. Try again, or reload the page.</p>
       <p class="hint pad" v-else-if="state==='empty'">Nothing matches
-        &ldquo;{{ q.trim() }}&rdquo;. The graph keeps entities above the export
-        thresholds, so a real but rarely studied one can be missing here while still
-        present in the corpus. Names, abbreviations and misspellings all work.</p>
+        &ldquo;{{ q.trim() }}&rdquo;.
+        <template v-if="inText"><b>But &ldquo;{{ inText.word }}&rdquo; appears in
+        {{ inText.n.toLocaleString() }} abstracts here.</b> It was never marked as
+        an entity, so there is no node to open &mdash; which says something about
+        what was labelled, not about the literature. Peptide and fusion-protein
+        drugs are missing this way most often.</template>
+        <template v-else>Names, abbreviations and misspellings all work. Entities
+        below the export thresholds are left out, so a real but rarely studied one
+        can be missing here.</template></p>
       <template v-else>
         <button v-for="(r,i) in rows" :key="r.eid" role="option"
                 :class="{on: i===ix}" @click="choose(r)"

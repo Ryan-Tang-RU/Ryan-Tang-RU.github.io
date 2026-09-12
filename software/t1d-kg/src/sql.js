@@ -19,6 +19,16 @@
 // Number([120,0,0,0]) is NaN and showed the corpus paper count as 0.
 window.T1DSQL = {
 
+  // ---- how often a word occurs in the abstracts ------------------------
+  // Asked only when the entity search found nothing, to separate "this graph has
+  // no node for it" from "the literature does not mention it". The two look the
+  // same to a reader and are not the same thing: the whole GLP-1 class is written
+  // in hundreds of abstracts here and tagged in none of them.
+  vocab: `
+    SELECT tok, n_papers FROM vocab
+    WHERE tok IN (SELECT unnest(string_split($toks, chr(31))))
+    ORDER BY n_papers DESC`,
+
   // ---- search: names and the words people actually write ----------------
   search: `
     WITH scored AS (
@@ -40,7 +50,16 @@ window.T1DSQL = {
       FROM search
       WHERE norm LIKE '%' || $q || '%'
          OR len(list_filter(string_split($toks, chr(31)), t -> NOT norm LIKE '%' || t || '%')) = 0
-         OR (length($q) >= 4 AND jaro_winkler_similarity(norm, $q) >= 0.88)
+         -- A near-spelling, not a different word. At 0.88 the fallback answered
+               -- "abatacept" with the gene ABAT and "tirzepatide" with Teriparatide -
+               -- confidently wrong, and worse than nothing, because a reader cannot
+               -- tell an approximate hit from an exact one. Real typos score far
+               -- higher: teplizumb/teplizumab 0.980, metfomin/metformin 0.978,
+               -- diabetis/diabetes 0.950, against 0.889 and 0.893 for those two. The
+               -- length guard catches the other shape, a short name swallowed by a
+               -- long query: ABAT is 4 characters against abatacept's 9.
+         OR (length($q) >= 4 AND jaro_winkler_similarity(norm, $q) >= 0.92
+             AND length(norm) BETWEEN length($q) * 0.75 AND length($q) * 1.34)
     ), best AS (
       SELECT eid, any_value(type) AS type, any_value(name) AS name,
              any_value(n_papers) AS n_papers,
