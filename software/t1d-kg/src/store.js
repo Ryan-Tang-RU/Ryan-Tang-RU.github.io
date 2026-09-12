@@ -356,7 +356,15 @@ window.T1DStore = new Vuex.Store({
           rel_dist: n.rel_dist
         });
       });
-      await dispatch("fillSubgraph");
+      // The facts are fetched before the selection changes, not after it. The
+      // counts already were - setNeighbourTotal and setNeighbourRemaining are
+      // committed above - so leaving only nodeFacts to the panel's own watcher
+      // meant switching entity drew the panel once without them and again a round
+      // trip later, which is the page that flashed past. In parallel with the
+      // subgraph, so this costs no extra wait. The watcher still covers the other
+      // way in, clicking a node on the canvas, where nothing has been fetched yet.
+      await Promise.all([dispatch("fillSubgraph"),
+                         dispatch("loadNodeFacts", eid)]);
       commit("select", { kind: "node", eid: eid });
     },
     // `p` is an eid, or {eid, types} to add one type at a time - the faceted

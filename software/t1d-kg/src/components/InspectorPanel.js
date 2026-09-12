@@ -348,7 +348,13 @@ between them in the left-hand panel">
                         : 'make this end B of the path'">B</button>
         </span>
       </div>
-      <p class="hint allshown" v-if="!nextBatch && nTotal">
+      <!-- Only once the count has actually arrived. An empty next-batch is also
+           true while the request is still in flight, and saying "every partner is
+           on the canvas" because the answer has not come back yet is the
+           confident wrong statement this project keeps having to remove.
+           No backticks in here: this whole template is one backtick string, and
+           a quoted identifier ends it - which blanked the panel. -->
+      <p class="hint allshown" v-if="rem && !rem.total">
         Every partner this graph has for it is on the canvas.</p>
       <p class="hint" style="margin:0 0 8px" v-if="rem && rem.total">
         {{ rem.total.toLocaleString() }} more partners are not on the canvas.
@@ -379,24 +385,34 @@ between them in the left-hand panel">
         <button class="ghost" @click="$store.commit('removeNode', node.eid)">
           Remove from canvas</button>
       </div>
-      <dl class="kv" v-if="facts">
+      <!-- One list with the labels always present, values filled in when they
+           arrive. Two lists - a four-row one for loaded facts and a one-row
+           fallback - meant switching entity redrew the panel at a different height
+           for the length of one request, then again when the neighbour count
+           landed: three shapes for one click, which is the flicker. The labels are
+           known immediately; only the numbers are pending, so only the numbers
+           wait. -->
+      <dl class="kv">
         <dt>papers, {{ years }}</dt>
-        <dd>{{ facts.n_papers_in_window.toLocaleString() }}</dd>
+        <dd v-if="facts">{{ facts.n_papers_in_window.toLocaleString() }}</dd>
+        <dd v-else class="pend">&mdash;</dd>
         <dt>papers, all years</dt>
-        <dd>{{ facts.n_papers_corpus.toLocaleString() }}<span class="hint"
-          v-if="facts.last_year > 2025"> (includes {{ facts.last_year }})</span></dd>
+        <dd v-if="facts">{{ facts.n_papers_corpus.toLocaleString() }}<span
+          class="hint" v-if="facts.last_year > 2025"> (includes {{
+          facts.last_year }})</span></dd>
+        <dd v-else>{{ (node.total_papers || 0).toLocaleString() }}</dd>
         <dt>active</dt>
-        <dd>{{ facts.first_year }}&ndash;{{ facts.last_year }}</dd>
+        <dd v-if="facts">{{ facts.first_year }}&ndash;{{ facts.last_year }}</dd>
+        <dd v-else class="pend">&mdash;</dd>
         <dt>appears with</dt>
-        <dd>{{ facts.partners_all.toLocaleString() }} entities</dd>
-        <dt v-if="forms.length">written as</dt>
-        <dd v-if="forms.length"><span v-for="(f,i) in forms" :key="f.text"><span
-          v-if="i">, </span><code>{{ f.text }}</code>
-          <span class="n">&times;{{ f.n.toLocaleString() }}</span></span></dd>
-      </dl>
-      <dl class="kv" v-else>
-        <dt>papers, all years</dt>
-        <dd>{{ (node.total_papers||0).toLocaleString() }}</dd>
+        <dd v-if="facts">{{ facts.partners_all.toLocaleString() }} entities</dd>
+        <dd v-else class="pend">&mdash;</dd>
+        <template v-if="forms.length">
+          <dt>written as</dt>
+          <dd><span v-for="(f,i) in forms" :key="f.text"><span
+            v-if="i">, </span><code>{{ f.text }}</code>
+            <span class="n">&times;{{ f.n.toLocaleString() }}</span></span></dd>
+        </template>
       </dl>
       <div class="connwrap">
       <label style="display:block;font:700 10.5px var(--sans);letter-spacing:.08em;
