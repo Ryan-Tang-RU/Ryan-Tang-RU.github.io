@@ -411,7 +411,13 @@ window.T1DAssistant = (function () {
         required: ["a", "b"],
       },
       run: async (i, c) => {
-        const key = [i.a, i.b].slice().sort().join(" ");
+        // The store's own key function, not a second copy of the rule. This line
+        // built the key itself and joined with a NUL byte where the store joins
+        // with a space, so the lookup could never match and the tool answered
+        // every request with "no edge between those two on the canvas" - a tidy
+        // error that reads as a deliberate answer. It is syntactically valid and
+        // parses, so only running it could find it.
+        const key = window.T1DPairKey(i.a, i.b);
         const link = c.store.state.links[key];
         if (!link) return { error: "no edge between those two on the canvas" };
         c.store.commit("select", { kind: "edge", key: key });
