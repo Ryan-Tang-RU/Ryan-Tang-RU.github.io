@@ -128,9 +128,12 @@ Vue.component("search-box", {
             <path :d="glyph(r.type,4.5)" :fill="color(r.type)"></path></svg>
           <span class="snm">
             <span class="sline"><b>{{ r.name }}</b></span>
-            <span class="smeta">{{ r.type }} {{ r.id }} &middot;
+            <span class="smeta">{{ r.type }} {{ r.id }}<template
+              v-if="r.species"> &middot; {{ r.species }}</template> &middot;
               {{ (r.n_papers||0).toLocaleString() }} papers<template
-              v-if="r.via"> &middot; matched &ldquo;{{ r.via }}&rdquo;</template><span
+              v-if="r.via"> &middot; matched &ldquo;{{ r.via }}&rdquo;</template><template
+              v-if="r.others"> &middot; {{ r.others }} more of this name in other
+              species</template><span
               class="pill" v-if="onCanvas(r.eid)">on canvas</span></span>
           </span>
         </button>

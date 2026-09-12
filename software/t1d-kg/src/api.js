@@ -147,7 +147,7 @@ window.T1DApi = {
   search: (q, limit) => timed("search", async () => {
     const n = norm(q);
     if (n.length < 2) return { fields: [], rows: [] };
-    return { fields: ["eid", "type", "id", "name", "n_papers", "via"],
+    return { fields: ["eid", "type", "id", "name", "n_papers", "species", "via"],
              rows: await run("search", { q: n, toks: n.split(" "),
                                          limit: limit || 25 }) };
   }),
@@ -256,6 +256,7 @@ window.T1DApi = {
       top_forms: forms.map(f => ({ text: f.text, n: Number(f.n) })),
       n_papers_corpus: Number((base && base.n_papers) || 0),
       n_papers_in_window: Number((win && win.n) || 0),
+      species: base ? base.species : null,
       first_year: base ? base.first_year : null,
       last_year: base ? base.last_year : null,
       partners_all: Number((par && par.n) || 0),

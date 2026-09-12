@@ -22,7 +22,7 @@ window.T1DSQL = {
   // ---- search: names and the words people actually write ----------------
   search: `
     WITH scored AS (
-      SELECT eid, type, name, n_papers, term, is_name, c,
+      SELECT eid, type, name, n_papers, species_name, term, is_name, c,
              CASE
                WHEN norm = $q AND is_name THEN 100
                WHEN norm = $q THEN 92
@@ -43,16 +43,36 @@ window.T1DSQL = {
          OR (length($q) >= 4 AND jaro_winkler_similarity(norm, $q) >= 0.88)
     ), best AS (
       SELECT eid, any_value(type) AS type, any_value(name) AS name,
-             any_value(n_papers) AS n_papers, max(score) AS score, max(ev) AS ev,
+             any_value(n_papers) AS n_papers,
+             any_value(species_name) AS species_name,
+             max(score) AS score, max(ev) AS ev,
              arg_max(term, score) AS term, arg_max(is_name, score) AS is_name
       FROM scored GROUP BY eid
+    ), grouped AS (
+      -- One row per name, not one per identifier. PubTator gives every species its
+      -- own gene id, so "ins" matched twenty entities all shown as INS: human with
+      -- 27,778 papers, then dog 160, pig 91, cattle 65, rabbit 24. The largest is
+      -- the answer; the rest are a count.
+      --
+      -- The typed spelling wins the group only when the reader used a capital,
+      -- which is the signal that the case was deliberate: "CD4" is the human gene
+      -- and "Cd4" the mouse one. Applied to every query, an all-lowercase "ins"
+      -- put a zebrafish gene literally named "ins" - 9 papers - first.
+      SELECT *,
+             row_number() OVER (PARTITION BY type, lower(name)
+                                ORDER BY CASE WHEN name = $raw
+                                                AND $raw <> lower($raw)
+                                              THEN 0 ELSE 1 END,
+                                         score DESC, ev DESC, n_papers DESC,
+                                         eid) AS rn,
+             count(*) OVER (PARTITION BY type, lower(name)) AS same
+      FROM best
     )
     SELECT eid, type, split_part(eid, '|', 2) AS id, name, n_papers,
-           CASE WHEN is_name THEN NULL ELSE term END AS via
-    FROM best
-    -- eid last, so the order is total: without it two entities alike in score,
-    -- evidence, size and name length come back in scan order, which differs
-    -- between this build and the server's.
+           CASE WHEN type = 'Species' THEN NULL ELSE species_name END AS species,
+           CASE WHEN is_name THEN NULL ELSE term END AS via,
+           (same - 1)::BIGINT AS others
+    FROM grouped WHERE rn = 1
     ORDER BY score DESC, ev DESC, n_papers DESC, length(name), name, eid
     LIMIT $limit`,
 
@@ -213,7 +233,8 @@ window.T1DSQL = {
   // ---- one entity's facts ------------------------------------------------
   node: `
     SELECT e.eid, e.type, split_part(e.eid, '|', 2) AS id, e.name,
-           e.n_papers AS n_papers_corpus, e.first_year, e.last_year
+           e.n_papers AS n_papers_corpus, e.first_year, e.last_year,
+           CASE WHEN e.type = 'Species' THEN NULL ELSE e.species_name END AS species
     FROM entities e WHERE e.eid = $eid`,
 
   entities_by_ids: `
