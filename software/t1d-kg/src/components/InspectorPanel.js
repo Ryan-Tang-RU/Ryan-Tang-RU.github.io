@@ -215,8 +215,7 @@ Vue.component("inspector-panel", {
     <div v-if="pathRow">
       <h2 style="font-size:1rem;margin:0 0 4px">Shortest path &mdash;
         {{ pathRow.hops }} hops</h2>
-      <p class="hint" style="margin:0 0 10px" v-if="avoidHubs">Hub nodes were
-        excluded from the middle, so this is not simply routed through
+      <p class="hint" style="margin:0 0 10px" v-if="avoidHubs">The most connected nodes were kept out of the middle, so this is not simply a detour through
         <em>Homo sapiens</em>.</p>
       <p class="hint" style="margin:0 0 10px" v-else>Hubs were allowed, so this may
         route through a node that connects to almost everything.</p>
@@ -249,7 +248,7 @@ Vue.component("inspector-panel", {
           </div>
           <div class="hopmeta">
             <span class="pill rel" v-for="t in relsOf(h)" :key="t">{{ t }}</span>
-            <span class="hint" v-if="!relsOf(h).length">co-mention only</span>
+            <span class="hint" v-if="!relsOf(h).length">mentioned together, no claim</span>
           </div>
         </li>
       </ul>
@@ -335,9 +334,7 @@ Vue.component("inspector-panel", {
       <p class="hint" style="margin:0 0 10px" v-if="nTotal != null">
         {{ connections.length }} of {{ nTotal.toLocaleString() }} graph neighbours are
         on the canvas.<template v-if="hiddenPartners"> A further
-        <b>{{ hiddenPartners.toLocaleString() }}</b> entities co-occur with this one
-        but never reach three papers in any single year, which is the threshold for an
-        edge &mdash; they are in the corpus and not in this graph.</template></p>
+        <b>{{ hiddenPartners.toLocaleString() }}</b> more appear alongside this one somewhere in these papers, but never three times in a single year, so no line is drawn for them here.</template></p>
       <div class="warnbox" v-if="crowded">The canvas holds {{ canvasSize }} nodes.
         Past roughly 150 the layout stops being readable &mdash; narrow the years or
         remove a few before expanding again.</div>
@@ -348,12 +345,12 @@ Vue.component("inspector-panel", {
       <dl class="kv" v-if="facts">
         <dt>papers, {{ years }}</dt>
         <dd>{{ facts.n_papers_in_window.toLocaleString() }}</dd>
-        <dt>papers, whole corpus</dt>
+        <dt>papers, all years</dt>
         <dd>{{ facts.n_papers_corpus.toLocaleString() }}<span class="hint"
           v-if="facts.last_year > 2025"> (includes {{ facts.last_year }})</span></dd>
         <dt>active</dt>
         <dd>{{ facts.first_year }}&ndash;{{ facts.last_year }}</dd>
-        <dt>co-occurs with</dt>
+        <dt>appears with</dt>
         <dd>{{ facts.partners_all.toLocaleString() }} entities</dd>
         <dt v-if="forms.length">written as</dt>
         <dd v-if="forms.length"><span v-for="(f,i) in forms" :key="f.text"><span
@@ -361,15 +358,15 @@ Vue.component("inspector-panel", {
           <span class="n">&times;{{ f.n.toLocaleString() }}</span></span></dd>
       </dl>
       <dl class="kv" v-else>
-        <dt>papers, whole corpus</dt>
+        <dt>papers, all years</dt>
         <dd>{{ (node.total_papers||0).toLocaleString() }}</dd>
       </dl>
       <div class="connwrap">
       <label style="display:block;font:700 10.5px var(--sans);letter-spacing:.08em;
         text-transform:uppercase;color:var(--ink-3);margin:4px 0 6px">
-        Connections on canvas ({{ connections.length.toLocaleString() }})
+        On the canvas ({{ connections.length.toLocaleString() }})
         <span style="font-weight:400;text-transform:none;letter-spacing:0">
-          &mdash; papers co-mentioning both</span></label>
+          &mdash; papers that mention both</span></label>
       <ul class="ilist">
         <li v-for="c in connections" :key="c.link.key"
             @click="openConnection(c)"
@@ -411,7 +408,7 @@ Vue.component("inspector-panel", {
       <div class="imeta">
         <span v-if="link.comention_papers != null">{{
           link.comention_papers.toLocaleString() }} co-mentioning papers</span>
-        <span v-else>co-mention count loading&hellip;</span>
+        <span v-else>counting papers&hellip;</span>
         <span v-if="link.y_first">{{ link.y_first }}&ndash;{{ link.y_last }}</span>
       </div>
       <div class="imeta" v-if="rel.length">
@@ -426,16 +423,10 @@ Negative_Correlation all sit at a median of 0.99 across the corpus.">
           score {{ Number(link.rel_score_max).toFixed(2) }}</span>
       </div>
       <div class="warnbox" v-else-if="pairTotal === 0">
-        No extracted relation, and none is possible: the extractor never emits one
-        for a <b>{{ pairType }}</b> pair. It works only among Gene, Disease,
-        Chemical and Variant &mdash; Species and cell lines appear in none of the
-        262,510 relations &mdash; so this says nothing about the literature. The
-        sentences below are the evidence for this pair.
+        No claim was found, and none could be: the text-reading step never produces one for a <b>{{ pairType }}</b> pair. It reads claims only between genes, diseases, chemicals and variants &mdash; species and cell lines appear in none of the 262,510 claims &mdash; so this says nothing about the research itself. The sentences below are the evidence.
       </div>
       <div class="warnbox" v-else-if="pairTotal > 0">
-        No extracted relation for this pair, though <b>{{ pairType }}</b> pairs carry
-        {{ pairTotal.toLocaleString() }} corpus-wide &mdash; the absence is about
-        this pair, not the extractor's vocabulary.
+        No claim was found for this pair, although <b>{{ pairType }}</b> pairs carry {{ pairTotal.toLocaleString() }} elsewhere in these papers &mdash; so it is this pair that has none, not this kind of pair.
       </div>
       <evidence-panel :link="link"></evidence-panel>
     </div>

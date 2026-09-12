@@ -216,7 +216,7 @@ window.T1DSQL = {
     SELECT rel AS relation_type, count(*) AS n
     FROM relations
     WHERE a = $a AND b = $b AND year BETWEEN $y0 AND $y1
-    GROUP BY 1 ORDER BY n DESC`,
+    GROUP BY 1 ORDER BY n DESC, relation_type`,
 
   relations_total: `
     SELECT count(*) AS total FROM relations
@@ -304,7 +304,7 @@ window.T1DSQL = {
     FROM e JOIN entities en ON en.eid = e.eid
     WHERE ($etype IS NULL OR en.type = $etype)
     GROUP BY e.eid, en.type, en.name, en.n_papers
-    ORDER BY degree DESC, en.n_papers DESC
+    ORDER BY degree DESC, en.n_papers DESC, e.eid
     LIMIT $limit`,
 
   hubs: `
@@ -315,7 +315,7 @@ window.T1DSQL = {
     )
     SELECT e.eid, en.name, count(DISTINCT e.other) AS degree
     FROM e JOIN entities en ON en.eid = e.eid
-    GROUP BY 1, 2 ORDER BY degree DESC LIMIT $limit`,
+    GROUP BY 1, 2 ORDER BY degree DESC, e.eid LIMIT $limit`,
 
   // ---- evidence ----------------------------------------------------------
   // The paper count is its own exact query. Deriving it from the rows scanned for

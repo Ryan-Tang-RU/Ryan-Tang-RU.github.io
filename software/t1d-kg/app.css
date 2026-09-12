@@ -359,7 +359,9 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
    column: any change to its height re-lays out the graph, so a caption that grew a
    line or a band that appeared made the whole force layout jump. Everything inside
    it is sized to add up to this number. */
-.tstrip{flex:0 0 auto;height:106px;box-sizing:border-box;overflow:hidden;
+/* 11 padding + 22 head + 70 plot + 15 caption. The caption sat outside a 106px
+   box and was clipped by overflow:hidden - present in the DOM, invisible. */
+.tstrip{flex:0 0 auto;height:120px;box-sizing:border-box;overflow:hidden;
   border-top:1px solid var(--hair);background:var(--surface);padding:7px 12px 4px}
 .thead{display:flex;align-items:baseline;gap:10px;margin-bottom:5px}
 /* The name is what the strip is about, so it gets the room. A 40% cap truncated

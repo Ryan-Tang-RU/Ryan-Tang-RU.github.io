@@ -35,6 +35,9 @@ Vue.component("cypher-drawer", {
             </tr>
           </tbody>
         </table>
+        <p class="hint" style="padding:6px 8px" v-if="out.rows.length > 60">Showing
+          the first 60 of {{ out.rows.length }} rows returned. The query itself is
+          capped at 200 unless it carries its own LIMIT.</p>
       </div>
     </div>
   </div>`

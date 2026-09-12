@@ -17,6 +17,7 @@
 const DUCKDB = "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/";
 const SEP = String.fromCharCode(31);       // chr(31), split back into a list inside the SQL
 const MINC = 3;          // an edge needs three papers in one year: Step 7's rule
+const HUBS = 12;         // nodes a path can be told to route around
 const REL_CAP = 200;     // assertions listed per pair; the count is separate
 const PAPER_PAGE = 60;
 const PAPER_SCAN = 400;  // newest co-mentioning papers scanned for sentences
@@ -192,7 +193,7 @@ window.T1DApi = {
   // explicit.
   path: (a, b, hops, avoid) => timed("path", async () => {
     const hubs = avoid
-      ? (await run("hubs", { minc: MINC, limit: 12 }))
+      ? (await run("hubs", { minc: MINC, limit: HUBS }))
           .map(r => r.eid).filter(e => e !== a && e !== b)
       : [];
     let frontier = [a];
@@ -331,7 +332,7 @@ window.T1DApi = {
   })),
 
   hubs: () => timed("hubs", async () => ({
-    rows: await run("hubs", { minc: MINC, limit: 12 }),
+    rows: await run("hubs", { minc: MINC, limit: HUBS }),
   })),
 
   evidence: (a, b, y0, y1, offset) => timed("evidence", async () => {

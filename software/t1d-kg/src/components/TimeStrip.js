@@ -87,31 +87,35 @@ Vue.component("time-strip", {
     // therefore the canvas's, and the graph jumped every time the selection changed.
     // The detail lives in the tooltip, where length costs nothing.
     note() {
-      const bits = ["drag to set the year window"];
-      if (this.pol) bits.push("band: assertion direction");
-      if ((this.data.bursts || []).length) bits.push("orange: burst years");
-      if (this.lagBand) bits.push(this.lagBand.from + "+ under-indexed");
+      const bits = ["drag to choose years"];
+      if (this.pol) bits.push("strip below: which way the claims point");
+      if ((this.data.bursts || []).length) bits.push("orange: unusually busy years");
+      if (this.lagBand) bits.push(this.lagBand.from + " on: still being indexed");
       return bits.join(" \u00b7 ");
     },
     fullNote() {
-      const out = ["Bars are " + (this.mode === "count" ? "papers" : "share") +
-        "; the line is the share, divided by " + this.denomText +
-        " - the series that survives the corpus growing 25-fold across this range."];
+      const out = ["Bars are " + (this.mode === "count" ? "the number of papers"
+        : "the share") + " each year; the line is the share, out of "
+        + this.denomText + ". The share is the series worth reading: the literature "
+        + "itself grows about twenty-five fold across these years, so almost "
+        + "everything rises when you count papers."];
       if ((this.data.bursts || []).length) {
-        out.push("Orange bars are the Step 5b Kleinberg burst intervals: " +
+        out.push("Orange marks the years when this came up far more often than "
+          + "its own baseline: " +
           this.data.bursts.map(b => b[0] === b[1] ? b[0] : b[0] + "-" + b[1])
             .join(", ") + ".");
       }
       if (this.lagBand) {
-        out.push("The tinted years from " + this.lagBand.from + " on are " +
-          "under-indexed: MeSH assignment lags about four years, so a fall there " +
-          "is mostly the index catching up rather than the literature.");
+        out.push("The tinted years from " + this.lagBand.from + " on are not yet "
+          + "fully catalogued - the subject headings arrive about four years late "
+          + "- so a fall at the right-hand end is mostly the catalogue catching up, "
+          + "not the research slowing down.");
       }
       if (this.pol) {
-        out.push("The band under the bars is the direction of this pair's " +
-          "assertions each year as a share of that year's total - negative below, " +
-          "positive above, the gap between them plain association; up to " +
-          this.polMax + " assertions in a year.");
+        out.push("The strip under the bars shows which way the claims about these "
+          + "two point, each year: claims of a lower value below, a higher value "
+          + "above, and the gap between them claims that only say the two are "
+          + "related. Up to " + this.polMax + " claims in a single year.");
       }
       return out.join(" ");
     },

@@ -96,7 +96,6 @@ window.App = {
   template: `
   <div class="shell">
     <header class="bar">
-      <a class="home" href="../../software.html">&larr; Ruixiang Tang &middot; Software</a>
       <div class="brand" title="A Multi-Agent Framework for Constructing Temporally Evolving T1D Knowledge Graphs"><span class="dot"></span> A Multi-Agent Framework for Constructing Temporally Evolving T1D Knowledge Graphs</div>
       <div class="bspacer"></div>
       <div class="status">{{ status }}</div>

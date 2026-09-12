@@ -2,11 +2,11 @@
 Vue.component("filter-rail", {
   data: () => ({
     topOpen: false, topRows: [], topType: "", topBusy: false, topErr: "",
-    edgeModes: [["all", "all", "every co-mention edge"],
-                ["emphasise", "emphasise", "relations solid, co-mentions faint"],
-                ["only", "relations only", "hide edges with no extracted relation"]],
-    ranks: [["papers", "co-mentions", "papers mentioning both, the graph's own weight"],
-            ["relations", "relations", "how many assertions the extractor made"]],
+    edgeModes: [["all", "all", "every link"],
+                ["emphasise", "emphasise", "links with a claim solid, the rest faint"],
+                ["only", "relations only", "hide links with no claim behind them"]],
+    ranks: [["papers", "co-mentions", "how many papers mention both"],
+            ["relations", "relations", "how many claims were found in the text"]],
     presets: [["all",1960,2025],["1990s",1990,1999],["2000s",2000,2009],
               ["2010s",2010,2019],["2020+",2020,2025]],
     types: ["Gene","Disease","Chemical","Species","Variant","CellLine","Chromosome"]
@@ -90,7 +90,7 @@ Vue.component("filter-rail", {
     </div>
 
     <div class="sec">
-      <label>Top by distinct co-mention partners</label>
+      <label>Most connected entities</label>
       <button class="ghost wide" @click="toggleTop">
         {{ topOpen ? 'Hide' : 'Show' }} ranking for {{ y0 }}&ndash;{{ y1 }}</button>
       <div v-if="topOpen" style="margin-top:8px">
@@ -105,7 +105,9 @@ Vue.component("filter-rail", {
           co-mention edge inside {{ y0 }}&ndash;{{ y1 }}. The graph keeps a year only
           once a pair reaches 3 co-mentions in it, so narrow early windows can be
           empty.</p>
-        <ol class="toplist" v-else>
+        <p class="hint" v-else-if="topRows.length > 20">Top 20 of
+          {{ topRows.length }} fetched.</p>
+        <ol class="toplist" v-if="topRows.length && !topBusy && !topErr">
           <li v-for="r in topRows.slice(0,20)" :key="r.eid"
               @click="$emit('choose', {eid:r.eid, type:r.type, name:r.name,
                       id:r.eid.split('|').slice(1).join('|'), n_papers:r.n_papers})">
@@ -128,8 +130,7 @@ Vue.component("filter-rail", {
           <svg width="13" height="13" viewBox="-7 -7 14 14" aria-hidden="true">
             <path :d="glyph(t,5)" :fill="color(t)"></path></svg>{{ t }}</button>
       </div>
-      <p class="hint">Node size = papers &middot; edge thickness = co-mentions
-        &middot; <span class="pinhint">pinned</span> nodes stay where you drop
+      <p class="hint">Circle size = papers that mention it &middot; line thickness = papers that mention both &middot; <span class="pinhint">pinned</span> nodes stay where you drop
         them.</p>
     </div>
 
@@ -146,18 +147,14 @@ Vue.component("filter-rail", {
           relation &mdash; disease&ndash;disease, or anything with a species &mdash;
           so hiding them filters the extractor's vocabulary, not the
           literature.</template></p>
-      <p class="hint" v-else-if="edgeMode === 'emphasise'">Edges with an extracted
-        relation are drawn solid; co-mention-only edges stay faint. Nothing is
-        hidden.</p>
+      <p class="hint" v-else-if="edgeMode === 'emphasise'">Links with a claim behind them are solid; links where the two are only mentioned together stay faint. Nothing is hidden.</p>
 
       <label style="margin-top:12px">Rank partners by</label>
       <div class="seg" role="group" aria-label="partner ranking">
         <button v-for="r in ranks" :key="r[0]" @click="setRank(r[0])"
                 :aria-pressed="String(rankBy === r[0])" :title="r[2]">{{ r[1] }}</button>
       </div>
-      <p class="hint">Relations first by default: by co-mentions the biggest
-        partners are the pair types that can never carry one, so most edges open
-        onto nothing. Edge thickness still means co-mentions either way.</p>
+      <p class="hint">Claims first by default. Ordered by papers, the biggest neighbours are the kinds of pair that never carry a claim, so most links open onto nothing. Line thickness still means papers either way.</p>
     </div>
 
     <div class="sec">
@@ -176,7 +173,7 @@ Vue.component("filter-rail", {
                   @click="$store.commit('setEndpoint',{which:'B',node:null})">&times;</button>
         </div>
       </div>
-      <label class="chk"><input type="checkbox" v-model="avoidHubs"> avoid hub nodes</label>
+      <label class="chk"><input type="checkbox" v-model="avoidHubs"> avoid the most connected nodes</label>
       <p class="hint" v-if="hubs.length">Without this, paths route through
         <em v-for="(h,i) in hubs.slice(0,3)" :key="h.eid">{{ h.name }}<span
           v-if="i<2">, </span></em> &mdash; true and useless.</p>
