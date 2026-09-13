@@ -199,8 +199,12 @@ Vue.component("evidence-panel", {
         <span v-if="belowThreshold">That is {{ belowThreshold }} more than the edge
           weight: the graph keeps a year only once the pair reaches 3 co-mentions in
           it, so sparse early years are in the count but not in the edge.</span></p>
-      <p class="hint" v-if="!papers.length">The paper count above is exact; the list is
-        empty because this view was paged. Reopen the edge to see it.</p>
+      <!-- Reachable only if the list genuinely came back empty, which the count
+           above says should not happen. It used to blame paging, from when a
+           later page overwrote the list; it no longer does, so the old wording
+           was an apology for a fixed bug. -->
+      <p class="hint" v-if="!papers.length">The count above is exact, but the list
+        of papers did not load. Reopen the edge to try again.</p>
       <ul class="ilist" v-else>
         <li v-for="p in papers" :key="p.pmid" class="nocursor">
           <a :href="pubmed(p.pmid)" target="_blank" rel="noopener">{{ p.title }}</a>

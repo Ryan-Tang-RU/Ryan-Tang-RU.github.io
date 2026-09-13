@@ -332,12 +332,19 @@ window.T1DStore = new Vuex.Store({
     },
     appendEvidence(s, more) {
       if (!s.evidence) { s.evidence = more; return; }
-      s.evidence = {
+      /* Everything the first page carried, with the new page merged in.
+         Enumerating four fields dropped the rest, and two of them are read by the
+         panel: `scan_capped` and `scanned_papers`. So the notice saying the
+         sentence list came from the newest 400 papers rather than from all of
+         them disappeared the moment a reader asked for more sentences - exactly
+         when they were digging further into a list whose limit had stopped being
+         stated. */
+      s.evidence = Object.assign({}, s.evidence, more, {
         sentences: (s.evidence.sentences || []).concat(more.sentences || []),
+        // The paper list is fetched once, on the first page; a later page returns
+        // none and must not blank it.
         papers: (more.papers && more.papers.length) ? more.papers : s.evidence.papers,
-        n_papers: more.n_papers != null ? more.n_papers : s.evidence.n_papers,
-        n_sentences: more.n_sentences != null ? more.n_sentences : s.evidence.n_sentences
-      };
+      });
     }
   },
   actions: {
