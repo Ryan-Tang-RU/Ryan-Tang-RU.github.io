@@ -506,12 +506,21 @@ window.T1DAssistant = (function () {
         required: ["eid"],
       },
       run: async (i, c) => {
-        const row = (ok(await c.api.search(i.eid, 1)).rows || [])[0];
+        // Asked of `node`, which looks the entity up by eid in entities_canon.
+        // This used to call `search(eid)`, and the search index is built on names
+        // and synonyms, so an eid matches nothing in it: every lookup failed, and
+        // the fallbacks then wrote the identifier in as the name and hardcoded the
+        // type to Gene. Showing INS on the canvas labelled it "Gene|3630".
+        const row = (ok(await c.api.node(
+          i.eid, c.store.state.y0, c.store.state.y1)).rows || [])[0];
+        if (!row || row.exists === false) {
+          return { error: "there is no entity " + i.eid + " in this graph. Use "
+                          + "find_entity to get an identifier." };
+        }
         c.store.commit("upsertNode", {
-          eid: i.eid, type: row ? row.type : "Gene",
-          id: i.eid.split("|").slice(1).join("|"),
-          name: row ? row.name : i.eid,
-          total_papers: row ? row.n_papers : null,
+          eid: i.eid, type: row.type, id: row.id,
+          name: row.name,
+          total_papers: row.n_papers_corpus,
         });
         await c.store.dispatch("focusOn", { eid: i.eid });
         // Ringed, like a freshly expanded batch. A question that redraws the
