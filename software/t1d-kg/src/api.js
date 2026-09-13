@@ -302,7 +302,14 @@ window.T1DApi = {
       eid: eid, type: eid.split("|")[0], id: ident,
       name: (base && base.name) || ident,
       top_forms: forms.map(f => ({ text: f.text, n: Number(f.n) })),
-      n_papers_corpus: Number((base && base.n_papers) || 0),
+      // `n_papers_corpus`, which is what the query aliases it to. Reading
+      // `base.n_papers` got undefined, and `|| 0` turned that into an
+      // authoritative zero: HLA-A, with 2,390 papers, read "0 papers" on the
+      // live page. Second time this exact shape has shipped - the trend tool
+      // asked for `share_all` where the server returns `share_corpus` - so
+      // tests/test_publish_sql.py now checks every field read off a query
+      // against the columns that query returns.
+      n_papers_corpus: Number((base && base.n_papers_corpus) || 0),
       n_papers_in_window: Number((win && win.n) || 0),
       species: base ? base.species : null,
       first_year: base ? base.first_year : null,
