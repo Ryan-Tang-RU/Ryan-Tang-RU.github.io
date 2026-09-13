@@ -21,13 +21,42 @@ Vue.component("assistant-panel", {
     hasKey: !!window.T1DAssistant.getKey(),
     x: null, y: null,      // null until first dragged, so CSS places it
     drag: null,
+    stopping: false,
+    followups: [],         // offered after an answer, seeded from what it read
   }),
   computed: {
     model() { return window.T1DAssistant.MODEL; },
+    /* What to offer before anything has been asked.
+
+       Fixed examples teach the syntax and nothing else. These are built from what
+       is actually on screen, so the first question a reader asks is about the
+       thing in front of them - which is the pattern every assistant that sits
+       beside a document uses, and the reason this one floats over the canvas
+       rather than living on its own page. Falls back to three that always work. */
     examples() {
-      return ["When did teplizumab and C-peptide start appearing together?",
-              "What does the graph say about vitamin D and type 1 diabetes?",
-              "Which genes carry the most assertions with type 1 diabetes?"];
+      const S = this.$store.state, out = [];
+      const nameOf = eid => (S.nodes[eid] || {}).name;
+      const sel = S.selection;
+      if (sel && sel.kind === "edge" && S.links[sel.key]) {
+        const l = S.links[sel.key];
+        const a = nameOf(l.a), b = nameOf(l.b);
+        if (a && b) out.push("What does the graph actually say about "
+                             + a + " and " + b + "?");
+      }
+      const f = S.focus && nameOf(S.focus);
+      if (f) {
+        out.push("What does " + f + " connect to most strongly?");
+        out.push("Has " + f + " been studied more or less over time?");
+      }
+      if (S.y0 > 1960 || S.y1 < 2025)
+        out.push("What surged between " + S.y0 + " and " + S.y1 + "?");
+      else out.push("What surged in the 1990s?");
+      const fallback = [
+        "When did teplizumab and C-peptide start appearing together?",
+        "Which genes carry the most assertions with type 1 diabetes?",
+        "Is liraglutide in this graph?"];
+      fallback.forEach(x => { if (out.length < 3) out.push(x); });
+      return out.slice(0, 3);
     },
   },
   methods: {
@@ -53,6 +82,75 @@ Vue.component("assistant-panel", {
       this.showKey = true;
     },
     use(ex) { this.q = ex; this.send(); },
+    /* What a tool call did, in words.
+
+       The row used to read `find_entity {"name":"teplizumab"}`. The reader opening
+       it wants to know whether the answer rests on the right lookup, and a
+       function signature makes them translate before they can tell. The result
+       itself stays as JSON underneath - that is the thing being checked. */
+    said(t) {
+      const i = t.input || {};
+      const first = i.name || i.word || i.eid || i.a || "";
+      const short = String(first).split("|").slice(-1)[0];
+      switch (t.name) {
+        case "find_entity":       return "looked up \u201c" + (i.name || "") + "\u201d";
+        case "entity_facts":      return "read the facts for " + short;
+        case "entity_trend":      return "read the year-by-year series";
+        case "pair_trend":        return "read the pair\u2019s series";
+        case "partners":          return "listed the strongest partners";
+        case "claims":            return "read the extracted claims";
+        case "sentences":         return "pulled sentences, with their PMIDs";
+        case "word_in_abstracts": return "counted \u201c" + (i.word || "")
+                                         + "\u201d in the abstracts";
+        case "connect":           return "searched for a path between them";
+        case "surges_in_window":  return "looked for surges, " + i.y0 + "\u2013" + i.y1;
+        case "canvas_state":      return "looked at your canvas";
+        case "show_on_canvas":    return "loaded " + short + " onto the canvas";
+        case "set_years":         return "set the years to " + i.y0 + "\u2013" + i.y1;
+        case "open_pair_evidence":return "opened the evidence for that pair";
+        default:                  return t.name;
+      }
+    },
+    /* An answer, split into text and the PMIDs inside it.
+
+       Rendered as spans and anchors rather than through v-html: this is model
+       output, and handing it to an HTML parser would make anything the model
+       echoed back - a sentence quoted out of an abstract, say - into markup. */
+    parts(text) {
+      const out = [], re = /\b(\d{7,8})\b/g;
+      let at = 0, m;
+      while ((m = re.exec(text || "")) !== null) {
+        if (m.index > at) out.push({ pmid: null, s: text.slice(at, m.index) });
+        out.push({ pmid: m[1], s: m[1] });
+        at = m.index + m[0].length;
+      }
+      if (at < (text || "").length) out.push({ pmid: null, s: text.slice(at) });
+      return out;
+    },
+    // Where to go next, from what the turn actually read. Offered rather than
+    // guessed at: a reader who has just been told a number usually wants to see
+    // it, and the three things worth doing next are the same every time.
+    nextSteps(trace) {
+      const eids = [], names = {};
+      trace.forEach(s => {
+        const o = s.output || {};
+        (o.matches || []).forEach(r => { if (r.eid) { eids.push(r.eid);
+                                                      names[r.eid] = r.name; } });
+        if (o.eid) { eids.push(o.eid); names[o.eid] = o.name; }
+      });
+      if (!eids.length) return [];
+      const eid = eids[0], nm = names[eid] || eid;
+      const done = trace.map(s => s.name);
+      const out = [];
+      if (done.indexOf("show_on_canvas") === -1)
+        out.push("Show " + nm + " on the canvas");
+      if (done.indexOf("partners") === -1)
+        out.push("What does " + nm + " connect to most strongly?");
+      if (done.indexOf("sentences") === -1)
+        out.push("Show me sentences about " + nm + " and type 1 diabetes");
+      return out.slice(0, 3);
+    },
+    stop() { this.stopping = true; },
     // A tool result is shown as compact JSON. Long ones are cut, because the
     // reader is checking which query ran and roughly what came back, not reading
     // 66 years of counts in a chat window.
@@ -67,6 +165,8 @@ Vue.component("assistant-panel", {
       this.q = "";
       this.turns.push({ role: "you", text: q });
       this.busy = true;
+      this.stopping = false;
+      this.followups = [];
       this.scroll();
       const ctx = { api: window.T1DApi, store: this.$store };
       try {
@@ -95,11 +195,19 @@ Vue.component("assistant-panel", {
               }
             }
             this.scroll();
-          });
+          }, () => this.stopping);
           this.history = res.messages;
+          if (res.stopped) this.turns.push({ role: "err", text:
+            "Stopped. What it had already read is above." });
+          else this.followups = this.nextSteps(
+            this.turns.filter(t => t.role === "tool"));
+          // The answer above was given after the tools were withdrawn, so it is
+          // built on what had been gathered rather than on everything the
+          // question needed. Worth saying, but it is no longer an error.
           if (res.capped) this.turns.push({ role: "err", text:
-            "Stopped after too many steps without an answer. Try a narrower " +
-            "question." });
+            "That took the maximum number of steps, so the answer above was " +
+            "written from what had been gathered by then. A narrower question " +
+            "will get a more complete one." });
         }
       } catch (e) {
         const m = String((e && e.message) || e);
@@ -145,6 +253,16 @@ Vue.component("assistant-panel", {
       window.removeEventListener("mousemove", this.move);
       window.removeEventListener("mouseup", this.drop);
     },
+  },
+  mounted() {
+    // Reachable from the thing being looked at, not only from the header. The
+    // inspector puts the question together and hands it over, so asking about an
+    // entity is one click rather than typing its name back out.
+    this.$root.$on("assistant:ask", q => {
+      this.open = true;
+      this.q = q;
+      this.$nextTick(this.send);
+    });
   },
   beforeDestroy() {
     window.removeEventListener("mousemove", this.move);
@@ -196,13 +314,17 @@ Vue.component("assistant-panel", {
         <template v-for="(t, i) in turns">
           <div class="asyou" :key="'y'+i" v-if="t.role === 'you'">{{ t.text }}</div>
 
-          <div class="asai" :key="'a'+i" v-else-if="t.role === 'ai'">{{ t.text }}</div>
+          <div class="asai" :key="'a'+i" v-else-if="t.role === 'ai'"><template
+            v-for="(p, j) in parts(t.text)"><a v-if="p.pmid" :key="'p'+j"
+              :href="'https://pubmed.ncbi.nlm.nih.gov/' + p.pmid + '/'"
+              target="_blank" rel="noopener" class="aspmid">{{ p.s }}</a><span
+              v-else :key="'s'+j">{{ p.s }}</span></template></div>
 
           <details class="astool" :key="'t'+i" v-else-if="t.role === 'tool'">
             <summary>
               <span class="astag" :class="{acts: t.acts}">{{ t.acts ? 'did' : 'read' }}</span>
-              {{ t.name }}
-              <span class="hint">{{ brief(t.input) }}</span>
+              <span class="assaid">{{ said(t) }}</span>
+              <span class="hint">{{ t.name }}</span>
             </summary>
             <pre v-if="t.out !== null">{{ brief(t.out) }}</pre>
             <p class="hint" v-else>running&hellip;</p>
@@ -240,7 +362,18 @@ Vue.component("assistant-panel", {
           <div class="aserr" :key="'e'+i" v-else>{{ t.text }}</div>
         </template>
 
-        <p class="hint" v-if="busy">thinking&hellip;</p>
+        <div class="asbusy" v-if="busy">
+          <span class="hint">{{ stopping ? 'stopping\u2026' : 'working\u2026' }}</span>
+          <button class="ghost tiny" @click="stop" v-if="!stopping"
+                  title="stop after the current step">Stop</button>
+        </div>
+        <!-- Where to go next, from what the answer actually read. A reader who has
+             just been given a number usually wants to see it on the canvas, and
+             finding the phrasing for that themselves is friction. -->
+        <div class="asnext" v-if="followups.length && !busy">
+          <button class="tchip" v-for="f in followups" :key="f" @click="use(f)">
+            {{ f }}</button>
+        </div>
       </div>
 
       <div class="asfoot">

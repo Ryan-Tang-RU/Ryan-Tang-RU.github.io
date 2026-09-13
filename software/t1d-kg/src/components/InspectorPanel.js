@@ -331,6 +331,11 @@ Vue.component("inspector-panel", {
         <button class="ghost" v-if="!isFocus" @click="$emit('focus', node)"
                 title="redraw the canvas around this entity and add it to the trail">
           Focus here</button>
+        <!-- The assistant, reached from the entity rather than from the header,
+             with the question already written. -->
+        <button class="ghost" @click="$root.$emit('assistant:ask',
+                  'What does this graph say about ' + node.name + '?')"
+                title="ask the assistant about this entity">Ask</button>
         <!-- The two path ends, carrying the A and B tags the left-hand panel uses,
              so it is visible where they land. They were bare letters with no label,
              no tooltip and no state: a node already set as A looked exactly like one

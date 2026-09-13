@@ -23,7 +23,7 @@ window.T1DAssistant = (function () {
   const ENDPOINT = "https://api.anthropic.com/v1/messages";
   const MODEL = "claude-sonnet-5";
   const KEY_ITEM = "t1dkg.key";
-  const MAX_ROUNDS = 8;          // tool rounds before the loop gives up
+  const MAX_ROUNDS = 12;         // tool rounds before tools are withdrawn
   const MAX_TOKENS = 2048;
 
   // ---- the key ---------------------------------------------------------------
@@ -274,9 +274,11 @@ window.T1DAssistant = (function () {
       name: "connect",
       acts: false,
       description:
-        "The shortest chain of co-mentions between two entities that are not " +
-        "directly connected. Routes around the most connected hubs, so the chain " +
-        "says something more than 'both appear beside type 1 diabetes'.",
+        "The shortest chain of co-mentions between two entities. Use it whenever a " +
+        "pair turns out to have no direct co-mention: that is not an answer to " +
+        "\"how are these related\", it is the reason to ask this tool. Routes " +
+        "around the most connected hubs, so the chain says something more than " +
+        "'both appear beside type 1 diabetes'.",
       schema: {
         type: "object",
         properties: { a: { type: "string" }, b: { type: "string" } },
@@ -449,6 +451,10 @@ window.T1DAssistant = (function () {
     "  because this corpus never tagged the drug at all.",
     "- State no number you did not get from a tool in this conversation. If a tool",
     "  returns nothing, say that, and say which tool.",
+    "- If a pair has no co-mentions, no assertions and no sentences, call connect",
+    "  before saying they are unrelated. Two entities with nothing between them",
+    "  directly are exactly the case the path search exists for, and \"they do not",
+    "  connect\" is a different claim from \"they do not connect directly\".",
     "- If find_entity finds nothing, call word_in_abstracts before concluding",
     "  anything. Drug coverage is uneven: of those tested, 19 of 19 small molecules",
     "  and 11 of 11 monoclonal antibodies are tagged, and 11 of 15 peptide and",
@@ -467,6 +473,12 @@ window.T1DAssistant = (function () {
     "  anything into an absence.",
     "- Report relation types as shares of the total, not as a list. One assertion",
     "  and three thousand are not two facts of equal weight.",
+    "- An assertion count is not a paper count. `claims` returns assertions; the",
+    "  number of papers mentioning both is `co_mentioning_papers` from `sentences`,",
+    "  or the summed series from `pair_trend`. They differ by a lot - Glucose and",
+    "  type 1 diabetes carry 1,932 assertions across 17,576 co-mentioning papers -",
+    "  and reporting one as the other is the commonest way to be confidently wrong",
+    "  here. If you are asked how many papers, fetch the paper count.",
     "- MeSH indexing lags about four years, so 2023-2025 are under-indexed. The",
     "  project's own analyses stop at 2022.",
     "",
@@ -514,11 +526,17 @@ window.T1DAssistant = (function () {
      show the tool calls rather than a spinner. Showing them is the point: this
      project's recurring failure is a confident number with nothing behind it, and
      a reader who can see which query produced a figure can check it. */
-  async function ask(question, history, ctx, onEvent) {
+  async function ask(question, history, ctx, onEvent, shouldStop) {
     const key = getKey();
     if (!key) throw new Error("no key");
+    const stop = shouldStop || function () { return false; };
     const messages = (history || []).concat([{ role: "user", content: question }]);
     for (let round = 0; round < MAX_ROUNDS; round++) {
+      // Checked between rounds, which is where the waiting happens: a question
+      // that needs eight tool calls leaves the reader with nothing to do but
+      // watch. The transcript keeps whatever was gathered, so stopping is not
+      // the same as losing the turn.
+      if (stop()) return { messages: messages, text: "", stopped: true };
       const reply = await post(key, {
         model: MODEL, max_tokens: MAX_TOKENS, system: SYSTEM,
         tools: schemas(), messages: messages,
@@ -551,7 +569,24 @@ window.T1DAssistant = (function () {
       }
       messages.push({ role: "user", content: results });
     }
-    return { messages: messages, text: "", capped: true };
+    // Out of rounds, with a transcript full of evidence and nothing said. Asking
+    // once more without tools forces an answer from what was already gathered,
+    // which is the whole point of having gathered it: a question that ran eight
+    // steps deep - four resolutions, a path search, claims and sentences - used
+    // to end with "stopped after too many steps" and no answer at all.
+    const last = await post(key, {
+      model: MODEL, max_tokens: MAX_TOKENS,
+      system: SYSTEM + "\n\nYou are out of tool calls. Answer now from what the "
+              + "tools already returned, and say which part of the question you "
+              + "could not reach.",
+      messages: messages,
+    });
+    const tail = (last.content || []).filter(b => b.type === "text")
+      .map(b => b.text).join("");
+    if (tail) onEvent({ kind: "text", text: tail });
+    return { messages: messages.concat([{ role: "assistant",
+                                          content: last.content || [] }]),
+             text: tail, capped: true };
   }
 
   // Words that are never the subject of a question. Without this list the
