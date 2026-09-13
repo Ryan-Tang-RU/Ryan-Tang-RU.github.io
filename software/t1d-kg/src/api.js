@@ -164,6 +164,15 @@ window.T1DApi = {
     rows: await run("vocab", { toks: toks }),
   })),
 
+  // Sentences containing a word, among one entity's newest papers. The bridge
+  // answers the same question from the same shape.
+  textSearch: (eid, word, y0, y1, scan, limit) => timed("textSearch", async () => ({
+    rows: await run("text_search", {
+      eid: eid, word: String(word || "").toLowerCase(), y0: y0, y1: y1,
+      scan: Math.max(1, Math.min(scan || 800, 4000)),
+      limit: Math.max(1, Math.min(limit || 12, 30)) }),
+  })),
+
   /* Entities whose detected burst overlaps a window, largest first.
 
      The intervals ship inside the manifest - 1,548 of them, re-keyed canonically at

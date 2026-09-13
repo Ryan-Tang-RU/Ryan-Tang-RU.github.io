@@ -271,6 +271,42 @@ window.T1DAssistant = (function () {
       }),
     },
     {
+      name: "search_sentences",
+      acts: false,
+      description:
+        "Find sentences containing a word among one entity's papers, with their " +
+        "PMIDs. Use it for questions the structured tools cannot reach - a " +
+        "hypothesis, a mechanism, a phrase - where you need what was actually " +
+        "written rather than a count. This is word matching, not meaning: " +
+        "\"aetiology\" will not find \"etiology\", so try the spellings and the " +
+        "synonyms yourself, and never read an empty result as the literature " +
+        "being silent. It is anchored on an entity because scanning the whole " +
+        "corpus is not possible here; pick the entity the question is about.",
+      schema: {
+        type: "object",
+        properties: {
+          eid: { type: "string", description: "the entity to search within" },
+          word: { type: "string", description: "one word, lowercase" },
+          scan: { type: "integer",
+                  description: "newest papers to look through, default 800" },
+        },
+        required: ["eid", "word"],
+      },
+      run: async (i, c) => {
+        const st = c.store.state;
+        const r = ok(await c.api.textSearch(i.eid, i.word, st.y0, st.y1,
+                                            i.scan || 800, 12));
+        return {
+          word: String(i.word || "").toLowerCase(),
+          papers_looked_through: Math.min(i.scan || 800, 4000),
+          matching: short((r.rows || []).map(x => ({
+            pmid: x.pmid, year: x.year,
+            text: String(x.text).slice(0, 600),
+          })), 8),
+        };
+      },
+    },
+    {
       name: "connect",
       acts: false,
       description:
@@ -534,8 +570,11 @@ window.T1DAssistant = (function () {
     "     vitamin D, HLA-DQB1 and the hygiene hypothesis\" lets the reader see what",
     "     you left out, which is the part they can correct.",
     "  2. Retrieve each one. find_entity, then whichever of claims, sentences,",
-    "     partners or the trends the sub-question needs. An open question needs",
-    "     several retrievals; one is not an answer to it.",
+    "     partners or the trends the sub-question needs. When the sub-question is",
+    "     a hypothesis or a mechanism rather than an entity, search_sentences for",
+    "     the word inside the relevant entity's papers - and try the spellings,",
+    "     since it matches words and not meaning. An open question needs several",
+    "     retrievals; one is not an answer to it.",
     "  3. Answer only from what came back, with the numbers attached.",
     "  4. End with one sentence naming what this graph cannot tell you about",
     "     this question. It is the last thing you write, and it is a limit, not",

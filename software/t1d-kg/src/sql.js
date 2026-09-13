@@ -19,6 +19,27 @@
 // Number([120,0,0,0]) is NaN and showed the corpus paper count as 0.
 window.T1DSQL = {
 
+  // ---- sentences containing a word, near an entity ---------------------
+  /* Lexical retrieval, anchored. A scan of all 262,226 passages for a word would
+     pull most of a 55 MB file over range requests; anchoring on an entity first
+     cuts the candidates to that entity's newest papers, which `mentions` prunes
+     to about one row group. It is word matching, not meaning: "aetiology" will
+     not find "etiology", and the tool says so, because a reader who thinks this
+     is semantic search will read absence as evidence. */
+  text_search: `
+    WITH cand AS (
+      SELECT pmid, year FROM mentions
+      WHERE eid = $eid AND year BETWEEN $y0 AND $y1
+      GROUP BY 1, 2
+      ORDER BY year DESC, pmid DESC
+      LIMIT $scan
+    )
+    SELECT c.pmid, c.year, pg.text
+    FROM cand c JOIN passages pg ON pg.pmid = c.pmid
+    WHERE contains(lower(pg.text), $word)
+    ORDER BY c.year DESC, c.pmid DESC
+    LIMIT $limit`,
+
   // ---- how often a word occurs in the abstracts ------------------------
   // Asked only when the entity search found nothing, to separate "this graph has
   // no node for it" from "the literature does not mention it". The two look the
@@ -267,10 +288,12 @@ window.T1DSQL = {
     WHERE list_contains(string_split($eids, chr(31)), eid)
     ORDER BY n_papers DESC, eid`,
 
+  // `mentions` carries the year, so this touches one file. Joining `papers` for
+  // it cost about 320 ms of HTTP round trips on every entity opened.
   node_window: `
-    SELECT count(DISTINCT m.pmid) AS n
-    FROM mentions m JOIN papers p USING (pmid)
-    WHERE m.eid = $eid AND p.year BETWEEN $y0 AND $y1`,
+    SELECT count(DISTINCT pmid) AS n
+    FROM mentions
+    WHERE eid = $eid AND year BETWEEN $y0 AND $y1`,
 
   node_partners: `
     SELECT count(DISTINCT CASE WHEN a = $eid THEN b ELSE a END) AS n
@@ -377,13 +400,12 @@ window.T1DSQL = {
   // one sentence.
   evidence_sentences: `
     WITH cand AS (
-      SELECT p.pmid, p.year
-      FROM papers p
-      JOIN mentions ma ON ma.pmid = p.pmid AND ma.eid = $a
-      JOIN mentions mb ON mb.pmid = p.pmid AND mb.eid = $b
-      WHERE p.year BETWEEN $y0 AND $y1
+      SELECT ma.pmid, ma.year
+      FROM mentions ma
+      JOIN mentions mb ON mb.pmid = ma.pmid AND mb.eid = $b
+      WHERE ma.eid = $a AND ma.year BETWEEN $y0 AND $y1
       GROUP BY 1, 2
-      ORDER BY p.year DESC, p.pmid DESC
+      ORDER BY ma.year DESC, ma.pmid DESC
       LIMIT $scan
     ),
     pg AS (
