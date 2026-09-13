@@ -185,7 +185,9 @@ window.T1DAssistant = (function () {
         "Facts about one entity: papers in the current year window and in the whole " +
         "corpus, the years it is active, how many entities it appears with, and the " +
         "strings papers actually write for it. The written forms matter - they are " +
-        "how you tell a mislabelled node from a real one.",
+        "how you tell a mislabelled node from a real one. If the entity is a known " +
+        "tagging artifact the reply carries a `caveat` field explaining it; when it " +
+        "does, lead with that before any count.",
       schema: {
         type: "object",
         properties: { eid: { type: "string" } },
@@ -722,6 +724,12 @@ window.T1DAssistant = (function () {
     "  Name the several that matter and what they have in common; twenty-five",
     "  entities in a column is the tool's output, not an answer.",
     "- Cite PMIDs when you quote a sentence.",
+    "- Some entities are the tagger's mistakes, and entity_facts marks those with",
+    "  a caveat field. When one comes back, say it before the count, not after.",
+    "  The corpus's largest \"variant\" is the string A1C read as c.1A>C; an answer",
+    "  that reports it as the most-studied locus in T1D is wrong even though every",
+    "  number in it is right. The written forms in top_forms are the same check by",
+    "  hand - if they do not look like the entity's name, say so.",
     "- When the answer is easier to see than to read, use show_on_canvas or",
     "  open_pair_evidence and say that you moved the view.",
     "- If the graph cannot answer the question, say so plainly and say what it",

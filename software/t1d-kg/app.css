@@ -741,6 +741,10 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 .cdgap8{margin-top:8px}
 
 /* The section label inside the inspector, which was written inline twice. */
+.caveat{margin:8px 0 2px;padding:7px 9px;font:400 11.5px/1.5 var(--sans);
+  color:var(--ink);background:color-mix(in oklab,var(--warn) 11%,var(--surface));
+  border:1px solid color-mix(in oklab,var(--warn) 45%,var(--rule));
+  border-left-width:3px;border-radius:5px}
 .seclbl{display:block;font:700 10.5px var(--sans);letter-spacing:.08em;
   text-transform:uppercase;color:var(--ink-3);margin:14px 0 6px}
 .seclbl.top{margin:4px 0 6px}

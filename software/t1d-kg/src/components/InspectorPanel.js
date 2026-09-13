@@ -393,6 +393,14 @@ between them in the left-hand panel">
         <button class="ghost" @click="$store.commit('removeNode', node.eid)">
           Remove from canvas</button>
       </div>
+      <!-- A hand-curated note, and only that. The comment above says why there is
+           no automatic mismatch warning: a dominant-form-unlike-the-name rule
+           fires on 40 of the 260 largest entities and about four fifths of those
+           are ordinary synonyms, so it would cry wolf four times in five. This
+           list is two entries long, each with measured evidence in
+           src/artifacts.py, so it never cries wolf - which is the only reason it
+           is allowed to look like a warning. -->
+      <p class="caveat" v-if="facts && facts.caveat">{{ facts.caveat }}</p>
       <!-- One list with the labels always present, values filled in when they
            arrive. Two lists - a four-row one for loaded facts and a one-row
            fallback - meant switching entity redrew the panel at a different height

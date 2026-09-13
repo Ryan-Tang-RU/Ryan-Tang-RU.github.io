@@ -274,7 +274,8 @@ window.T1DSQL = {
   node: `
     SELECT e.eid, e.type, split_part(e.eid, '|', 2) AS id, e.name,
            e.n_papers AS n_papers_corpus, e.first_year, e.last_year,
-           CASE WHEN e.type = 'Species' THEN NULL ELSE e.species_name END AS species
+           CASE WHEN e.type = 'Species' THEN NULL ELSE e.species_name END AS species,
+           e.caveat
     FROM entities e WHERE e.eid = $eid`,
 
   entities_by_ids: `
