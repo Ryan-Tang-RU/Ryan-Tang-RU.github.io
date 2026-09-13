@@ -1,6 +1,15 @@
 /* Left rail: years, type filters, path endpoints, legend. */
+// The corpus bounds, in one place. They were written into the two number inputs
+// and into the "all" preset separately, and the track would have been a fourth
+// copy. Not read from the manifest: this file is shared with the bridge build,
+// which has no manifest, and a year control that silently falls back to a
+// different range in one build is worse than one constant.
+const Y_MIN = 1960, Y_MAX = 2025;
+
 Vue.component("filter-rail", {
   data: () => ({
+    Y_MIN: Y_MIN, Y_MAX: Y_MAX,
+    grab: null, pending: null,
     topOpen: false, topRows: [], topType: "", topBusy: false, topErr: "",
     edgeModes: [["all", "all", "every link"],
                 ["emphasise", "emphasise", "links with a claim solid, the rest faint"],
@@ -12,6 +21,27 @@ Vue.component("filter-rail", {
     types: ["Gene","Disease","Chemical","Species","Variant","CellLine","Chromosome"]
   }),
   computed: {
+    // While a handle is held, the years shown come from `pending` and the store is
+    // left alone. Committing on every pixel would re-derive every edge on the
+    // canvas for each intermediate year, which is the one expensive thing the year
+    // control does. Same model as the strip under the graph.
+    selY0() { return this.pending ? this.pending.y0 : this.y0; },
+    selY1() { return this.pending ? this.pending.y1 : this.y1; },
+    railLeft() { return this.pct(this.selY0); },
+    railRight() { return this.pct(this.selY1); },
+    // How many nodes each chip actually governs. Without this a chip for a type
+    // with nothing on the canvas - Species, CellLine, Chromosome, most of the time
+    // - looked identical to one that would hide nineteen nodes, and clicking it
+    // changed nothing. The control was working and reading as broken.
+    typeCounts() {
+      const out = {};
+      const ns = this.$store.state.nodes;
+      Object.keys(ns).forEach(k => { out[ns[k].type] = (out[ns[k].type] || 0) + 1; });
+      return out;
+    },
+    hiddenCount() {
+      return this.hidden.reduce((n, t) => n + (this.typeCounts[t] || 0), 0);
+    },
     edgeMode() { return this.$store.state.edgeMode; },
     rankBy() { return this.$store.state.rankBy; },
     stats() { return this.$store.getters.edgeStats; },
@@ -28,6 +58,65 @@ Vue.component("filter-rail", {
     canvasSize() { return Object.keys(this.$store.state.nodes).length; }
   },
   methods: {
+    pct(y) {
+      return (100 * (y - this.Y_MIN) / (this.Y_MAX - this.Y_MIN)) + "%";
+    },
+    yearAtRail(ev) {
+      const b = this.$refs.rtrack.getBoundingClientRect();
+      const f = Math.min(1, Math.max(0, (ev.clientX - b.left) / b.width));
+      return this.Y_MIN + Math.round(f * (this.Y_MAX - this.Y_MIN));
+    },
+    // Grab an end to move that end, grab the band to slide the window keeping its
+    // width. The handles cannot cross: dragging the left one past the right stops
+    // at the right, rather than swapping them under the cursor.
+    railDown(ev, part) {
+      this.grab = { part: part, y0: this.y0, y1: this.y1,
+                    at: this.yearAtRail(ev) };
+      window.addEventListener("mousemove", this.railMove);
+      window.addEventListener("mouseup", this.railUp);
+      ev.preventDefault();
+    },
+    railMove(ev) {
+      const g = this.grab;
+      if (!g) return;
+      const y = this.yearAtRail(ev);
+      if (g.part === "left") this.pending = { y0: Math.min(y, g.y1), y1: g.y1 };
+      else if (g.part === "right") this.pending = { y0: g.y0, y1: Math.max(y, g.y0) };
+      else {
+        const w = g.y1 - g.y0;
+        let a = Math.max(this.Y_MIN, Math.min(g.y0 + (y - g.at), this.Y_MAX - w));
+        this.pending = { y0: a, y1: a + w };
+      }
+    },
+    railUp() {
+      window.removeEventListener("mousemove", this.railMove);
+      window.removeEventListener("mouseup", this.railUp);
+      const p = this.pending;
+      this.grab = null;
+      this.pending = null;
+      if (!p || (p.y0 === this.y0 && p.y1 === this.y1)) return;
+      this.$store.commit("setYears", { y0: p.y0, y1: p.y1 });
+      this.apply();
+    },
+    // A slider that only works with a mouse is not a control for everyone. Arrows
+    // move one year, shift-arrows ten, Home and End go to the ends.
+    railKey(ev, part) {
+      const step = ev.shiftKey ? 10 : 1;
+      let y0 = this.y0, y1 = this.y1;
+      const k = ev.key;
+      let d = 0;
+      if (k === "ArrowLeft" || k === "ArrowDown") d = -step;
+      else if (k === "ArrowRight" || k === "ArrowUp") d = step;
+      else if (k === "Home") d = -(this.Y_MAX - this.Y_MIN);
+      else if (k === "End") d = this.Y_MAX - this.Y_MIN;
+      else return;
+      ev.preventDefault();
+      if (part === "left") y0 = Math.max(this.Y_MIN, Math.min(y0 + d, y1));
+      else y1 = Math.min(this.Y_MAX, Math.max(y1 + d, y0));
+      if (y0 === this.y0 && y1 === this.y1) return;
+      this.$store.commit("setYears", { y0: y0, y1: y1 });
+      this.apply();
+    },
     preset(p) {
       this.$store.commit("setYears", {y0:p[1], y1:p[2]});
       this.$store.dispatch("reloadYears");
@@ -60,6 +149,9 @@ Vue.component("filter-rail", {
       if (this.topOpen) this.loadTop();
     },
     toggle(t) { this.$store.commit("toggleType", t); },
+    showAllTypes() {
+      this.hidden.slice().forEach(t => this.$store.commit("toggleType", t));
+    },
     color: t => T1DGlyphs.color(t),
     glyph: (t,r) => T1DGlyphs.path(t,r)
   },
@@ -73,14 +165,30 @@ Vue.component("filter-rail", {
     <div class="sec">
       <label>Years</label>
       <div class="years">
-        <input type="number" min="1960" max="2025" v-model.number="y0"
+        <input type="number" :min="Y_MIN" :max="Y_MAX" v-model.number="y0"
                @change="apply" aria-label="from year">
         <span>&ndash;</span>
-        <input type="number" min="1960" max="2025" v-model.number="y1"
+        <input type="number" :min="Y_MIN" :max="Y_MAX" v-model.number="y1"
                @change="apply" aria-label="to year">
       </div>
-      <input class="yslider" type="range" min="1960" max="2025" v-model.number="y1"
-             @change="apply" aria-label="end year">
+      <!-- Two handles, both draggable. The old control here was a single range
+           input bound to y1, so the start year could only be typed. -->
+      <div class="rtrack" ref="rtrack" @mousedown="railDown($event, 'band')">
+        <div class="rfill" :style="{left: railLeft, right: 'calc(100% - ' + railRight + ')'}"></div>
+        <button class="rgrip" :class="{held: grab && grab.part === 'left'}"
+                :style="{left: railLeft}" role="slider" aria-label="from year"
+                :aria-valuemin="Y_MIN" :aria-valuemax="selY1" :aria-valuenow="selY0"
+                :aria-valuetext="String(selY0)"
+                @mousedown.stop="railDown($event, 'left')"
+                @keydown="railKey($event, 'left')"></button>
+        <button class="rgrip" :class="{held: grab && grab.part === 'right'}"
+                :style="{left: railRight}" role="slider" aria-label="to year"
+                :aria-valuemin="selY0" :aria-valuemax="Y_MAX" :aria-valuenow="selY1"
+                :aria-valuetext="String(selY1)"
+                @mousedown.stop="railDown($event, 'right')"
+                @keydown="railKey($event, 'right')"></button>
+      </div>
+      <p class="rnow" :class="{pend: !!pending}">{{ selY0 }}&ndash;{{ selY1 }}</p>
       <p class="hint" v-if="canvasSize > 1">Changing the years redraws the edges.
         Your {{ canvasSize }} open nodes stay.</p>
       <div class="presets">
@@ -124,12 +232,22 @@ Vue.component("filter-rail", {
     <div class="sec">
       <label>Entity types <span class="lbl-note">click to hide</span></label>
       <div class="chips">
-        <button v-for="t in types" :key="t" class="chip" @click="toggle(t)"
+        <button v-for="t in types" :key="t" class="chip"
+                :class="{off: hidden.indexOf(t)!==-1, none: !typeCounts[t]}"
+                @click="toggle(t)"
                 :aria-pressed="String(hidden.indexOf(t)===-1)"
-                :title="hidden.indexOf(t)===-1 ? 'hide ' + t : 'show ' + t">
+                :title="!typeCounts[t] ? 'no ' + t + ' node is on the canvas'
+                        : (hidden.indexOf(t)===-1 ? 'hide ' + typeCounts[t] + ' '
+                           + t + ' nodes' : 'show ' + typeCounts[t] + ' ' + t
+                           + ' nodes')">
           <svg width="13" height="13" viewBox="-7 -7 14 14" aria-hidden="true">
-            <path :d="glyph(t,5)" :fill="color(t)"></path></svg>{{ t }}</button>
+            <path :d="glyph(t,5)" :fill="color(t)"></path></svg><span
+            class="chipname">{{ t }}</span><span class="chipn"
+            v-if="typeCounts[t]">{{ typeCounts[t] }}</span></button>
       </div>
+      <p class="hidenote" v-if="hiddenCount">{{ hiddenCount }} node<span
+        v-if="hiddenCount !== 1">s</span> hidden.
+        <button class="linky" @click="showAllTypes">Show all</button></p>
       <p class="hint">Circle size = papers that mention it &middot; line thickness = papers that mention both &middot; <span class="pinhint">pinned</span> nodes stay where you drop
         them.</p>
     </div>

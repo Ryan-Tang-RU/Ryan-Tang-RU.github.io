@@ -139,7 +139,25 @@ a{color:var(--link)}
 .years{display:flex;gap:6px;align-items:center}
 .years input{width:100%;padding:5px 7px;border:1px solid var(--rule);border-radius:4px;
   background:var(--ground);color:var(--ink);font:400 12px var(--mono)}
-.yslider{width:100%;margin-top:8px;accent-color:var(--brand)}
+/* The year range: one track, two grips, both draggable, plus a band that slides
+   the whole window. The grips are buttons so they take focus and answer arrows
+   without any extra wiring. */
+.rtrack{position:relative;height:22px;margin-top:10px;cursor:ew-resize;
+  touch-action:none}
+.rtrack::before{content:"";position:absolute;left:0;right:0;top:9px;height:4px;
+  border-radius:99px;background:var(--hair)}
+.rfill{position:absolute;top:9px;height:4px;border-radius:99px;
+  background:var(--brand)}
+.rgrip{position:absolute;top:2px;width:16px;height:16px;margin-left:-8px;padding:0;
+  border:2px solid var(--surface);border-radius:50%;background:var(--brand);
+  box-shadow:0 1px 3px rgba(0,0,0,.28);cursor:grab;transition:transform .1s}
+.rgrip:hover{transform:scale(1.14)}
+.rgrip:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.rgrip.held{cursor:grabbing;transform:scale(1.18)}
+.rnow{margin:3px 0 0;font:500 11px var(--mono);color:var(--ink-3);
+  text-align:center}
+.rnow.pend{color:var(--brand)}
+@media (prefers-reduced-motion:reduce){.rgrip{transition:none}}
 /* a small segmented control; same shape as .presets but exclusive */
 .seg{display:flex;gap:0;margin-top:2px;border:1px solid var(--rule);
   border-radius:5px;overflow:hidden}
@@ -159,7 +177,20 @@ a{color:var(--link)}
 .chip{display:flex;gap:5px;align-items:center;font-size:.78rem;padding:3px 8px;
   border:1px solid var(--rule);border-radius:99px;background:var(--surface);
   color:var(--ink-2)}
-.chip[aria-pressed=false]{opacity:.4}
+/* A hidden type has to be unmistakable, not just faint: opacity alone was the
+   whole feedback, so hiding a type that had no nodes on the canvas looked exactly
+   like a control that did nothing. */
+.chip .chipname{transition:none}
+.chip.off{opacity:.55;border-style:dashed;background:var(--ground)}
+.chip.off .chipname{text-decoration:line-through}
+.chip.off svg{filter:grayscale(1)}
+.chip.none{opacity:.45}
+.chipn{font:500 9.5px var(--mono);color:var(--ink-3);
+  background:var(--ground);border-radius:99px;padding:0 4px;margin-left:1px}
+.chip.off .chipn{text-decoration:line-through}
+.hidenote{margin:6px 0 0;font:400 11px var(--sans);color:var(--ink-3)}
+.linky{border:0;background:none;padding:0;color:var(--brand);
+  font:400 11px var(--sans);text-decoration:underline;cursor:pointer}
 .chip i{width:9px;height:9px;border-radius:2px;display:inline-block;flex:none}
 .chip svg{flex:none}
 /* The legend and the type filter listed the same nine types twice, so the chips now
