@@ -143,6 +143,8 @@ Vue.component("search-box", {
     </div>
 
     <div class="hits" id="hits" role="listbox" v-show="open" :style="box">
+      <p class="skeys" v-if="hasRows"><kbd>&uarr;</kbd><kbd>&darr;</kbd> move
+        &middot; <kbd>&crarr;</kbd> open &middot; <kbd>esc</kbd> close</p>
       <p class="hint pad" v-if="state==='loading'">searching&hellip;</p>
       <p class="hint pad" v-else-if="state==='error'">Search failed &mdash;
         {{ error }}. Try again, or reload the page.</p>

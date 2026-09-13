@@ -24,8 +24,8 @@ Vue.component("cypher-drawer", {
         <span class="hint">Read-only. A LIMIT is added if you omit one.</span>
       </div>
       <div class="rawout" v-if="out">
-        <p class="hint" style="padding:8px" v-if="out.error">{{ out.error }}</p>
-        <p class="hint" style="padding:8px" v-else-if="!out.rows || !out.rows.length">
+        <p class="hint" class="cdpad" v-if="out.error">{{ out.error }}</p>
+        <p class="hint" class="cdpad" v-else-if="!out.rows || !out.rows.length">
           no rows</p>
         <table class="mini" v-else>
           <thead><tr><th v-for="f in out.fields" :key="f">{{ f }}</th></tr></thead>
@@ -35,7 +35,7 @@ Vue.component("cypher-drawer", {
             </tr>
           </tbody>
         </table>
-        <p class="hint" style="padding:6px 8px" v-if="out.rows.length > 60">Showing
+        <p class="hint" class="cdpad6" v-if="out.rows.length > 60">Showing
           the first 60 of {{ out.rows.length }} rows returned. The query itself is
           capped at 200 unless it carries its own LIMIT.</p>
       </div>

@@ -230,11 +230,11 @@ Vue.component("inspector-panel", {
   template: `
   <aside class="inspector">
     <div v-if="pathRow">
-      <h2 style="font-size:1rem;margin:0 0 4px">Shortest path &mdash;
+      <h2 class="ih2">Shortest path &mdash;
         {{ pathRow.hops }} hops</h2>
-      <p class="hint" style="margin:0 0 10px" v-if="avoidHubs">The most connected nodes were kept out of the middle, so this is not simply a detour through
+      <p class="hint" class="hint gap" v-if="avoidHubs">The most connected nodes were kept out of the middle, so this is not simply a detour through
         <em>Homo sapiens</em>.</p>
-      <p class="hint" style="margin:0 0 10px" v-else>Hubs were allowed, so this may
+      <p class="hint" class="hint gap" v-else>Hubs were allowed, so this may
         route through a node that connects to almost everything.</p>
       <ol class="pathlist">
         <li v-for="(n,i) in pathRow.names" :key="i">
@@ -245,8 +245,7 @@ Vue.component("inspector-panel", {
         </li>
       </ol>
 
-      <label style="display:block;font:700 10.5px var(--sans);letter-spacing:.08em;
-        text-transform:uppercase;color:var(--ink-3);margin:14px 0 6px">Each step</label>
+      <label class="seclbl">Each step</label>
       <ul class="hoplist">
         <li v-for="h in hops" :key="h.key" @click="openHop(h)"
             :class="{on: link && link.key === h.key}"
@@ -365,7 +364,7 @@ between them in the left-hand panel">
            a quoted identifier ends it - which blanked the panel. -->
       <p class="hint allshown" v-if="rem && !rem.total">
         Every partner this graph has for it is on the canvas.</p>
-      <p class="hint" style="margin:0 0 8px" v-if="rem && rem.total">
+      <p class="hint gap8" v-if="rem && rem.total">
         {{ rem.total.toLocaleString() }} more partners are not on the canvas.
         <template v-if="remTypes.length > 1">Add one kind at a time:</template>
         <button class="tchip" v-for="t in remTypes" :key="t.type"
@@ -383,14 +382,14 @@ between them in the left-hand panel">
           {{ stack.length }} batches can be walked back.</template></span>
         <button class="ghost tiny" @click="$store.dispatch('undoExpand')">Undo</button>
       </div>
-      <p class="hint" style="margin:0 0 10px" v-if="nTotal != null">
+      <p class="hint" class="hint gap" v-if="nTotal != null">
         {{ connections.length }} of {{ nTotal.toLocaleString() }} graph neighbours are
         on the canvas.<template v-if="hiddenPartners"> A further
         <b>{{ hiddenPartners.toLocaleString() }}</b> more appear alongside this one somewhere in these papers, but never three times in a single year, so no line is drawn for them here.</template></p>
       <div class="warnbox" v-if="crowded">The canvas holds {{ canvasSize }} nodes.
         Past roughly 150 the layout stops being readable &mdash; narrow the years or
         remove a few before expanding again.</div>
-      <div class="row" style="margin:0 0 12px">
+      <div class="row gap12">
         <button class="ghost" @click="$store.commit('removeNode', node.eid)">
           Remove from canvas</button>
       </div>
@@ -424,10 +423,9 @@ between them in the left-hand panel">
         </template>
       </dl>
       <div class="connwrap">
-      <label style="display:block;font:700 10.5px var(--sans);letter-spacing:.08em;
-        text-transform:uppercase;color:var(--ink-3);margin:4px 0 6px">
+      <label class="seclbl top">
         On the canvas ({{ connections.length.toLocaleString() }})
-        <span style="font-weight:400;text-transform:none;letter-spacing:0">
+        <span class="lblplain">
           &mdash; papers that mention both</span></label>
       <ul class="ilist">
         <li v-for="c in connections" :key="c.link.key"
@@ -464,8 +462,8 @@ between them in the left-hand panel">
     <div v-else-if="link">
       <button class="ghost back" v-if="returnTo" @click="$store.commit('goBack')">
         &larr; Back to {{ backLabel }}</button>
-      <div class="ihead"><h2 style="font-size:.98rem">{{ ends[0] && ends[0].name }}
-        <span style="color:var(--ink-3)">&mdash;</span> {{ ends[1] && ends[1].name }}</h2>
+      <div class="ihead"><h2 class="ih2s">{{ ends[0] && ends[0].name }}
+        <span class="dim">&mdash;</span> {{ ends[1] && ends[1].name }}</h2>
       </div>
       <div class="imeta">
         <span v-if="link.comention_papers != null">{{
@@ -494,8 +492,8 @@ Negative_Correlation all sit at a median of 0.99 across the corpus.">
     </div>
 
     <div v-else class="empty">
-      <h2 style="font-size:.98rem;margin:0 0 6px">Nothing selected</h2>
-      <p class="hint" style="margin:0">Click a node for its papers, its partners and
+      <h2 class="ih2s gap6">Nothing selected</h2>
+      <p class="hint nogap">Click a node for its papers, its partners and
         the words it is written as; click an edge for the sentences behind it. Press
         <kbd>/</kbd> to search, or drag the year strip below the graph to narrow the
         window.</p>

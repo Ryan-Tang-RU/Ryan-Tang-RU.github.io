@@ -714,3 +714,33 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
   display:flex;align-items:center;gap:8px;font-size:.82rem;
   background:var(--surface);border:1px solid var(--rule);border-radius:8px;
   padding:6px 8px 6px 12px;box-shadow:0 6px 20px rgba(22,50,79,.16)}
+
+/* How the dropdown is driven, where it is being driven. */
+.skeys{margin:0;padding:5px 10px;border-bottom:1px solid var(--hair);
+  font:400 10.5px var(--sans);color:var(--ink-3);background:var(--ground)}
+.skeys kbd{font:500 10px var(--mono);border:1px solid var(--rule);border-radius:3px;
+  padding:0 4px;margin-right:2px;background:var(--surface)}
+/* The window being dragged to, marked while it is still uncommitted. */
+.tsel.pend{color:var(--brand)}
+/* Shared spacing, in place of the same inline margin written three times. */
+.hint.gap{margin:0 0 10px}
+.hint.gap8{margin:0 0 8px}
+.ih2{font-size:1rem;margin:0 0 4px}
+.ilist li.nocursor{cursor:default}
+
+.row.gap12{margin:0 0 12px}
+.lblplain{font-weight:400;text-transform:none;letter-spacing:0}
+.ih2s{font-size:.98rem}
+.ih2s.gap6{margin:0 0 6px}
+.hint.nogap{margin:0}
+.dim{color:var(--ink-3)}
+
+.cdpad{padding:8px}
+.cdpad6{padding:6px 8px}
+.cdgap12{margin-top:12px}
+.cdgap8{margin-top:8px}
+
+/* The section label inside the inspector, which was written inline twice. */
+.seclbl{display:block;font:700 10.5px var(--sans);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);margin:14px 0 6px}
+.seclbl.top{margin:4px 0 6px}

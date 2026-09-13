@@ -267,7 +267,9 @@ Vue.component("time-strip", {
       <span class="tsub">{{ data.total.toLocaleString() }} {{ data.label }}<template
         v-if="data.peak_year">, peak {{ data.peak_year }}</template></span>
       <span class="tspacer"></span>
-      <span class="tsel">{{ y0 }}&ndash;{{ y1 }}</span>
+      <!-- The handles show the years being dragged to; this showed the ones being
+           dragged from, so mid-drag the strip stated two different windows. -->
+      <span class="tsel" :class="{pend: !!pending}">{{ selY0 }}&ndash;{{ selY1 }}</span>
       <button class="ghost tiny" @click="reset" v-if="y0 !== 1960 || y1 !== 2025">
         all years</button>
       <button class="ghost tiny" @click="mode = mode === 'count' ? 'share' : 'count'">

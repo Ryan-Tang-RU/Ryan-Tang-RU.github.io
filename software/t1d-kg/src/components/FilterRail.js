@@ -93,7 +93,7 @@ Vue.component("filter-rail", {
       <label>Most connected entities</label>
       <button class="ghost wide" @click="toggleTop">
         {{ topOpen ? 'Hide' : 'Show' }} ranking for {{ y0 }}&ndash;{{ y1 }}</button>
-      <div v-if="topOpen" style="margin-top:8px">
+      <div v-if="topOpen" class="cdgap8">
         <select v-model="topType" @change="loadTop" class="tsel"
                 aria-label="restrict to an entity type">
           <option value="">all types</option>
@@ -149,7 +149,7 @@ Vue.component("filter-rail", {
           literature.</template></p>
       <p class="hint" v-else-if="edgeMode === 'emphasise'">Links with a claim behind them are solid; links where the two are only mentioned together stay faint. Nothing is hidden.</p>
 
-      <label style="margin-top:12px">Rank partners by</label>
+      <label class="cdgap12">Rank partners by</label>
       <div class="seg" role="group" aria-label="partner ranking">
         <button v-for="r in ranks" :key="r[0]" @click="setRank(r[0])"
                 :aria-pressed="String(rankBy === r[0])" :title="r[2]">{{ r[1] }}</button>

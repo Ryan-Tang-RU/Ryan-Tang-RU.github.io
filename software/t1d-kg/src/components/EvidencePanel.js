@@ -134,7 +134,7 @@ Vue.component("evidence-panel", {
           fact. Only 3.2% of pairs mix the two directions &mdash; but among pairs
           with fifty claims or more, 68% do.</p>
         <ul class="ilist">
-          <li v-for="(r,i) in rels" :key="i" style="cursor:default">
+          <li v-for="(r,i) in rels" :key="i" class="nocursor">
             <span class="pill" :class="polarity(r.relation_type)">{{
               r.relation_type }}</span>
             <a :href="pubmed(r.pmid)" target="_blank" rel="noopener">PMID {{ r.pmid }}</a>
@@ -202,7 +202,7 @@ Vue.component("evidence-panel", {
       <p class="hint" v-if="!papers.length">The paper count above is exact; the list is
         empty because this view was paged. Reopen the edge to see it.</p>
       <ul class="ilist" v-else>
-        <li v-for="p in papers" :key="p.pmid" style="cursor:default">
+        <li v-for="p in papers" :key="p.pmid" class="nocursor">
           <a :href="pubmed(p.pmid)" target="_blank" rel="noopener">{{ p.title }}</a>
           <span class="pill rel" v-if="p.same_sentence"
                 title="Both entities appear inside one sentence of this abstract,
