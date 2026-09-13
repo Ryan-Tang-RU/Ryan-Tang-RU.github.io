@@ -158,6 +158,14 @@ window.T1DAssistant = (function () {
         const many = Object.keys(kinds).length > 1 && rows.length > 1;
         return {
           matches: rows,
+          // Said here rather than only in the prompt, because the prompt did not
+          // stop it: told nothing matched "semaglutide", the model built
+          // `Chemical|semaglutide` and passed it to claims and connect, then
+          // reported the empty answers as findings about the drug.
+          none_found_note: rows.length ? null
+            : "no entity has this name. Do not construct an identifier for it - "
+              + "there is nothing to query. Call word_in_abstracts to find out "
+              + "whether the literature uses the word, and answer with that.",
           ambiguous: many || null,
           ambiguous_note: many
             ? "this name resolves to more than one kind of entity - pick one and "
@@ -426,13 +434,13 @@ window.T1DAssistant = (function () {
         type: "object",
         properties: {
           y0: { type: "integer" }, y1: { type: "integer" },
-          limit: { type: "integer", description: "1-60, default 25" },
+          limit: { type: "integer", description: "1-60, default 12" },
         },
         required: ["y0", "y1"],
       },
       run: async (i, c) => ({
         window: [i.y0, i.y1],
-        rows: short(ok(await c.api.bursts(i.y0, i.y1, i.limit || 25)).rows, 60),
+        rows: short(ok(await c.api.bursts(i.y0, i.y1, i.limit || 12)).rows, 60),
       }),
     },
     {
