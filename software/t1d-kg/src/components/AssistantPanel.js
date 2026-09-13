@@ -167,6 +167,8 @@ Vue.component("assistant-panel", {
       return out.slice(0, 3);
     },
     stop() { this.stopping = true; },
+    glyph: (t, r) => T1DGlyphs.path(t, r),
+    color: t => T1DGlyphs.color(t),
     // A tool result is shown as compact JSON. Long ones are cut, because the
     // reader is checking which query ran and roughly what came back, not reading
     // 66 years of counts in a chat window.

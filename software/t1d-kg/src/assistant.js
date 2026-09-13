@@ -482,6 +482,51 @@ window.T1DAssistant = (function () {
     "- MeSH indexing lags about four years, so 2023-2025 are under-indexed. The",
     "  project's own analyses stop at 2022.",
     "",
+    "The shape of an answer, by what is being asked:",
+    "",
+    "About one entity - what is X, tell me about X:",
+    "  find_entity, then entity_facts, then partners. Say what kind of thing it",
+    "  is and how much literature stands behind it, what it sits beside most, and",
+    "  over what years it was active. The written forms are worth a line when they",
+    "  differ from the name, because that is how a mislabelled node shows itself.",
+    "",
+    "About two things - how are X and Y related:",
+    "  find_entity twice, then claims, then sentences. Lead with the direction and",
+    "  its share, not with a list of relation types, and quote one sentence with",
+    "  its PMID. If claims and sentences both come back empty, call connect before",
+    "  concluding anything: no direct co-mention is not no relationship.",
+    "",
+    "About change over time - has X grown, when did X and Y start:",
+    "  entity_trend or pair_trend. Give the first year, the peak year, and the",
+    "  direction, and say which denominator you read it from. A raw count rising",
+    "  is not a finding on its own. Mention that the last three years are",
+    "  under-indexed if they carry your conclusion.",
+    "",
+    "About a ranking - which genes carry the most, what is strongest:",
+    "  partners, and say which order you asked for. By assertions and by papers",
+    "  give different lists and the difference is usually the point: the largest",
+    "  co-mention counts are often pair types that can carry no assertion at all.",
+    "",
+    "About a period - what surged in the 1990s:",
+    "  surges_in_window. These are burst intervals from a model over the",
+    "  normalised series, so they already account for the corpus growing; say so,",
+    "  because that is the first thing a reader will doubt.",
+    "",
+    "About whether something is here at all:",
+    "  find_entity, and if that is empty, word_in_abstracts. Answer in two parts:",
+    "  whether the graph has a node, and whether the literature has the word. They",
+    "  are different facts and only the first is about this graph.",
+    "",
+    "About the view - what am I looking at, this edge, these nodes:",
+    "  canvas_state first, then whatever it points at.",
+    "",
+    "When asked to do something - show me X, narrow the years:",
+    "  do it, then say what changed in one line. Never move the view silently.",
+    "",
+    "When the question does not fit any of these, retrieve what it plainly needs",
+    "and say what you could not reach. A partial answer with its gaps named is",
+    "worth more than a complete-sounding one.",
+    "",
     "How to answer:",
     "- Short. Lead with the number or the finding, then the evidence.",
     "- Cite PMIDs when you quote a sentence.",
@@ -608,7 +653,15 @@ window.T1DAssistant = (function () {
     // structural in this domain and never the subject: "type 1", "type 2",
     // "type I hypersensitivity". Left in, "type" resolved to Hypersensitivity
     // Immediate beside the Diabetes Mellitus that "diabetes" had already found.
-    "type types level levels risk rate effect effects role patient patients"
+    "type types level levels risk rate effect effects role patient patients " +
+    // the verbs and comparatives a question is framed in. "connect" was reported
+    // as a word with 74 abstracts and no node, which is true of every English
+    // verb and is not what the reader asked.
+    "connect connects connected relate relates related affect affects cause " +
+    "causes compare compares mention mentions appear appears associate " +
+    "associates link links find finds tell explain describe list rank " +
+    "strong strongest stronger most more less best better main major common " +
+    "important different same other studied happen happens work works"
     ).split(" ");
 
   // Alphanumeric pieces of a string, lowercased. Compared as sets rather than by
@@ -645,10 +698,25 @@ window.T1DAssistant = (function () {
      answer. The prose is what needs the model, and the prose was never the
      evidence. */
   async function lookup(question, ctx) {
+    /* Phrases first, longest first, and only then the words inside them.
+
+       Searching word by word answered "what does Diabetic Nephropathies connect
+       to most strongly?" with Diabetes Mellitus and Kidney Diseases - one from
+       "diabetic", one from "nephropathies" - while Diabetic Nephropathies, which
+       is a node with 4,802 papers, was never searched at all. Most entity names
+       in this corpus are two or three words, so the phrase is the thing to try. */
+    const kept = pieces(question).map(
+      w => (w.length >= 3 && STOP.indexOf(w) === -1) ? w : null);
     const words = [];
-    pieces(question).forEach(w => {
-      if (w.length >= 4 && STOP.indexOf(w) === -1 && words.indexOf(w) === -1)
-        words.push(w);
+    for (let n = 4; n >= 2; n--) {
+      for (let i = 0; i + n <= kept.length; i++) {
+        const run = kept.slice(i, i + n);
+        if (run.some(x => x === null)) continue;   // a stop word breaks a phrase
+        words.push(run.join(" "));
+      }
+    }
+    kept.forEach(w => {
+      if (w && w.length >= 4 && words.indexOf(w) === -1) words.push(w);
     });
     // Names carrying a hyphen, a dot or a slash survive as one token too, so
     // "HLA-DQB1", "rs2476601" and "C57BL/6" are looked up whole rather than only as
@@ -660,7 +728,7 @@ window.T1DAssistant = (function () {
     });
 
     const seen = {}, found = [], unmatched = [], claimed = {};
-    for (const w of words.slice(0, 8)) {
+    for (const w of words.slice(0, 14)) {
       if (found.length >= 3) break;
       // Already explained by something found. "C-peptide" resolves, and then its
       // piece "peptide" was searched separately and landed on the generic Peptides
