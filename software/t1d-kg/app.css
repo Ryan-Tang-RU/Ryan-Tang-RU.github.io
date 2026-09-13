@@ -549,12 +549,25 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
    is on the canvas right now, so it must not take width from the graph and must
    not cover the thing being asked about. z-index above the tooltip (30) and the
    modal sheet (60), because it stays open while the reader works. */
-.asktoggle{margin-left:6px}
+.asktoggle{margin-left:6px;display:inline-flex;align-items:center;gap:5px}
+.asktoggle svg{flex:none}
 .asktoggle.on{background:var(--brand);border-color:var(--brand);color:#fff}
-.aswin{position:fixed;right:16px;bottom:16px;z-index:80;width:min(420px,94vw);
+/* Beside the inspector, not on top of it. Anchored at right:16px the window sat
+   over the whole right-hand column - so the assistant discussed an entity while
+   covering that entity's own numbers, which is the panel it exists to complement.
+   Clear of it by the inspector's own width, and only falling back to the corner
+   when the screen is too narrow to have an inspector beside it anyway.
+
+   `isolation:isolate` and an explicit opaque background because this is the one
+   element that must cover everything under it: a token that ever resolved to a
+   transparent colour would let the layer beneath read through, which is exactly
+   how it looked when this was reported. */
+.aswin{position:fixed;right:calc(var(--insp) + 16px);bottom:16px;z-index:80;
+  isolation:isolate;width:min(420px,94vw);
   max-height:min(70vh,620px);display:flex;flex-direction:column;
   background:var(--surface);border:1px solid var(--rule);border-radius:10px;
   box-shadow:0 10px 34px rgba(22,50,79,.18)}
+@media (max-width:1100px){.aswin{right:16px}}
 .asbar{display:flex;align-items:center;gap:6px;padding:7px 8px 7px 12px;
   border-bottom:1px solid var(--hair);cursor:move;user-select:none;
   background:var(--ground);border-radius:10px 10px 0 0}
@@ -610,3 +623,37 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 .asnext{display:flex;flex-wrap:wrap;gap:5px;padding-top:2px}
 .asnext .tchip{text-align:left;white-space:normal;line-height:1.35}
 .asempty .tchip{text-align:left;white-space:normal;line-height:1.35}
+
+/* --- the assistant, as an assistant ------------------------------------- */
+/* The launcher. Bottom-right and round, which is where people look for help -
+   the same place Intercom and every messenger after it put it. Clear of the
+   canvas tools, which live inside the middle column rather than at the viewport
+   corner. */
+.aslauncher{position:fixed;right:18px;bottom:18px;z-index:79;width:48px;height:48px;
+  border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;
+  background:var(--navy);color:#fff;
+  box-shadow:0 6px 20px rgba(22,50,79,.32);transition:transform .12s}
+.aslauncher:hover{transform:scale(1.06)}
+.aslauncher:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+/* The mark, at two sizes: the window header and beside each turn. */
+.asface{flex:none;width:24px;height:24px;border-radius:50%;display:grid;
+  place-items:center;background:var(--navy);color:#fff}
+.asface.sm{width:19px;height:19px;margin-top:1px}
+.asid{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+/* A turn reads as one: the mark, then what was said. */
+.asturn{display:flex;gap:7px;align-items:flex-start}
+.asbubble{min-width:0;font-size:.84rem;line-height:1.5}
+.asbubble p{margin:0 0 6px}
+.asrole{color:var(--ink-3);font-size:.78rem}
+/* Working, shown the way waiting is normally shown, rather than as the word. */
+.astyping{display:inline-flex;gap:3px;align-items:center;height:14px}
+.astyping i{width:5px;height:5px;border-radius:50%;background:var(--ink-3);
+  animation:asdot 1.1s infinite ease-in-out}
+.astyping i:nth-child(2){animation-delay:.15s}
+.astyping i:nth-child(3){animation-delay:.3s}
+@keyframes asdot{0%,60%,100%{opacity:.25;transform:translateY(0)}
+                 30%{opacity:1;transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){
+  .astyping i{animation:none;opacity:.5}
+  .aslauncher{transition:none}
+}

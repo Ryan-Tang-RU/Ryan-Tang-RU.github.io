@@ -9,6 +9,20 @@
    number with nothing behind it, and a reader who can open the query that produced
    a figure can check it. An answer with no visible retrieval behind it should look
    incomplete here. */
+/* The name and the one-line role, in one place so they are easy to change. An
+   assistant with no identity reads as a search box with a transcript: every
+   mature messenger - Intercom, Copilot Chat, the rest - gives it a name, a mark
+   and a sentence about what it will and will not do, because that sentence is
+   what sets the reader's expectations before their first question. This one's
+   promise is narrow on purpose. */
+window.T1DAgent = {
+  name: "Archivist",
+  role: "Answers from this graph only, and shows every query behind a number.",
+  greet: "I can read this graph and move it \u2014 load an entity, change the "
+         + "years, open the papers behind an edge. Ask me about an entity, a "
+         + "pair, or how something changed over time.",
+};
+
 Vue.component("assistant-panel", {
   data: () => ({
     open: false,
@@ -25,6 +39,7 @@ Vue.component("assistant-panel", {
     followups: [],         // offered after an answer, seeded from what it read
   }),
   computed: {
+    agent() { return window.T1DAgent; },
     model() { return window.T1DAssistant.MODEL; },
     /* What to offer before anything has been asked.
 
@@ -62,6 +77,7 @@ Vue.component("assistant-panel", {
   methods: {
     toggle() {
       this.open = !this.open;
+      this.$root.$emit("assistant:open", this.open);
       if (this.open) this.$nextTick(() => {
         const i = this.$el.querySelector(".asinput");
         if (i) i.focus();
@@ -258,8 +274,10 @@ Vue.component("assistant-panel", {
     // Reachable from the thing being looked at, not only from the header. The
     // inspector puts the question together and hands it over, so asking about an
     // entity is one click rather than typing its name back out.
+    this.$root.$on("assistant:toggle", () => this.toggle());
     this.$root.$on("assistant:ask", q => {
       this.open = true;
+      this.$root.$emit("assistant:open", true);
       this.q = q;
       this.$nextTick(this.send);
     });
@@ -270,21 +288,39 @@ Vue.component("assistant-panel", {
   },
   template: `
   <div>
-    <button class="ghost asktoggle" @click="toggle"
-            :class="{on: open}" title="Ask about this graph">Ask</button>
+    <!-- The corner launcher. A small text button in the header is not something a
+         first-time reader finds: a round bubble in the bottom-right is where two
+         decades of messengers have taught people to look for help, which is both
+         the discoverability fix and most of the "assistant" feeling. -->
+    <button class="aslauncher" v-if="!open" @click="toggle"
+            :title="'Ask ' + agent.name + ' about this graph'"
+            aria-label="Open the assistant">
+      <svg width="21" height="21" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M8 1.6l5.4 3.1v6.6L8 14.4 2.6 11.3V4.7z" fill="none"
+              stroke="currentColor" stroke-width="1.3"></path>
+        <circle cx="8" cy="8" r="1.9" fill="currentColor"></circle></svg>
+    </button>
 
     <div class="aswin" v-if="open"
          :style="x === null ? null : {left: x + 'px', top: y + 'px',
                                       right: 'auto', bottom: 'auto'}">
       <div class="asbar" @mousedown.prevent="grab">
-        <b>Ask this graph</b>
-        <span class="asmodel" v-if="hasKey">{{ model }}</span>
+        <span class="asface" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 16 16">
+            <path d="M8 1.6l5.4 3.1v6.6L8 14.4 2.6 11.3V4.7z"
+                  fill="none" stroke="currentColor" stroke-width="1.3"></path>
+            <circle cx="8" cy="8" r="1.9" fill="currentColor"></circle></svg>
+        </span>
+        <span class="asid">
+          <b>{{ agent.name }}</b>
+          <span class="asmodel" v-if="hasKey">{{ model }}</span>
+        </span>
         <span class="bspacer"></span>
         <button class="ghost tiny" @click="clear" v-if="turns.length"
                 title="start over">Clear</button>
         <button class="ghost tiny" @click="showKey = !showKey"
                 :title="hasKey ? 'change or remove the key' : 'add a key'">Key</button>
-        <button class="ghost tiny" @click="open = false" title="close">&times;</button>
+        <button class="ghost tiny" @click="toggle" title="close">&times;</button>
       </div>
 
       <div class="askey" v-if="showKey || !hasKey">
@@ -304,21 +340,39 @@ Vue.component("assistant-panel", {
       </div>
 
       <div class="asbody">
-        <div class="asempty" v-if="!turns.length">
-          <p class="hint">It can read this graph and move it &mdash; load an entity,
-            change the years, open the papers behind an edge.</p>
-          <button class="tchip" v-for="e in examples" :key="e" @click="use(e)">
-            {{ e }}</button>
+        <!-- A greeting in the assistant's own voice, as the first turn of the
+             conversation rather than as instructions above it, with the openings
+             attached to it as quick replies. -->
+        <div class="asturn" v-if="!turns.length">
+          <span class="asface sm" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 16 16">
+              <path d="M8 1.6l5.4 3.1v6.6L8 14.4 2.6 11.3V4.7z" fill="none"
+                    stroke="currentColor" stroke-width="1.4"></path>
+              <circle cx="8" cy="8" r="1.9" fill="currentColor"></circle></svg>
+          </span>
+          <div class="asbubble">
+            <p class="asrole">{{ agent.role }}</p>
+            <p>{{ agent.greet }}</p>
+            <div class="asnext">
+              <button class="tchip" v-for="e in examples" :key="e" @click="use(e)">
+                {{ e }}</button>
+            </div>
+          </div>
         </div>
 
         <template v-for="(t, i) in turns">
           <div class="asyou" :key="'y'+i" v-if="t.role === 'you'">{{ t.text }}</div>
 
-          <div class="asai" :key="'a'+i" v-else-if="t.role === 'ai'"><template
+          <div class="asturn" :key="'a'+i" v-else-if="t.role === 'ai'"><span
+            class="asface sm" aria-hidden="true"><svg width="12" height="12"
+              viewBox="0 0 16 16"><path d="M8 1.6l5.4 3.1v6.6L8 14.4 2.6 11.3V4.7z"
+                fill="none" stroke="currentColor" stroke-width="1.4"></path>
+              <circle cx="8" cy="8" r="1.9" fill="currentColor"></circle></svg></span
+            ><div class="asai"><template
             v-for="(p, j) in parts(t.text)"><a v-if="p.pmid" :key="'p'+j"
               :href="'https://pubmed.ncbi.nlm.nih.gov/' + p.pmid + '/'"
               target="_blank" rel="noopener" class="aspmid">{{ p.s }}</a><span
-              v-else :key="'s'+j">{{ p.s }}</span></template></div>
+              v-else :key="'s'+j">{{ p.s }}</span></template></div></div>
 
           <details class="astool" :key="'t'+i" v-else-if="t.role === 'tool'">
             <summary>
@@ -363,7 +417,13 @@ Vue.component("assistant-panel", {
         </template>
 
         <div class="asbusy" v-if="busy">
-          <span class="hint">{{ stopping ? 'stopping\u2026' : 'working\u2026' }}</span>
+          <span class="asface sm" aria-hidden="true"><svg width="12" height="12"
+            viewBox="0 0 16 16"><path d="M8 1.6l5.4 3.1v6.6L8 14.4 2.6 11.3V4.7z"
+              fill="none" stroke="currentColor" stroke-width="1.4"></path>
+            <circle cx="8" cy="8" r="1.9" fill="currentColor"></circle></svg></span>
+          <span class="astyping" v-if="!stopping" aria-label="working">
+            <i></i><i></i><i></i></span>
+          <span class="hint" v-else>stopping&hellip;</span>
           <button class="ghost tiny" @click="stop" v-if="!stopping"
                   title="stop after the current step">Stop</button>
         </div>

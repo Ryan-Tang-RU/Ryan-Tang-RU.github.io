@@ -8,7 +8,7 @@
    the inspector - and the page ended wherever that column ended, leaving a band of
    background that grew and shrank as the inspector's content changed. */
 window.App = {
-  data: () => ({ showHelp: false }),
+  data: () => ({ showHelp: false, askOpen: false }),
   computed: {
     status() { return this.$store.state.status; },
     focus() { return this.$store.state.focus; },
@@ -88,6 +88,7 @@ window.App = {
   },
   mounted() {
     T1DApi.onStatus(s => this.$store.commit("setStatus", s));
+    this.$root.$on("assistant:open", v => { this.askOpen = v; });
     this.$store.dispatch("loadHubs");
     this.$store.dispatch("loadPairTypes");
     document.addEventListener("keydown", this.keys);
@@ -99,9 +100,19 @@ window.App = {
       <div class="brand" title="A Multi-Agent Framework for Constructing Temporally Evolving T1D Knowledge Graphs"><span class="dot"></span> A Multi-Agent Framework for Constructing Temporally Evolving T1D Knowledge Graphs</div>
       <div class="bspacer"></div>
       <div class="status">{{ status }}</div>
-      <!-- The toggle lives in the header; the window itself is fixed-position and
-           floats over the whole shell, so the component is mounted here once. -->
-      <assistant-panel></assistant-panel>
+      <!-- The toggle is here; the window itself is mounted at the bottom of the
+           shell. A fixed-position overlay inside the header put its stacking and
+           its containing block at the mercy of whatever the header does, which is
+           not a thing to leave to chance for the one element that must cover
+           everything. -->
+      <button class="ghost asktoggle" :class="{on: askOpen}"
+              @click="$root.$emit('assistant:toggle')"
+              title="Ask about this graph">
+        <svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M2 3.2A1.2 1.2 0 013.2 2h9.6A1.2 1.2 0 0114 3.2v6.6a1.2 1.2 0
+                   01-1.2 1.2H6.5L3.4 13.6A.5.5 0 012.6 13.2V11H3.2A1.2 1.2 0
+                   012 9.8z" fill="currentColor"></path></svg>
+        Ask</button>
       <button class="ghost" @click="showHelp=true" title="Shortcuts">?</button>
     </header>
 
@@ -126,6 +137,8 @@ window.App = {
       <inspector-panel @expand="expand" @focus="focusOn"
                        @pick-edge="pickEdge"></inspector-panel>
     </div>
+
+    <assistant-panel></assistant-panel>
 
     <div class="modal" v-if="showHelp" @click.self="showHelp=false">
       <div class="sheet">
