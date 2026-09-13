@@ -146,15 +146,14 @@ Vue.component("search-box", {
       <p class="skeys" v-if="hasRows"><kbd>&uarr;</kbd><kbd>&darr;</kbd> move
         &middot; <kbd>&crarr;</kbd> open &middot; <kbd>esc</kbd> close</p>
       <p class="hint pad" v-if="state==='loading'">searching&hellip;</p>
-      <p class="hint pad" v-else-if="state==='error'">Search failed &mdash;
+      <p class="hint pad" v-else-if="state==='error'">Search failed.
         {{ error }}. Try again, or reload the page.</p>
       <p class="hint pad" v-else-if="state==='empty'">Nothing matches
         &ldquo;{{ q.trim() }}&rdquo;.
         <template v-if="inText"><b>But &ldquo;{{ inText.word }}&rdquo; appears in
         {{ inText.n.toLocaleString() }} abstracts here.</b> It was never marked as
-        an entity, so there is no node to open &mdash; which says something about
-        what was labelled, not about the literature. Peptide and fusion-protein
-        drugs are missing this way most often.</template>
+        an entity, so there is no node to open. Peptide and fusion-protein
+        drugs are most often missing this way.</template>
         <template v-else>Names, abbreviations and misspellings all work. Entities
         below the export thresholds are left out, so a real but rarely studied one
         can be missing here.</template></p>

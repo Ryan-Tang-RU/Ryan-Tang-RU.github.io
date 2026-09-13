@@ -31,7 +31,7 @@ Vue.component("error-bar", {
       if (/Failed to fetch|Load failed|NetworkError|ERR_CONNECTION/i.test(m))
         return { what: "A data file could not be fetched.",
                  how: "The connection dropped or the host did not answer. " +
-                      "Press Retry; if it keeps failing, reload the page." };
+                      "Press Retry. If it keeps failing, reload the page." };
       if (/out of memory|OOM|allocat/i.test(m))
         return { what: "The browser ran out of memory for that query.",
                  how: "Narrow the year range or remove some nodes, then try again." };

@@ -424,7 +424,7 @@ def build_publications():
     total = sum(len(s["items"]) for s in pubs)
     body = f"""<h1 class="h-page">Conference/Journal Papers
   <a class="scholar" href="{scholar}">[google scholar]</a></h1>
-<p class="pub-note">(* indicates equal contribution; &dagger; indicates corresponding author)</p>
+<p class="pub-note">(* indicates equal contribution, &dagger; indicates corresponding author)</p>
 {blocks}"""
     page("publications.html", f"Publications · {site['name']}", body,
          f"{total} publications by {site['name_full']} on trustworthy AI, interpretability, "

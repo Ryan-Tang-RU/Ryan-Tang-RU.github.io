@@ -336,10 +336,9 @@ Vue.component("assistant-panel", {
 
       <div class="askey" v-if="showKey || !hasKey">
         <p class="hint" v-if="!hasKey">Retrieval runs in your browser and needs
-          nothing. Written answers need an Anthropic API key, and this page is a
-          static site with no server to keep one in &mdash; so it uses yours. It is
-          stored in this browser only and sent to api.anthropic.com and nowhere
-          else. Without one, questions still resolve the entities they name and
+          nothing. Written answers need an Anthropic API key. It is stored in
+          this browser only and sent to api.anthropic.com and nowhere else.
+          Without a key, questions still resolve the entities they name and
           show what the graph holds for them.</p>
         <div class="row">
           <input class="askeyin" type="password" v-model="keyInput"
@@ -415,7 +414,7 @@ Vue.component("assistant-panel", {
             <!-- The tagging gap, which for a drug is the whole answer. -->
             <p class="hint" v-for="u in t.untagged" :key="'u'+u.tok">
               <b>&ldquo;{{ u.tok }}&rdquo; is in {{ u.n_papers.toLocaleString() }}
-              abstracts here but has no node</b> &mdash; it was never tagged as an
+              abstracts here but has no node</b>. It was never tagged as an
               entity, so nothing in the graph can be said about it. That is a fact
               about the labelling, not about the literature.</p>
             <p class="hint" v-if="!t.found.length && !t.untagged.length">Nothing in

@@ -116,10 +116,8 @@ Vue.component("evidence-panel", {
     <p v-if="loading" class="hint">loading evidence&hellip;</p>
 
     <div v-else-if="failed" class="evidscroll">
-      <p class="hint">Could not load evidence for this pair &mdash;
-        {{ ev.error }}.<br>The counts and sentences below would all read as zero,
-        which is why nothing is shown instead. Click the edge again, or reload
-        the page.</p>
+      <p class="hint">Could not load evidence for this pair.
+        {{ ev.error }}.<br>Click the edge again, or reload the page.</p>
     </div>
 
     <div v-else-if="tab==='relations'" class="evidscroll">
@@ -129,10 +127,9 @@ Vue.component("evidence-panel", {
           <span v-for="r in relSummary" :key="r.type" class="pill"
                 :class="polarity(r.type)">{{ r.type }}
             {{ r.n.toLocaleString() }} ({{ r.pct }}%)</span></p>
-        <p class="hint" v-if="relSummary.length > 1">A well-studied link carries a little of everything: these claims come from
-          different papers, and a direction is what one sentence said, not a settled
-          fact. Only 3.2% of pairs mix the two directions &mdash; but among pairs
-          with fifty claims or more, 68% do.</p>
+        <p class="hint" v-if="relSummary.length > 1">Claims come from different papers and different sentences. Both directions
+          on one pair is normal for a well-studied link: among pairs with fifty
+          claims or more, 68% carry both.</p>
         <ul class="ilist">
           <li v-for="(r,i) in rels" :key="i" class="nocursor">
             <span class="pill" :class="polarity(r.relation_type)">{{
@@ -145,33 +142,32 @@ Vue.component("evidence-panel", {
       </template>
       <template v-else>
         <p class="hint" v-if="pairTotal === 0">No claim was found, and none could be: the text-reading step never produces one for a
-          <b>{{ pairType }}</b> pair &mdash; not once in {{ (relCorpusTotal || 0).toLocaleString() }} claims across all these papers. It reads claims only between genes, diseases, chemicals and variants, so nothing is missing here: this kind of pair is outside what it looks for. The sentences are the evidence.</p>
+          <b>{{ pairType }}</b> pair, not once in {{ (relCorpusTotal || 0).toLocaleString() }} claims across all these papers. It reads claims only between genes, diseases, chemicals and variants, so nothing is missing here: this kind of pair is outside what it looks for. The sentences are the evidence.</p>
         <p class="hint" v-else>No claim was found for this pair, although <b>{{ pairType }}</b> pairs carry
-          {{ pairTotal.toLocaleString() }} claims elsewhere in these papers &mdash;
-          so here it is this pair that has none, not the kind of pair. The sentences
+          {{ pairTotal.toLocaleString() }} claims elsewhere in these papers.
+          Here it is this pair that has none, not the kind of pair. The sentences
           below show where the two appear together.</p>
       </template>
     </div>
 
     <div v-else-if="tab==='sentences'" class="evidscroll">
       <p class="hint" v-if="nSent">{{ nSent }}{{ capped ? '+' : '' }} sentences contain
-        both entities, reconstructed from PubTator's character offsets. Showing
+        both entities. Showing
         {{ sentences.length }}.
-        <span v-if="rels && rels.length">A tag marks a sentence whose <em>paper</em> carries a claim &mdash; claims are
-          recorded for a paper, not for a sentence, so the tagged sentence is not
-          necessarily the one that makes it<span v-if="relCapped">, and only the
+        <span v-if="rels && rels.length">A tag marks a sentence from a <em>paper</em> that carries a claim. Claims are
+          recorded per paper, so the tagged sentence is not necessarily the one
+          making the claim<span v-if="relCapped">, and only the
           {{ rels.length }} highest-confidence of {{ relTotal.toLocaleString() }}
           are tagged</span>.</span>
         <span v-if="capped">This pair is large enough that the search stopped after
           the {{ scanned.toLocaleString() }} newest of
-          {{ nPapers.toLocaleString() }} co-mentioning papers &mdash; older ones may
+          {{ nPapers.toLocaleString() }} co-mentioning papers, and older ones may
           hold more. Narrow the years to reach them.</span></p>
       <p class="hint" v-else-if="capped">The search stopped after
         the {{ scanned.toLocaleString() }} newest of
         {{ nPapers.toLocaleString() }} co-mentioning papers without finding a sentence
-        that contains both &mdash; which is not a finding that none exists. Narrow the
-        years to search a smaller slice exhaustively.</p>
-      <p class="hint" v-else>No sentence contains both mentions &mdash; they share an
+        that contains both. Narrow the years to search the rest.</p>
+      <p class="hint" v-else>No sentence contains both mentions. They share an
         abstract but not a sentence. Open the Papers tab.</p>
       <p class="sent" v-for="(s,i) in sentences" :key="i">
         <span v-html="marked(s)"></span>
@@ -194,11 +190,10 @@ Vue.component("evidence-panel", {
 
     <div v-else class="evidscroll">
       <p class="hint">{{ nPapers.toLocaleString() }} papers mention both in this year
-        range. Listed newest first, and papers that name the two inside one sentence
-        come ahead of papers that merely mention both somewhere in the abstract.
+        range, newest first, with same-sentence papers ahead of the rest.
         <span v-if="belowThreshold">That is {{ belowThreshold }} more than the edge
-          weight: the graph keeps a year only once the pair reaches 3 co-mentions in
-          it, so sparse early years are in the count but not in the edge.</span></p>
+          weight, because an edge needs 3 shared papers within a single year and
+          sparser years are counted here but not drawn.</span></p>
       <!-- Reachable only if the list genuinely came back empty, which the count
            above says should not happen. It used to blame paging, from when a
            later page overwrote the list; it no longer does, so the old wording
@@ -211,7 +206,7 @@ Vue.component("evidence-panel", {
           <span class="pill rel" v-if="p.same_sentence"
                 title="Both entities appear inside one sentence of this abstract,
 not merely somewhere in it. A paper that names them together in a sentence is more
-often about the pair; one that mentions them paragraphs apart often is not.">both
+often about the pair, and one that mentions them paragraphs apart often is not.">both
             in one sentence</span>
           <span class="n">{{ p.year }}</span>
         </li>

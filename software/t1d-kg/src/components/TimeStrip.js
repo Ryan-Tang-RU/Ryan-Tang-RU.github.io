@@ -50,7 +50,7 @@ Vue.component("time-strip", {
       const S = this.$store.state;
       if (this.link) {
         const a = S.nodes[this.link.a], b = S.nodes[this.link.b];
-        return (a ? a.name : "?") + " — " + (b ? b.name : "?");
+        return (a ? a.name : "?") + " \u2013 " + (b ? b.name : "?");
       }
       if (this.focus && S.nodes[this.focus]) return S.nodes[this.focus].name;
       return "";
@@ -108,7 +108,7 @@ Vue.component("time-strip", {
     },
     fullNote() {
       const out = ["Bars are " + (this.mode === "count" ? "the number of papers"
-        : "the share") + " each year; the line is the share, out of "
+        : "the share") + " each year. The line is the share, out of "
         + this.denomText + ". The share is the series worth reading: the literature "
         + "itself grows about twenty-five fold across these years, so almost "
         + "everything rises when you count papers."];

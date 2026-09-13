@@ -230,12 +230,12 @@ Vue.component("inspector-panel", {
   template: `
   <aside class="inspector">
     <div v-if="pathRow">
-      <h2 class="ih2">Shortest path &mdash;
+      <h2 class="ih2">Shortest path,
         {{ pathRow.hops }} hops</h2>
       <p class="hint" class="hint gap" v-if="avoidHubs">The most connected nodes were kept out of the middle, so this is not simply a detour through
         <em>Homo sapiens</em>.</p>
-      <p class="hint" class="hint gap" v-else>Hubs were allowed, so this may
-        route through a node that connects to almost everything.</p>
+      <p class="hint" class="hint gap" v-else>Hubs were allowed. This route may
+        pass through a node connected to almost everything.</p>
       <ol class="pathlist">
         <li v-for="(n,i) in pathRow.names" :key="i">
           <svg width="12" height="12" viewBox="-6 -6 12 12" aria-hidden="true">
@@ -268,9 +268,8 @@ Vue.component("inspector-panel", {
           </div>
         </li>
       </ul>
-      <p class="hint">Open a step to read its relations and sentences &mdash; the
-        path stays, and that view has a way back. Clicking a node or an edge on the
-        canvas leaves the result; it is a selection, not a mode.</p>
+      <p class="hint">Open a step to read its relations and sentences. The path
+        stays, with a link back.</p>
       <button class="ghost wide" @click="$store.commit('clearEndpoints')">
         Clear path and endpoints</button>
     </div>
@@ -287,10 +286,10 @@ Vue.component("inspector-panel", {
     <div v-else-if="!node && !link" class="insEmpty">
       <p>Select a node or an edge.</p>
       <ul class="keys">
-        <li><b>Click</b> a node &mdash; inspect it</li>
-        <li><b>Double-click</b> &mdash; expand its neighbours</li>
-        <li><b>Drag</b> &mdash; move and pin</li>
-        <li><b>Click</b> an edge &mdash; papers and sentences</li>
+        <li><b>Click</b> a node to inspect it</li>
+        <li><b>Double-click</b> to expand its neighbours</li>
+        <li><b>Drag</b> to move and pin</li>
+        <li><b>Click</b> an edge for papers and sentences</li>
       </ul>
     </div>
 
@@ -387,8 +386,8 @@ between them in the left-hand panel">
         on the canvas.<template v-if="hiddenPartners"> A further
         <b>{{ hiddenPartners.toLocaleString() }}</b> more appear alongside this one somewhere in these papers, but never three times in a single year, so no line is drawn for them here.</template></p>
       <div class="warnbox" v-if="crowded">The canvas holds {{ canvasSize }} nodes.
-        Past roughly 150 the layout stops being readable &mdash; narrow the years or
-        remove a few before expanding again.</div>
+        Layouts above 150 nodes are hard to read. Narrow the years or remove
+        nodes before expanding.</div>
       <div class="row gap12">
         <button class="ghost" @click="$store.commit('removeNode', node.eid)">
           Remove from canvas</button>
@@ -411,7 +410,7 @@ between them in the left-hand panel">
       <dl class="kv">
         <dt>papers, {{ years }}</dt>
         <dd v-if="facts">{{ facts.n_papers_in_window.toLocaleString() }}</dd>
-        <dd v-else class="pend">&mdash;</dd>
+        <dd v-else class="pend">&ndash;</dd>
         <dt>papers, all years</dt>
         <dd v-if="facts">{{ facts.n_papers_corpus.toLocaleString() }}<span
           class="hint" v-if="facts.last_year > 2025"> (includes {{
@@ -419,10 +418,10 @@ between them in the left-hand panel">
         <dd v-else>{{ (node.total_papers || 0).toLocaleString() }}</dd>
         <dt>active</dt>
         <dd v-if="facts">{{ facts.first_year }}&ndash;{{ facts.last_year }}</dd>
-        <dd v-else class="pend">&mdash;</dd>
+        <dd v-else class="pend">&ndash;</dd>
         <dt>appears with</dt>
         <dd v-if="facts">{{ facts.partners_all.toLocaleString() }} entities</dd>
-        <dd v-else class="pend">&mdash;</dd>
+        <dd v-else class="pend">&ndash;</dd>
         <template v-if="forms.length">
           <dt>written as</dt>
           <dd><span v-for="(f,i) in forms" :key="f.text"><span
@@ -434,7 +433,7 @@ between them in the left-hand panel">
       <label class="seclbl top">
         On the canvas ({{ connections.length.toLocaleString() }})
         <span class="lblplain">
-          &mdash; papers that mention both</span></label>
+          papers that mention both</span></label>
       <ul class="ilist">
         <li v-for="c in connections" :key="c.link.key"
             @click="openConnection(c)"
@@ -471,7 +470,7 @@ between them in the left-hand panel">
       <button class="ghost back" v-if="returnTo" @click="$store.commit('goBack')">
         &larr; Back to {{ backLabel }}</button>
       <div class="ihead"><h2 class="ih2s">{{ ends[0] && ends[0].name }}
-        <span class="dim">&mdash;</span> {{ ends[1] && ends[1].name }}</h2>
+        <span class="dim">&ndash;</span> {{ ends[1] && ends[1].name }}</h2>
       </div>
       <div class="imeta">
         <span v-if="link.comention_papers != null">{{
@@ -491,10 +490,10 @@ Negative_Correlation all sit at a median of 0.99 across the corpus.">
           score {{ Number(link.rel_score_max).toFixed(2) }}</span>
       </div>
       <div class="warnbox" v-else-if="pairTotal === 0">
-        No claim was found, and none could be: the text-reading step never produces one for a <b>{{ pairType }}</b> pair. It reads claims only between genes, diseases, chemicals and variants &mdash; species and cell lines appear in none of the 262,510 claims &mdash; so this says nothing about the research itself. The sentences below are the evidence.
+        No claim was found, and none could be: the text-reading step never produces one for a <b>{{ pairType }}</b> pair. It reads claims only between genes, diseases, chemicals and variants, and species and cell lines appear in none of the 262,510 claims, so this says nothing about the research itself. The sentences below are the evidence.
       </div>
       <div class="warnbox" v-else-if="pairTotal > 0">
-        No claim was found for this pair, although <b>{{ pairType }}</b> pairs carry {{ pairTotal.toLocaleString() }} elsewhere in these papers &mdash; so it is this pair that has none, not this kind of pair.
+        No claim was found for this pair, although <b>{{ pairType }}</b> pairs carry {{ pairTotal.toLocaleString() }} elsewhere in these papers, so it is this pair that has none, not this kind of pair.
       </div>
       <evidence-panel :link="link"></evidence-panel>
     </div>
@@ -502,7 +501,7 @@ Negative_Correlation all sit at a median of 0.99 across the corpus.">
     <div v-else class="empty">
       <h2 class="ih2s gap6">Nothing selected</h2>
       <p class="hint nogap">Click a node for its papers, its partners and
-        the words it is written as; click an edge for the sentences behind it. Press
+        the words it is written as. Click an edge for the sentences behind it. Press
         <kbd>/</kbd> to search, or drag the year strip below the graph to narrow the
         window.</p>
     </div>

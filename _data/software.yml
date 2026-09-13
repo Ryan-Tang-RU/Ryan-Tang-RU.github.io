@@ -16,8 +16,11 @@ projects:
   date: 2026
   status: in development
   summary: >-
-    PubMed tells you whether a paper exists; a review tells you today's
-    consensus. Neither shows you when a connection entered the field. This
-    traces any link in the type 1 diabetes literature from first mention to
-    surge, with the papers and the sentences that put it there, and finds routes
-    between entities nobody has studied together. 131,511 records, 1960 to 2026.
+    A temporally resolved knowledge graph of the type 1 diabetes literature,
+    built from 131,511 PubMed records spanning 1960 to 2026. Every link between
+    two entities retains its year by year paper counts, the assertions extracted
+    from the text, and the sentences supporting it, so a connection can be dated
+    to its first appearance and measured against a corpus baseline rather than
+    read as a static fact. The interface provides entity and pair timelines,
+    burst detection, shortest paths between entities never studied together, and
+    retrieval of the underlying passages.

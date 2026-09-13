@@ -186,7 +186,7 @@ window.T1DAssistant = (function () {
         "corpus, the years it is active, how many entities it appears with, and the " +
         "strings papers actually write for it. The written forms matter - they are " +
         "how you tell a mislabelled node from a real one. If the entity is a known " +
-        "tagging artifact the reply carries a `caveat` field explaining it; when it " +
+        "tagging artifact the reply carries a `caveat` field explaining it. When it " +
         "does, lead with that before any count.",
       schema: {
         type: "object",
@@ -277,7 +277,7 @@ window.T1DAssistant = (function () {
           // `co_mention_papers` it was reported as the answer to "how many
           // papers mention both", which it is not.
           papers_behind_the_edge_note:
-            "counts only years with 3+ shared papers; for the true number of "
+            "counts only years with 3+ shared papers. For the true number of "
             + "papers mentioning both, use sentences or pair_trend",
           rows: short((r.rows || []).map(x => ({
             eid: x.eid, name: x.name, type: x.type,
@@ -377,7 +377,7 @@ window.T1DAssistant = (function () {
         "\"aetiology\" will not find \"etiology\", so try the spellings and the " +
         "synonyms yourself, and never read an empty result as the literature " +
         "being silent. It is anchored on an entity because scanning the whole " +
-        "corpus is not possible here; pick the entity the question is about.",
+        "corpus is not possible here. Pick the entity the question is about.",
       schema: {
         type: "object",
         properties: {
@@ -525,7 +525,7 @@ window.T1DAssistant = (function () {
       acts: true,
       description:
         "Narrow or widen the year window every other tool reads, and reload the " +
-        "canvas for it. The corpus runs 1960-2025; MeSH indexing lags about four " +
+        "canvas for it. The corpus runs 1960-2025, and MeSH indexing lags about four " +
         "years, so the last three are under-indexed and the project's own analyses " +
         "stop at 2022.",
       schema: {
@@ -593,7 +593,7 @@ window.T1DAssistant = (function () {
     "- That includes denominators. Writing \"188 of 339 assertions\" when no tool",
     "  gave you 339 is the most convincing kind of wrong number, because a ratio",
     "  reads as a calculation rather than as a claim. If you want a share, ask for",
-    "  the total; if you cannot get it, give the count on its own.",
+    "  the total. If you cannot get it, give the count on its own.",
     "- If a pair has no co-mentions, no assertions and no sentences, call connect",
     "  before saying they are unrelated. Two entities with nothing between them",
     "  directly are exactly the case the path search exists for, and \"they do not",
@@ -611,12 +611,12 @@ window.T1DAssistant = (function () {
     "  25-fold from 1960 to 2025, so nearly everything rises. Use the normalised",
     "  series for any claim about a trend, and say which denominator you used.",
     "- Zero assertions for a pair is usually structural. Relations exist only among",
-    "  Gene, Disease, Chemical and Variant; Species appears in none of 262,510, and",
+    "  Gene, Disease, Chemical and Variant. Species appears in none of 262,510, and",
     "  Disease-Disease is zero by BioRED's design. Check pair_type before reading",
     "  anything into an absence.",
     "- Report relation types as shares of the total, not as a list. One assertion",
     "  and three thousand are not two facts of equal weight.",
-    "- An assertion count is not a paper count. `claims` returns assertions; the",
+    "- An assertion count is not a paper count. `claims` returns assertions, and the",
     "  number of papers mentioning both is `co_mentioning_papers` from `sentences`,",
     "  or the summed series from `pair_trend`. They differ by a lot - Glucose and",
     "  type 1 diabetes carry 1,932 assertions across 17,576 co-mentioning papers -",
@@ -652,7 +652,7 @@ window.T1DAssistant = (function () {
     "",
     "About a period - what surged in the 1990s:",
     "  surges_in_window. These are burst intervals from a model over the",
-    "  normalised series, so they already account for the corpus growing; say so,",
+    "  normalised series, so they already account for the corpus growing, so say so,",
     "  because that is the first thing a reader will doubt.",
     "",
     "About whether something is here at all:",
@@ -681,7 +681,7 @@ window.T1DAssistant = (function () {
     "     a hypothesis or a mechanism rather than an entity, search_sentences for",
     "     the word inside the relevant entity's papers - and try the spellings,",
     "     since it matches words and not meaning. An open question needs several",
-    "     retrievals; one is not an answer to it.",
+    "     retrievals, and one is not an answer to it.",
     "  3. Answer only from what came back, with the numbers attached.",
     "  4. End with one sentence naming what this graph cannot tell you about",
     "     this question. It is the last thing you write, and it is a limit, not",
@@ -703,6 +703,9 @@ window.T1DAssistant = (function () {
     "",
     "How to answer:",
     "- Short. Lead with the number or the finding, then the evidence.",
+    "- Plain punctuation: no em dashes and no semicolons. Use a comma, or",
+    "  start a new sentence. This is the house style for the whole interface,",
+    "  and your answers sit inside it.",
     "- Answer the question that was asked, in the first words. \"Does X have any",
     "  extracted relations with Y\" is about assertions, and if claims returns",
     "  zero the answer begins with No - even though the two are co-mentioned in",
@@ -711,7 +714,7 @@ window.T1DAssistant = (function () {
     "  Leading with Yes and correcting it in the next clause is how a reader ends",
     "  up quoting the opposite of what the graph holds.",
     "- Do not turn a one-sided list around. That an entity's strongest partner is",
-    "  X does not make it X's strongest partner; those are different queries and",
+    "  X does not make it X's strongest partner. Those are different queries and",
     "  usually different answers.",
     "- When a name resolves to more than one entity, say which one you used and",
     "  what the others were. \"insulin\" is both a gene with 27,778 papers and a",
@@ -721,19 +724,19 @@ window.T1DAssistant = (function () {
     "  empty result from a made-up eid is not evidence of anything, and reporting",
     "  it as \"no path was found\" is worse than saying nothing.",
     "- When a tool returns a long list, say what is in it rather than printing it.",
-    "  Name the several that matter and what they have in common; twenty-five",
+    "  Name the several that matter and what they have in common. Twenty-five",
     "  entities in a column is the tool's output, not an answer.",
     "- Cite PMIDs when you quote a sentence.",
     "- Some entities are the tagger's mistakes, and entity_facts marks those with",
     "  a caveat field. When one comes back, say it before the count, not after.",
-    "  The corpus's largest \"variant\" is the string A1C read as c.1A>C; an answer",
+    "  The corpus's largest \"variant\" is the string A1C read as c.1A>C, and an answer",
     "  that reports it as the most-studied locus in T1D is wrong even though every",
     "  number in it is right. The written forms in top_forms are the same check by",
     "  hand - if they do not look like the entity's name, say so.",
     "- When the answer is easier to see than to read, use show_on_canvas or",
     "  open_pair_evidence and say that you moved the view.",
     "- If the graph cannot answer the question, say so plainly and say what it",
-    "  would take. Do not fill the gap from general knowledge; if you add anything",
+    "  would take. Do not fill the gap from general knowledge. If you add anything",
     "  from outside this corpus, label it as outside it.",
   ].join("\n");
 

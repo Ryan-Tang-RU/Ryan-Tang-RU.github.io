@@ -439,7 +439,7 @@ Vue.component("graph-canvas", {
     edgeTip(d) {
       const S = this.$store.state, a = S.nodes[d.a], b = S.nodes[d.b];
       const rel = (d.relation_types || []).filter(Boolean);
-      return "<b>" + this.esc(a.name) + "</b> &mdash; <b>" + this.esc(b.name) +
+      return "<b>" + this.esc(a.name) + "</b> &ndash; <b>" + this.esc(b.name) +
         "</b><br>" + (d.comention_papers == null ? "co-mention count loading&hellip;"
           : d.comention_papers.toLocaleString() + " co-mentioning papers") +
         (d.y_first ? " &middot; " + d.y_first + "&ndash;" + d.y_last : "") + "<br>" +

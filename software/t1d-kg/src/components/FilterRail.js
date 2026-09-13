@@ -81,8 +81,8 @@ Vue.component("filter-rail", {
       </div>
       <input class="yslider" type="range" min="1960" max="2025" v-model.number="y1"
              @change="apply" aria-label="end year">
-      <p class="hint" v-if="canvasSize > 1">Changing the years re-derives the edges
-        and keeps the {{ canvasSize }} nodes you have opened.</p>
+      <p class="hint" v-if="canvasSize > 1">Changing the years redraws the edges.
+        Your {{ canvasSize }} open nodes stay.</p>
       <div class="presets">
         <button v-for="p in presets" :key="p[0]" @click="preset(p)"
                 :aria-pressed="String(isPreset(p))">{{ p[0] }}</button>
@@ -100,9 +100,9 @@ Vue.component("filter-rail", {
           <option v-for="t in types" :key="t" :value="t">{{ t }}</option>
         </select>
         <p class="hint" v-if="topBusy">loading&hellip;</p>
-        <p class="hint" v-else-if="topErr">Ranking failed &mdash; {{ topErr }}.</p>
-        <p class="hint" v-else-if="!topRows.length">No entity of this type has a
-          co-mention edge inside {{ y0 }}&ndash;{{ y1 }}. The graph keeps a year only
+        <p class="hint" v-else-if="topErr">Ranking failed. {{ topErr }}.</p>
+        <p class="hint" v-else-if="!topRows.length">No entity of this type has an
+          edge in {{ y0 }}&ndash;{{ y1 }}. The graph keeps a year only
           once a pair reaches 3 co-mentions in it, so narrow early windows can be
           empty.</p>
         <p class="hint" v-else-if="topRows.length > 20">Top 20 of
@@ -144,17 +144,15 @@ Vue.component("filter-rail", {
         {{ stats.withRel }} of {{ stats.total }} edges.
         <template v-if="stats.impossible">{{ stats.impossible }} of the
           {{ stats.hidden }} hidden ones are pair types that can never carry a
-          relation &mdash; disease&ndash;disease, or anything with a species &mdash;
-          so hiding them filters the extractor's vocabulary, not the
-          literature.</template></p>
-      <p class="hint" v-else-if="edgeMode === 'emphasise'">Links with a claim behind them are solid; links where the two are only mentioned together stay faint. Nothing is hidden.</p>
+          relation, such as disease&ndash;disease or any pair with a species.</template></p>
+      <p class="hint" v-else-if="edgeMode === 'emphasise'">Links with a claim are solid. Links with only shared papers are faint. Nothing is hidden.</p>
 
       <label class="cdgap12">Rank partners by</label>
       <div class="seg" role="group" aria-label="partner ranking">
         <button v-for="r in ranks" :key="r[0]" @click="setRank(r[0])"
                 :aria-pressed="String(rankBy === r[0])" :title="r[2]">{{ r[1] }}</button>
       </div>
-      <p class="hint">Claims first by default. Ordered by papers, the biggest neighbours are the kinds of pair that never carry a claim, so most links open onto nothing. Line thickness still means papers either way.</p>
+      <p class="hint">Claims ranks by extracted assertions. Papers ranks by shared papers. Line thickness always shows shared papers.</p>
     </div>
 
     <div class="sec">
@@ -176,7 +174,7 @@ Vue.component("filter-rail", {
       <label class="chk"><input type="checkbox" v-model="avoidHubs"> avoid the most connected nodes</label>
       <p class="hint" v-if="hubs.length">Without this, paths route through
         <em v-for="(h,i) in hubs.slice(0,3)" :key="h.eid">{{ h.name }}<span
-          v-if="i<2">, </span></em> &mdash; true and useless.</p>
+          v-if="i<2">, </span></em>, which is true and useless.</p>
       <button class="primary wide" :disabled="!pathA || !pathB"
               @click="$emit('find-path')">Find shortest path</button>
     </div>
