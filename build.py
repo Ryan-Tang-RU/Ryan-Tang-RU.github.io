@@ -362,25 +362,34 @@ def slug(s):
     return "".join(c.lower() if c.isalnum() else "-" for c in s).strip("-")
 
 
-ME = "<b>Ruixiang Tang</b>"
+NAME = "Ruixiang Tang"
+ME = f"<b>{NAME}</b>"
 
 
 def mark_corresponding(authors, explicit=None):
-    """Flag the papers Ruixiang is corresponding author on.
+    """Flag the corresponding authors of a paper.
 
-    The convention on this site is that he is corresponding author when he is
-    last author. An entry can set `corresponding: true/false` in the YAML when
-    that does not hold, which is the only thing to change if a paper is an
-    exception.
+    The convention on this site is that Ruixiang is corresponding author when
+    he is last author, so nothing needs saying for most entries. An entry can
+    override that with `corresponding:` in the YAML, either a boolean for the
+    papers where the convention does not hold, or a list of names for the ones
+    with more than one corresponding author.
     """
-    last = authors.rstrip().rstrip(".").rstrip().endswith(ME)
-    flag = last if explicit is None else explicit
-    if not flag or ME not in authors:
-        return authors
-    i = authors.rfind(ME)
-    return (authors[:i] + ME
-            + '<sup class="corr" title="corresponding author">&dagger;</sup>'
-            + authors[i + len(ME):])
+    if isinstance(explicit, list):
+        names = explicit
+    else:
+        last = authors.rstrip().rstrip(".").rstrip().endswith(ME)
+        names = [NAME] if (last if explicit is None else explicit) else []
+
+    dagger = '<sup class="corr" title="corresponding author">&dagger;</sup>'
+    for name in names:
+        bold = f"<b>{name}</b>"
+        needle = bold if bold in authors else name
+        if needle not in authors:
+            raise SystemExit(f"corresponding author {name!r} is not in: {authors!r}")
+        i = authors.rfind(needle) + len(needle)
+        authors = authors[:i] + dagger + authors[i:]
+    return authors
 
 
 def build_publications():

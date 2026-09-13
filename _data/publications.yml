@@ -77,6 +77,7 @@
     url: "https://arxiv.org/abs/2601.08000"
     authors: Can Jin*, Rui Wu*, Tong Che*, Qixin Zhang, Hongwu Peng, Jiahui Zhao, Zhenting Wang, Wenqi Wei, Ligong Han, Zhao Zhang, Yuan Cao, <b>Ruixiang Tang</b>, Dimitris N Metaxas
     venue: <i>Association for Computational Linguistics, <b>ACL Main</b>, 2026</i>
+    corresponding: [Ruixiang Tang, Dimitris N Metaxas]
   - title: "Shifting Uncertainty to Critical Moments: Towards Reliable Uncertainty Quantification for VLA Model"
     url: "https://arxiv.org/pdf/2603.18342"
     authors: Yanchuan Tang*, Taowen Wang*, Yuefei Chen, Boxuan Zhang, Qiang Guan, <b>Ruixiang Tang</b>
