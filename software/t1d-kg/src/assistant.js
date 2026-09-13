@@ -512,6 +512,9 @@ window.T1DAssistant = (function () {
           total_papers: row ? row.n_papers : null,
         });
         await c.store.dispatch("focusOn", { eid: i.eid });
+        // Ringed, like a freshly expanded batch. A question that redraws the
+        // canvas should leave the reader able to see which node it was about.
+        c.store.commit("flashNode", i.eid);
         return { shown: i.eid };
       },
     },

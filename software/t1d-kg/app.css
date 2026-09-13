@@ -707,3 +707,10 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
   .cstat{font-size:10px}
 }
 @media (prefers-reduced-motion:reduce){.rail{transition:none}}
+
+/* The one action on the canvas that could not be taken back. Shown where it
+   happened rather than in the inspector, which has nothing selected by then. */
+.cundo{position:absolute;left:50%;transform:translateX(-50%);bottom:16px;z-index:6;
+  display:flex;align-items:center;gap:8px;font-size:.82rem;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:6px 8px 6px 12px;box-shadow:0 6px 20px rgba(22,50,79,.16)}

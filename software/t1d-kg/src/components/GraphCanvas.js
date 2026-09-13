@@ -516,6 +516,16 @@ Vue.component("graph-canvas", {
         v-if="hiddenNow.length > 1">s</span> hidden</span>
     </div>
 
+    <!-- Transient, over the canvas, where the removal happened - the inspector
+         has nothing selected once the node is gone, so its own Undo bar cannot
+         appear there. -->
+    <div class="cundo" v-if="$store.state.lastRemoved">
+      <span>Removed <b>{{ $store.state.lastRemoved.name }}</b></span>
+      <button class="ghost tiny" @click="$store.commit('restoreRemoved')">Undo</button>
+      <button class="ghost tiny" @click="$store.commit('forgetRemoved')"
+              title="dismiss">&times;</button>
+    </div>
+
     <div class="ctools">
       <button class="ghost" @click="$root.$emit('graph:zoom',1.4)" title="Zoom in">+</button>
       <button class="ghost" @click="$root.$emit('graph:zoom',1/1.4)" title="Zoom out">&minus;</button>

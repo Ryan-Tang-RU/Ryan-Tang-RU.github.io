@@ -47,6 +47,7 @@ window.T1DStore = new Vuex.Store({
     // A stack, not one slot. Show-more is meant to be clicked repeatedly, so undo
     // has to walk back the same way: one batch per press, newest first.
     expandStack: [],
+    lastRemoved: null,   // the node and edges Undo would put back
     // What is still not shown for a node, and how it breaks down by type. Both are
     // computed server-side with the canvas contents excluded, which is what lets a
     // button state an exact number instead of an upper bound.
@@ -162,7 +163,19 @@ window.T1DStore = new Vuex.Store({
       }
       s.version++;
     },
+    /* Removing is the one action on the canvas that could not be taken back.
+       Everything else has a way home - expand has Undo, focus has the trail, the
+       year strip has Reset - so a misplaced click here meant searching for the
+       entity again and rebuilding what it was attached to. The node and its edges
+       are kept so both come back, not just the dot. */
     removeNode(s, eid) {
+      const node = s.nodes[eid];
+      if (!node) return;
+      const edges = Object.keys(s.links)
+        .filter(k => s.links[k].a === eid || s.links[k].b === eid)
+        .map(k => s.links[k]);
+      s.lastRemoved = { node: node, links: edges, name: node.name,
+                        focus: s.focus === eid };
       Vue.delete(s.nodes, eid);
       Object.keys(s.links).forEach(k => {
         const l = s.links[k];
@@ -172,6 +185,23 @@ window.T1DStore = new Vuex.Store({
       if (s.selection && s.selection.eid === eid) s.selection = null;
       if (s.pathA && s.pathA.eid === eid) s.pathA = null;
       if (s.pathB && s.pathB.eid === eid) s.pathB = null;
+      s.version++;
+    },
+    restoreRemoved(s) {
+      const r = s.lastRemoved;
+      if (!r) return;
+      Vue.set(s.nodes, r.node.eid, r.node);
+      r.links.forEach(l => { Vue.set(s.links, l.key, l); });
+      if (r.focus) s.focus = r.node.eid;
+      s.lastRemoved = null;
+      s.version++;
+    },
+    forgetRemoved(s) { s.lastRemoved = null; },
+    // The ring the canvas already draws for a freshly expanded batch, for one
+    // node. The assistant loading an entity moved the view with nothing saying
+    // which of the nodes on it was the new one.
+    flashNode(s, eid) {
+      Object.keys(s.nodes).forEach(e => { s.nodes[e].justAdded = e === eid; });
       s.version++;
     },
     setNeighbourTotal(s, p) { Vue.set(s.neighbourTotals, p.eid, p.total); },
@@ -462,6 +492,10 @@ window.T1DStore = new Vuex.Store({
       // may have taken a dozen clicks to build, with no warning and no undo.
       Object.keys(state.links).forEach(k => Vue.delete(state.links, k));
       commit("clearNodeFacts");     // every fact below is window-relative
+      // The edges kept for Undo belong to the window that has just gone. Putting
+      // them back after a year change would restore links this window does not
+      // have, which is a worse outcome than losing the undo.
+      commit("forgetRemoved");
       // The neighbour totals are window-relative as well, and survived a year
       // change: selecting a node that was not the focus showed "18 of 762 graph
       // neighbours" with 762 measured in the previous window.
