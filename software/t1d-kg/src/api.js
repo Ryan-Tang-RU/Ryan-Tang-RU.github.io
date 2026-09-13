@@ -29,6 +29,7 @@ const TABLES = ["entities", "entity_year", "pair_year", "corpus_year", "papers",
 
 let conn = null;
 let manifest = null;
+let warmed = false;
 let onStatus = () => {};
 const prepared = new Map();
 
@@ -163,6 +164,34 @@ window.T1DApi = {
   vocab: toks => timed("vocab", async () => ({
     rows: await run("vocab", { toks: toks }),
   })),
+
+  /* Read the files an evidence click will need, once, in the background.
+
+     Measured on the published files, cold: the first click on an edge costs about
+     9 seconds, and the next about 2.5. The difference is entirely first-touch -
+     `passages` is 55 MB and nothing reads it until an edge is opened, and type 1
+     diabetes alone is 12% of `mentions`, seven row groups, on almost every pair.
+     Warming both takes 1.65 s and takes the first click to about 6.8.
+
+     Not at boot: a reader who only looks at the graph would pay for data they
+     never use. This runs when a node is selected, which is the step before
+     clicking one of its edges, and spends the seconds they are reading the panel.
+     Fire and forget - nothing waits on it and a failure is silence, because it is
+     an optimisation and not a feature. */
+  warm: () => {
+    if (warmed) return;
+    warmed = true;
+    (async () => {
+      try {
+        const hub = (await run("hubs", { minc: MINC, limit: 1 }))[0];
+        if (hub) await run("node_window", { eid: hub.eid, y0: manifest.year_min,
+                                            y1: manifest.year_max });
+        await conn.query(
+          "SELECT count(*) FROM passages WHERE pmid > (SELECT max(pmid) - 400000 "
+          + "FROM papers)");
+      } catch (e) { /* an optimisation that failed is not an error */ }
+    })();
+  },
 
   // Sentences containing a word, among one entity's newest papers. The bridge
   // answers the same question from the same shape.

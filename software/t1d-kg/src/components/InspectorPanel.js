@@ -143,6 +143,10 @@ Vue.component("inspector-panel", {
       if (!this.$store.state.nodeFacts[n.eid])
         this.$store.dispatch("loadNodeFacts", n.eid);
       this.$store.dispatch("loadNeighbourTotal", n.eid);
+      // Selecting a node is the step before opening one of its edges, and the
+      // reader spends a few seconds on this panel. The files an evidence click
+      // needs are fetched during them rather than after the click.
+      if (T1DApi.warm) T1DApi.warm();
     } }
   },
   methods: {

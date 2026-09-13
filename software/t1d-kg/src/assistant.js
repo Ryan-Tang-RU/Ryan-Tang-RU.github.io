@@ -66,7 +66,12 @@ window.T1DAssistant = (function () {
     }
     return {
       years: out,
-      total_papers: t.total,
+      // Not the entity's paper count. This is the sum over the years the series
+      // covers, and entity_facts reports all years: INS is 27,029 here and 27,778
+      // there, teplizumab 152 against 190, the difference being papers dated
+      // outside the window. Two numbers for "how many papers" is one too many
+      // unless each says which it is.
+      papers_in_the_years_shown: t.total,
       peak_year: t.peak_year == null ? null : t.peak_year,
       // What the second denominator actually counts, so the model can name it
       // rather than saying "normalised".
@@ -94,6 +99,35 @@ window.T1DAssistant = (function () {
     return res || {};
   }
 
+  /* Was that identifier ever real?
+
+     Told to resolve names first, the model still passed `Chemical|MESH:Cxxx` and
+     `Chemical|UNKNOWN` to claims and connect, and then reported the empty answers
+     as findings - "no path was found" about a thing that does not exist. An
+     instruction did not stop it, so the tools check instead: only when a result
+     comes back empty, which costs nothing in the ordinary case, and only against
+     the smallest table. An unknown identifier becomes an error that names the fix
+     rather than an absence that reads like evidence. */
+  async function unknown(ctx, eids) {
+    const want = (eids || []).filter(e => typeof e === "string" && e.indexOf("|") > 0);
+    if (!want.length) return null;
+    const bad = [];
+    for (const e of want) {
+      // `ok` so a bridge that is down raises rather than being read as "this
+      // identifier does not exist" - the same confusion this function exists to
+      // stop, one level up.
+      const r = ok(await ctx.api.node(e, ctx.store.state.y0, ctx.store.state.y1));
+      const row = (r && r.rows && r.rows[0]) || null;
+      if (!row || row.not_found || !row.name) bad.push(e);
+    }
+    return bad.length
+      ? { error: "no entity has the identifier " + bad.join(", ")
+                 + " - call find_entity for the name first, and use the eid it "
+                 + "returns. An empty result from an identifier that does not "
+                 + "exist is not evidence about anything." }
+      : null;
+  }
+
   // ---- the tools -------------------------------------------------------------
   // `run` receives the parsed input and a context of { api, store }. Anything that
   // changes the canvas is marked `acts`, which the panel shows differently: a
@@ -114,7 +148,23 @@ window.T1DAssistant = (function () {
         properties: { name: { type: "string", description: "name, symbol or abbreviation" } },
         required: ["name"],
       },
-      run: async (i, c) => ({ matches: short(ok(await c.api.search(i.name, 6)).rows, 6) }),
+      run: async (i, c) => {
+        const rows = short(ok(await c.api.search(i.name, 6)).rows, 6);
+        // Said out loud rather than left for the model to notice. "insulin" is a
+        // gene with 27,778 papers and a chemical with 6,761, and an answer that
+        // does not say which it meant is unreadable.
+        const kinds = {};
+        rows.forEach(r => { kinds[r.type] = (kinds[r.type] || 0) + 1; });
+        const many = Object.keys(kinds).length > 1 && rows.length > 1;
+        return {
+          matches: rows,
+          ambiguous: many || null,
+          ambiguous_note: many
+            ? "this name resolves to more than one kind of entity - pick one and "
+              + "say in your answer which you used and what the others were"
+            : null,
+        };
+      },
     },
     {
       name: "entity_facts",
@@ -161,14 +211,27 @@ window.T1DAssistant = (function () {
         properties: { a: { type: "string" }, b: { type: "string" } },
         required: ["a", "b"],
       },
-      run: async (i, c) => series(ok(await c.api.timeline({ a: i.a, b: i.b }))),
+      run: async (i, c) => {
+        const out = series(ok(await c.api.timeline({ a: i.a, b: i.b })));
+        if (!out.years.length) return (await unknown(c, [i.a, i.b])) || out;
+        return out;
+      },
     },
     {
       name: "partners",
       acts: false,
       description:
         "The entities most often co-mentioned with this one, in the current year " +
-        "window. `rank` 'relations' orders by how many extracted assertions the " +
+        "window. Both of its totals are edge-based: an edge needs three shared " +
+        "papers in one year, so they are smaller than the unthresholded counts " +
+        "entity_facts reports, and they are for ranking rather than for quoting " +
+        "as how much literature exists. Its paper figure is the count behind the " +
+        "drawn edge, which " +
+        "exists only for years with three or more shared papers - it is a " +
+        "ranking number, not the number of papers mentioning both, and it is " +
+        "lower. Quote it as an answer to 'how many papers' and you will be " +
+        "wrong by a little, invisibly. " +
+        "`rank` 'relations' orders by how many extracted assertions the " +
         "pair carries, 'papers' by co-mention count. They answer different " +
         "questions: the largest co-mention counts are often pair types that can " +
         "never carry an assertion.",
@@ -186,10 +249,25 @@ window.T1DAssistant = (function () {
           Math.min(Math.max(i.limit || 15, 1), 25), [], null,
           i.rank === "papers" ? "papers" : "relations"));
         return {
-          total_partners: r.total_neighbours,
+          // Partners the graph draws an edge to, which needs three shared papers
+          // in one year. entity_facts.partners_all counts every entity that ever
+          // appears alongside this one and is far larger - 8,215 against 829 for
+          // INS. Quote this one as "appears with N entities" and you are out by
+          // an order of magnitude.
+          partners_with_an_edge: r.total_neighbours,
+          // Named for what it is. This is the count behind the drawn edge, and
+          // an edge exists only for a pair with three or more papers in a single
+          // year, so it is lower than the number of papers mentioning both:
+          // teplizumab and type 1 diabetes read 122 here and 134 from the pair
+          // itself, INS and type 1 diabetes 19,532 against 19,546. Called
+          // `co_mention_papers` it was reported as the answer to "how many
+          // papers mention both", which it is not.
+          papers_behind_the_edge_note:
+            "counts only years with 3+ shared papers; for the true number of "
+            + "papers mentioning both, use sentences or pair_trend",
           rows: short((r.rows || []).map(x => ({
             eid: x.eid, name: x.name, type: x.type,
-            co_mention_papers: x.papers,
+            papers_behind_the_edge: x.papers,
             assertions: (x.rel_dist && x.rel_dist.total) || 0,
             relation_types: (x.rel_dist && x.rel_dist.types) || [],
           })), 25),
@@ -221,6 +299,10 @@ window.T1DAssistant = (function () {
           relation_type: x.relation_type, n: x.n,
           share_pct: tot ? Math.round((Number(x.n) / tot) * 1000) / 10 : null,
         }));
+        if (!tot) {
+          const bad = await unknown(c, [i.a, i.b]);
+          if (bad) return bad;
+        }
         return {
           total_assertions: tot,
           by_type: by,
@@ -322,6 +404,10 @@ window.T1DAssistant = (function () {
       },
       run: async (i, c) => {
         const r = ok(await c.api.path(i.a, i.b, 4, true));
+        if (!(r.rows || []).length) {
+          const bad = await unknown(c, [i.a, i.b]);
+          if (bad) return bad;
+        }
         return { hops: short(r.rows, 8) };
       },
     },
@@ -596,6 +682,22 @@ window.T1DAssistant = (function () {
     "",
     "How to answer:",
     "- Short. Lead with the number or the finding, then the evidence.",
+    "- Answer the question that was asked, in the first words. Asked whether",
+    "  something has any extracted relations and the answer is none, the first",
+    "  word is No - not Yes followed by a correction.",
+    "- Do not turn a one-sided list around. That an entity's strongest partner is",
+    "  X does not make it X's strongest partner; those are different queries and",
+    "  usually different answers.",
+    "- When a name resolves to more than one entity, say which one you used and",
+    "  what the others were. \"insulin\" is both a gene with 27,778 papers and a",
+    "  chemical with 6,761, and an answer that does not say which it means is",
+    "  unreadable.",
+    "- Never call a tool with an identifier you did not get from find_entity. An",
+    "  empty result from a made-up eid is not evidence of anything, and reporting",
+    "  it as \"no path was found\" is worse than saying nothing.",
+    "- When a tool returns a long list, say what is in it rather than printing it.",
+    "  Name the several that matter and what they have in common; twenty-five",
+    "  entities in a column is the tool's output, not an answer.",
     "- Cite PMIDs when you quote a sentence.",
     "- When the answer is easier to see than to read, use show_on_canvas or",
     "  open_pair_evidence and say that you moved the view.",
@@ -728,7 +830,10 @@ window.T1DAssistant = (function () {
     "causes compare compares mention mentions appear appears associate " +
     "associates link links find finds tell explain describe list rank " +
     "strong strongest stronger most more less best better main major common " +
-    "important different same other studied happen happens work works"
+    "important different same other studied happen happens work works " +
+    "look looks looking summarise summarize summary overview capital country " +
+    "city world people first next then also maybe please thanks want need " +
+    "think know understand matter matters interesting useful"
     ).split(" ");
 
   // Alphanumeric pieces of a string, lowercased. Compared as sets rather than by
@@ -752,9 +857,21 @@ window.T1DAssistant = (function () {
     // "no node", about a node that is right there.
     // The eid's own tail is the canonical key, which for a variant is the rs
     // number itself.
-    return inside(pieces(row.name)) || inside(pieces(row.id))
-      || (row.via && inside(pieces(row.via)))
-      || inside(pieces(String(row.eid).split("|").slice(1).join("|")));
+    if (inside(pieces(row.name)) || inside(pieces(row.id))
+        || (row.via && inside(pieces(row.via)))
+        || inside(pieces(String(row.eid).split("|").slice(1).join("|"))))
+      return true;
+    // A typed name with a letter missing. The search finds it - that is what its
+    // fuzzy fallback is for - and this then threw the hit away, so "teplizumb"
+    // resolved to nothing here while the search box resolved it fine. Only for a
+    // single long word, and only when the two share a long prefix and are within
+    // two characters of each other, which is a slip rather than a different word.
+    const a = w.join(" "), b = String(row.name || "").toLowerCase();
+    if (w.length !== 1 || a.length < 6 || Math.abs(a.length - b.length) > 2)
+      return false;
+    let i = 0;
+    while (i < a.length && i < b.length && a[i] === b[i]) i++;
+    return i >= 6;
   }
 
   /* What the panel can still answer with no key at all.
@@ -772,8 +889,16 @@ window.T1DAssistant = (function () {
        "diabetic", one from "nephropathies" - while Diabetic Nephropathies, which
        is a node with 4,802 papers, was never searched at all. Most entity names
        in this corpus are two or three words, so the phrase is the thing to try. */
+    // Nothing that is mostly digits is ever searched. "2020 2021 2022" resolved
+    // to c.2020G>A - a variant whose name contains the year - which is the kind
+    // of answer that makes a reader distrust every other one.
+    // Starts with a digit, or has no letters. Counting digits as a proportion
+    // killed rs2476601 - seven digits in nine characters - which is a name, not a
+    // number. What is never a name is a token that opens with a digit: "2020",
+    // "1990s", "50".
+    const numeric = w => /^\d/.test(w) || !/[a-z]/.test(w);
     const kept = pieces(question).map(
-      w => (w.length >= 3 && STOP.indexOf(w) === -1) ? w : null);
+      w => (w.length >= 3 && STOP.indexOf(w) === -1 && !numeric(w)) ? w : null);
     const words = [];
     for (let n = 4; n >= 2; n--) {
       for (let i = 0; i + n <= kept.length; i++) {
@@ -782,8 +907,10 @@ window.T1DAssistant = (function () {
         words.push(run.join(" "));
       }
     }
+    // Three characters, not four: INS, ALB, TNF, CD4 and GAD are entities, and
+    // "what does INS do" resolved nothing at all while the length floor was 4.
     kept.forEach(w => {
-      if (w && w.length >= 4 && words.indexOf(w) === -1) words.push(w);
+      if (w && w.length >= 3 && words.indexOf(w) === -1) words.push(w);
     });
     // Names carrying a hyphen, a dot or a slash survive as one token too, so
     // "HLA-DQB1", "rs2476601" and "C57BL/6" are looked up whole rather than only as
@@ -841,8 +968,17 @@ window.T1DAssistant = (function () {
       // the stop list and the ceiling at 138 abstracts; no drug, gene or disease
       // in this corpus ends in -ing, -ed, -ly or -est.
       const inflected = w => /(ing|ed|ly|est)$/.test(w);
+      // "1990s" was reported as a word in 103 abstracts with no node, which is
+      // true and useless: a decade is not an entity anyone failed to tag. Nothing
+      // that is mostly digits is a candidate.
+      const numeric = w => /^\d/.test(w) || !/[a-z]/.test(w);
       untagged = rows
-        .filter(r => r.n_papers >= 5 && r.n_papers <= 600 && !inflected(r.tok))
+        // Seven characters at least. Every untagged entity this project has found
+        // is a long name - liraglutide and tirzepatide 11, etanercept 10,
+        // abatacept 9 - while the short words that slip the stop list are the
+        // ones that made this report noise: "look", "connect", "france".
+        .filter(r => r.n_papers >= 5 && r.n_papers <= 600 && r.tok.length >= 7
+                     && !inflected(r.tok) && !numeric(r.tok))
         .sort((a, b) => a.n_papers - b.n_papers)   // rarest first: the likeliest term
         .slice(0, 2);
     }
