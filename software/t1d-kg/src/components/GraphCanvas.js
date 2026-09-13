@@ -27,7 +27,28 @@ Vue.component("graph-canvas", {
     focus() { return this.$store.state.focus; },
     selection() { return this.$store.state.selection; },
     pathEids() { return this.$store.state.pathEids; },
-    isEmpty() { return this.nodes.length === 0; },
+    /* Three states, not two.
+
+       `nodes` is already filtered by the type checkboxes, so hiding every type
+       emptied it and the canvas offered "Start from an entity" - telling the
+       reader to do the thing they had just done, and hiding the one control that
+       would undo it. Nothing loaded and everything filtered out look the same
+       here and are not the same problem. */
+    nothingLoaded() {
+      return Object.keys(this.$store.state.nodes).length === 0;
+    },
+    allFiltered() {
+      return !this.nothingLoaded() && this.nodes.length === 0;
+    },
+    hiddenNow() { return (this.$store.state.hiddenTypes || []).slice(); },
+    // What is on screen, on the screen. The counts lived only in the inspector,
+    // so the reader had to select something to find out how much they were
+    // looking at, and the year window - which silently governs every number -
+    // was legible only from the strip's handles.
+    pinnedCount() {
+      return Object.keys(this.$store.state.nodes)
+        .filter(k => this.$store.state.nodes[k].pinned).length;
+    },
     busy() { return this.$store.state.status === "running"; },
     // One hover, in the store, whether the pointer is on this canvas or on a row in
     // the inspector's list: both point at the same node or edge. Keeping a local
@@ -454,7 +475,21 @@ Vue.component("graph-canvas", {
     <div class="tip" v-show="tipHtml" v-html="tipHtml"
          :style="{left: tipX+'px', top: tipY+'px'}"></div>
     <div class="busy" v-if="busy">working&hellip;</div>
-    <div class="empty" v-if="isEmpty">
+    <!-- Everything is on the canvas and every type of it is switched off. -->
+    <div class="empty" v-if="allFiltered">
+      <div class="start">
+        <h2>Every entity type is hidden</h2>
+        <p>The canvas holds
+          {{ Object.keys($store.state.nodes).length }} entities, and the type
+          filters are hiding all of them.</p>
+        <div class="startrow">
+          <button class="seedbtn" v-for="t in hiddenNow" :key="t"
+                  @click="$store.commit('toggleType', t)">show {{ t }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty" v-else-if="nothingLoaded">
       <div class="start">
         <h2>Start from an entity</h2>
         <p>Search on the left, or open one of these:</p>
@@ -473,11 +508,25 @@ Vue.component("graph-canvas", {
           Drag a node to move it, click an edge for the sentences behind it.</p>
       </div>
     </div>
+    <div class="cstat" v-if="!nothingLoaded">
+      <b>{{ nodes.length.toLocaleString() }}</b> entities
+      &middot; <b>{{ links.length.toLocaleString() }}</b> links
+      &middot; {{ $store.state.y0 }}&ndash;{{ $store.state.y1 }}
+      <span v-if="hiddenNow.length">&middot; {{ hiddenNow.length }} type<span
+        v-if="hiddenNow.length > 1">s</span> hidden</span>
+    </div>
+
     <div class="ctools">
       <button class="ghost" @click="$root.$emit('graph:zoom',1.4)" title="Zoom in">+</button>
       <button class="ghost" @click="$root.$emit('graph:zoom',1/1.4)" title="Zoom out">&minus;</button>
       <button class="ghost" @click="fit" title="Fit to view">&#8690;</button>
-      <button class="ghost" @click="releaseAll" title="Release pinned nodes">&#9679;</button>
+      <!-- Only when there is something to release, and saying how many. A filled
+           circle labelled "release pinned nodes" is a control whose meaning is
+           only in its tooltip, sitting there whether or not it does anything. -->
+      <button class="ghost cpin" v-if="pinnedCount" @click="releaseAll"
+              :title="'release ' + pinnedCount + ' pinned node'
+                      + (pinnedCount > 1 ? 's' : '')">
+        &#9679;<span class="cpinn">{{ pinnedCount }}</span></button>
     </div>
   </div>`
 });

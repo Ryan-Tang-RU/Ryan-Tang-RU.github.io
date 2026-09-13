@@ -658,3 +658,52 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
   .aslauncher{transition:none}
 }
 
+/* --- keyboard focus ------------------------------------------------------ */
+/* Five rules covered five controls, and everything else moved the focus with no
+   sign of where it had gone. `:focus-visible` shows it for the keyboard and stays
+   out of the way of the mouse. */
+:where(button, [role="button"], a, input, textarea, select, summary,
+       [tabindex]):focus-visible{
+  outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+.bar :where(button, a):focus-visible{outline-color:#fff}
+.seedbtn:focus-visible, .tchip:focus-visible, .chip:focus-visible{
+  outline-offset:1px}
+
+/* What is on screen, said on the screen. Quiet enough to ignore, present enough
+   that the year window is never a thing you have to remember. */
+.cstat{position:absolute;left:12px;top:10px;z-index:4;pointer-events:none;
+  font:400 11px var(--mono);color:var(--ink-3);
+  background:color-mix(in oklab,var(--surface) 82%,transparent);
+  padding:3px 8px;border-radius:5px;border:1px solid var(--hair)}
+.cstat b{color:var(--ink-2);font-weight:600}
+.cpin{position:relative}
+.cpinn{position:absolute;top:-4px;right:-4px;min-width:14px;height:14px;
+  border-radius:99px;background:var(--warn);color:#fff;
+  font:700 9px var(--sans);display:grid;place-items:center;padding:0 3px}
+
+/* --- narrow windows ------------------------------------------------------ */
+/* Two fixed columns cost 540 px of a 1024 px window and the canvas got 484; on a
+   tablet it got 228, which is not a graph. Below 1000 px the rail stops being a
+   column and becomes a drawer over the canvas, so the graph keeps the width. */
+.railtoggle{display:none;margin-left:2px}
+.railscrim{display:none}
+@media (max-width:1000px){
+  .app{grid-template-columns:minmax(0,1fr) var(--insp)}
+  .railtoggle{display:inline-flex;align-items:center}
+  .railtoggle.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .rail{position:fixed;left:0;top:48px;bottom:0;width:min(300px,86vw);z-index:70;
+    transform:translateX(-102%);transition:transform .18s ease;
+    box-shadow:2px 0 18px rgba(22,50,79,.18);border-right:1px solid var(--rule)}
+  .app.railopen .rail{transform:none}
+  .app.railopen .railscrim{display:block;position:fixed;inset:48px 0 0 0;
+    z-index:69;background:rgba(22,50,79,.22)}
+}
+/* Narrower still: the inspector goes too, and what is selected opens over the
+   canvas rather than beside it. */
+@media (max-width:720px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .inspector{position:fixed;right:0;top:48px;bottom:0;width:min(360px,92vw);
+    z-index:68;box-shadow:-2px 0 18px rgba(22,50,79,.18)}
+  .cstat{font-size:10px}
+}
+@media (prefers-reduced-motion:reduce){.rail{transition:none}}

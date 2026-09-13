@@ -8,7 +8,7 @@
    the inspector - and the page ended wherever that column ended, leaving a band of
    background that grew and shrank as the inspector's content changed. */
 window.App = {
-  data: () => ({ showHelp: false, askOpen: false }),
+  data: () => ({ showHelp: false, askOpen: false, railOpen: false }),
   computed: {
     status() { return this.$store.state.status; },
     focus() { return this.$store.state.focus; },
@@ -105,6 +105,15 @@ window.App = {
            its containing block at the mercy of whatever the header does, which is
            not a thing to leave to chance for the one element that must cover
            everything. -->
+      <!-- The rail's toggle. CSS hides it above the breakpoint, where the rail
+           is a column and never needs opening. -->
+      <button class="ghost railtoggle" @click="railOpen = !railOpen"
+              :class="{on: railOpen}" title="Filters and search"
+              aria-label="Filters and search">
+        <svg width="14" height="12" viewBox="0 0 16 14" aria-hidden="true">
+          <path d="M1 2h14M3 7h10M6 12h4" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" fill="none"></path></svg>
+      </button>
       <button class="ghost asktoggle" :class="{on: askOpen}"
               @click="$root.$emit('assistant:toggle')"
               title="Ask about this graph">
@@ -116,8 +125,12 @@ window.App = {
       <button class="ghost" @click="showHelp=true" title="Shortcuts">?</button>
     </header>
 
-    <div class="app">
+    <div class="app" :class="{railopen: railOpen}">
       <filter-rail @choose="onChoose" @find-path="findPath"></filter-rail>
+      <!-- Only ever visible on a narrow window, where the rail is an overlay.
+           Tapping the canvas behind it closes it, which is what every drawer
+           does and what a reader will try first. -->
+      <div class="railscrim" @click="railOpen = false"></div>
 
       <main class="stage">
         <error-bar></error-bar>
