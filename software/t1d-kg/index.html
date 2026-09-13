@@ -4,13 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A Multi-Agent Framework for Constructing Temporally Evolving T1D Knowledge Graphs</title>
-<meta name="description" content="An interactive knowledge graph of the type 1 diabetes literature: 131,511 PubMed records, 26,185 normalised entities, the papers and sentences behind every edge.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<meta name="description" content="An interactive knowledge graph of the type 1 diabetes literature: 131,511 PubMed records, 26,185 normalised entities, 262,510 extracted relations, and the papers and sentences behind every edge. Queried in the browser.">
+<meta name="description" content="Trace when a connection entered the type 1 diabetes literature, read the sentences that put it there, and find routes between entities nobody has studied together. 131,511 PubMed records, 1960-2026.">
 <meta property="og:title" content="A Multi-Agent Framework for Constructing Temporally Evolving T1D Knowledge Graphs">
-<meta property="og:description" content="An interactive knowledge graph of the type 1 diabetes literature: 131,511 PubMed records, 26,185 normalised entities, 262,510 extracted relations, and the papers and sentences behind every edge. Queried in the browser.">
+<meta property="og:description" content="Trace when a connection entered the type 1 diabetes literature, read the sentences that put it there, and find routes between entities nobody has studied together. 131,511 PubMed records, 1960-2026.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.ruixiangtang.net/software/t1d-kg/">
 <link rel="canonical" href="https://www.ruixiangtang.net/software/t1d-kg/">
@@ -45,7 +44,7 @@
     <div class="boot__t">Temporally Evolving T1D Knowledge Graph</div>
     <div class="boot__s" id="bootmsg">Starting&hellip;</div>
     <div class="boot__track"><div class="boot__fill"></div></div>
-    <div class="boot__n" id="bootn">no server: the queries run in this browser</div>
+    <div class="boot__n" id="bootn">1960&ndash;2026 &middot; 131,511 papers &middot; every link keeps its sentences</div>
   </div>
 </div>
 
@@ -134,5 +133,6 @@
   }
 })();
 </script>
+<!-- analytics --><script>(function(){var k='gcskip';function set(){var h=location.hash;try{if(h==='#gc-off'){localStorage.setItem(k,'1');alert('Visits from this browser are no longer counted.');return 1;}if(h==='#gc-on'){localStorage.removeItem(k);alert('Visits from this browser are counted again.');}}catch(e){}return 0;}addEventListener('hashchange',set);if(set())return;try{if(localStorage.getItem(k))return;}catch(e){}var s=document.createElement('script');s.async=true;s.src='//gc.zgo.at/count.js';s.setAttribute('data-goatcounter','https://ryan-tang.goatcounter.com/count');document.head.appendChild(s);})();</script><!-- /analytics -->
 </body>
 </html>

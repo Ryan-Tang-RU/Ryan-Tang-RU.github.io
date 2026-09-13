@@ -16,6 +16,8 @@ projects:
   date: 2026
   status: in development
   summary: >-
-    An interactive knowledge graph of the type 1 diabetes literature - 131,511
-    PubMed records from 1960 to 2026, with the papers and sentences behind every
-    edge. Runs entirely in the browser.
+    PubMed tells you whether a paper exists; a review tells you today's
+    consensus. Neither shows you when a connection entered the field. This
+    traces any link in the type 1 diabetes literature from first mention to
+    surge, with the papers and the sentences that put it there, and finds routes
+    between entities nobody has studied together. 131,511 records, 1960 to 2026.
