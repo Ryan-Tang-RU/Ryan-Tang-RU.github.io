@@ -118,7 +118,11 @@ window.T1DAssistant = (function () {
       // stop, one level up.
       const r = ok(await ctx.api.node(e, ctx.store.state.y0, ctx.store.state.y1));
       const row = (r && r.rows && r.rows[0]) || null;
-      if (!row || row.not_found || !row.name) bad.push(e);
+      // `exists`, not `name`: the name falls back to the identifier so a
+      // role-only node still renders, and that fallback let `Chemical|?` pass as
+      // a real entity - after which claims answered "0 assertions, pair type
+      // Disease-Chemical", which reads exactly like a finding.
+      if (!row || row.exists === false || row.not_found) bad.push(e);
     }
     return bad.length
       ? { error: "no entity has the identifier " + bad.join(", ")
@@ -581,6 +585,10 @@ window.T1DAssistant = (function () {
     "  because this corpus never tagged the drug at all.",
     "- State no number you did not get from a tool in this conversation. If a tool",
     "  returns nothing, say that, and say which tool.",
+    "- That includes denominators. Writing \"188 of 339 assertions\" when no tool",
+    "  gave you 339 is the most convincing kind of wrong number, because a ratio",
+    "  reads as a calculation rather than as a claim. If you want a share, ask for",
+    "  the total; if you cannot get it, give the count on its own.",
     "- If a pair has no co-mentions, no assertions and no sentences, call connect",
     "  before saying they are unrelated. Two entities with nothing between them",
     "  directly are exactly the case the path search exists for, and \"they do not",
@@ -690,9 +698,13 @@ window.T1DAssistant = (function () {
     "",
     "How to answer:",
     "- Short. Lead with the number or the finding, then the evidence.",
-    "- Answer the question that was asked, in the first words. Asked whether",
-    "  something has any extracted relations and the answer is none, the first",
-    "  word is No - not Yes followed by a correction.",
+    "- Answer the question that was asked, in the first words. \"Does X have any",
+    "  extracted relations with Y\" is about assertions, and if claims returns",
+    "  zero the answer begins with No - even though the two are co-mentioned in",
+    "  53,323 papers, because co-mention is not an extracted relation and the",
+    "  question did not ask about it. Say No, then say what there is instead.",
+    "  Leading with Yes and correcting it in the next clause is how a reader ends",
+    "  up quoting the opposite of what the graph holds.",
     "- Do not turn a one-sided list around. That an entity's strongest partner is",
     "  X does not make it X's strongest partner; those are different queries and",
     "  usually different answers.",

@@ -338,6 +338,7 @@ window.T1DApi = {
     const ident = eid.split("|").slice(1).join("|");
     return { fields: ["eid"], rows: [{
       eid: eid, type: eid.split("|")[0], id: ident,
+      exists: !!base,
       name: (base && base.name) || ident,
       top_forms: forms.map(f => ({ text: f.text, n: Number(f.n) })),
       // `n_papers_corpus`, which is what the query aliases it to. Reading
