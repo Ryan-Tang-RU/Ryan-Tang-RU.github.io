@@ -38,7 +38,10 @@ Vue.component("graph-canvas", {
       return Object.keys(this.$store.state.nodes).length === 0;
     },
     allFiltered() {
-      return !this.nothingLoaded() && this.nodes.length === 0;
+      // A computed, read as a value. Calling it threw on every evaluation of
+      // allFiltered, which is in the template, so GraphCanvas never rendered and
+      // the canvas was simply absent while every other panel worked.
+      return !this.nothingLoaded && this.nodes.length === 0;
     },
     hiddenNow() { return (this.$store.state.hiddenTypes || []).slice(); },
     // What is on screen, on the screen. The counts lived only in the inspector,
