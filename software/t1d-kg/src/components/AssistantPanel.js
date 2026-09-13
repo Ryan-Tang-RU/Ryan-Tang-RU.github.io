@@ -258,13 +258,22 @@ Vue.component("assistant-panel", {
     },
     move(ev) {
       if (!this.drag) return;
-      // Kept inside the viewport: dragged past an edge the title bar becomes
-      // unreachable and the window cannot be moved back or closed.
-      const w = 30, h = 26;
-      this.x = Math.min(Math.max(ev.clientX - this.drag.dx, -0),
-                        window.innerWidth - w - 300);
+      /* Enough of the title bar stays on screen to grab it again.
+
+         The bound used to be `innerWidth - 30 - 300`, where the 300 corresponded
+         to nothing: the window is 420 wide, so on a 1400 px screen its left edge
+         could reach 1070 and its right edge 1490 - ninety pixels off, with the
+         close button among them. Measured from the element rather than guessed,
+         and expressed as what it is for: KEEP px of the bar visible on every side.
+         Grab and drop are on window, so a drag that leaves the viewport still
+         ends properly. */
+      const KEEP = 90;
+      const el = this.$el.querySelector(".aswin");
+      const w = el ? el.offsetWidth : 420, h = el ? el.offsetHeight : 200;
+      this.x = Math.min(Math.max(ev.clientX - this.drag.dx, KEEP - w),
+                        window.innerWidth - KEEP);
       this.y = Math.min(Math.max(ev.clientY - this.drag.dy, 0),
-                        window.innerHeight - h);
+                        window.innerHeight - Math.min(h, 40));
     },
     drop() {
       this.drag = null;

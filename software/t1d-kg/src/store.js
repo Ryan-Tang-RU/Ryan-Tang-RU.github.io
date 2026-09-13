@@ -483,7 +483,11 @@ window.T1DStore = new Vuex.Store({
         return;
       }
       const res = await T1DApi.subgraph(eids, state.y0, state.y1);
-      if (res.error) { commit("setError", { op: "subgraph", message: res.error }); return; }
+      if (res.error) {
+        commit("setError", { op: "subgraph", message: res.error });
+        commit("setRetry", { action: "fillSubgraph" });
+        return;
+      }
       res.rows.forEach(e => commit("upsertLink", {
         a: e.a, b: e.b, comention_papers: e.papers, y_first: e.y_first,
         y_last: e.y_last,
@@ -542,7 +546,11 @@ window.T1DStore = new Vuex.Store({
       const r = await T1DApi.hubs();
       // Without hubs the path search silently stops avoiding them, and every answer
       // becomes a two-hop trip through Homo sapiens.
-      if (r.error) { commit("setError", { op: "hubs", message: r.error }); return; }
+      if (r.error) {
+        commit("setError", { op: "hubs", message: r.error });
+        commit("setRetry", { action: "loadHubs" });
+        return;
+      }
       if (r.rows) commit("setHubs", r.rows);
     },
     // An edge opened from a list, with the way back recorded.
@@ -570,7 +578,11 @@ window.T1DStore = new Vuex.Store({
       const r = await T1DApi.node(eid, state.y0, state.y1);
       // Silent on failure meant the inspector kept the previous entity's facts under
       // the new entity's name, which is worse than showing nothing.
-      if (r.error) { commit("setError", { op: "node", message: r.error }); return; }
+      if (r.error) {
+        commit("setError", { op: "node", message: r.error });
+        commit("setRetry", { action: "loadNodeFacts", payload: eid });
+        return;
+      }
       if (r.rows && r.rows.length) commit("setNodeFacts", r.rows[0]);
     },
     async loadEvidence({ state, commit }, p) {
@@ -589,7 +601,13 @@ window.T1DStore = new Vuex.Store({
       commit("setCypher", window.T1DCypher.evidence(a, b, state.y0, state.y1));
       if (!offset) {
         const rel = await T1DApi.relations(link.a, link.b, state.y0, state.y1);
-        if (rel.error) commit("setError", { op: "relations", message: rel.error });
+        if (rel.error) {
+          commit("setError", { op: "relations", message: rel.error });
+          // The relations come with the evidence, so retrying means reopening the
+          // edge - six of ten error paths offered no way back at all, and a
+          // transient failure on any of them meant reloading the page.
+          commit("setRetry", { action: "loadEvidence", payload: p });
+        }
         commit("setRelations", Object.assign({}, rel, {
           rows: rel.rows || [],
           total: rel.total != null ? rel.total : (rel.rows || []).length }));

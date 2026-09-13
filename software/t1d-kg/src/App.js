@@ -18,6 +18,10 @@ window.App = {
       return S.history.slice(-5).concat(S.focus ? [S.focus] : [])
         .map(eid => ({ eid: eid, name: (S.nodes[eid] || {}).name || eid }));
     },
+    // How many steps the trail is not showing. Backspace walks back through all
+    // of them, so a trail that quietly keeps the last five understates what is
+    // behind it - the reader cannot tell whether they are two steps in or nine.
+    trailHidden() { return Math.max(0, this.$store.state.history.length - 5); },
     selNode() { return this.$store.getters.selectedNode; }
   },
   methods: {
@@ -135,6 +139,10 @@ window.App = {
       <main class="stage">
         <error-bar></error-bar>
         <div class="crumbs">
+          <span class="crumbmore" v-if="trailHidden"
+                :title="trailHidden + ' earlier step' + (trailHidden > 1 ? 's' : '')
+                        + ' - press Backspace to walk back through them'">
+            +{{ trailHidden }}</span>
           <template v-for="(c,i) in trail">
             <span class="sep" v-if="i" :key="'s'+i">&rsaquo;</span>
             <b v-if="i===trail.length-1" :key="'b'+i">{{ c.name }}</b>
