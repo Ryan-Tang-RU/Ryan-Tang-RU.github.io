@@ -63,7 +63,7 @@
     venue: <i>The European Conference on Computer Vision, <b>ECCV</b>, 2026</i>
   - title: "Counting Circuits: Mechanistic Interpretability of Visual Reasoning in Large Vision-Language Models"
     url: "https://arxiv.org/html/2603.18523v1"
-    authors: Liwei Che*, Zhiyu Xue*, Yihao Quan*, Benlin Liu, Zeru Shi, Michelle Hurst, Jacob Feldman, <b>Ruixiang Tang</b>, Ranjay Krishna, Vladimir Pavlovic
+    authors: Liwei Che*, Zhiyu Xue*, Yihao Quan*, Benlin Liu, Zeru Shi, <b>Ruixiang Tang</b>, Ranjay Krishna, Vladimir Pavlovic
     venue: <i>The European Conference on Computer Vision, <b>ECCV</b>, 2026</i>
   - title: "A Single Layer to Explain Them All: Understanding Massive Values in Large Language Models"
     url: "http://arxiv.org/abs/2605.08504"
