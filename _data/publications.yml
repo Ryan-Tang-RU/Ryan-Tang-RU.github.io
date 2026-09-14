@@ -281,10 +281,6 @@
     url: "https://arxiv.org/abs/2006.08131"
     authors: <b>Ruixiang Tang</b>, Mengnan Du, Ninghao Liu, Fan Yang, Xia Hu
     venue: <i>ACM International Conference on Knowledge Discovery &amp; Data Mining, <b>KDD </b>2020</i>
-  - title: Breast Mass Detection in Mammograms via Blending Adversarial Learning
-    url: "https://link.springer.com/chapter/10.1007/978-3-030-32778-1_6"
-    authors: Chunze Lin, <b>Ruixiang Tang</b>, Darryl D Lin, Langechuan Liu, Jiwen Lu, Yunqiang Chen, Dashan Gao, Jie Zhou
-    venue: <i>International Workshop on <b>Simulation and Synthesis in Medical Imaging</b>, <b>SASHIMI</b>, 2019</i>
   - title: Deep Feature Disentanglement Learning for Bone Suppression in Chest Radiographs
     url: "https://ieeexplore.ieee.org/document/9098399"
     authors: Chunze Lin, <b>Ruixiang Tang</b>, Darryl D Lin, Langechuan Liu, Jiwen Lu, Yunqiang Chen, Dashan Gao, Jie Zhou
