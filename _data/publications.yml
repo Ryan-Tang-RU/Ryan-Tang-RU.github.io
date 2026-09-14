@@ -69,7 +69,7 @@
     url: "http://arxiv.org/abs/2605.08504"
     authors: Zeru Shi, Zhenting Wang, Fan Yang, Qifan Wang, <b>Ruixiang Tang</b>
     venue: <i>The International Conference on Machine Learning, <b>ICML</b>, 2026</i>
-  - title: Towards Generalizable Implicit In-Context Learning with Attention Routing
+  - title: "Train Once, Reuse Everywhere: Generalizable Implicit ICL by Routing Attention"
     url: "https://arxiv.org/abs/2509.22854"
     authors: Jiaqian Li*, Yanshu Li*, Ligong Han, <b>Ruixiang Tang</b>, Wenya Wang
     venue: <i>The International Conference on Machine Learning, <b>ICML</b>, 2026</i>
@@ -207,7 +207,7 @@
   - title: Does Synthetic Data Generation of LLMs Help Clinical Text Mining?
     url: "https://arxiv.org/abs/2303.04360"
     authors: <b>Ruixiang Tang</b>*, Xiaotian Han*, Xiaoqian Jiang, Xia Hu
-    venue: <i><b>AMIA</b> 2023 Annual Symposium </i>
+    venue: <i><b>AMIA</b> 2023 Annual Symposium (Poster)</i>
   - title: "Large Language Models for Healthcare Data Augmentation: An Example on Patient-Trial Matching"
     url: "https://arxiv.org/abs/2303.16756"
     authors: Jiayi Yuan,<b> Ruixiang Tang</b>, Xiaoqian Jiang, Xia Hu
