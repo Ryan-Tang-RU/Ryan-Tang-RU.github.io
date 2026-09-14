@@ -378,6 +378,17 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 .endpoint .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;
   white-space:nowrap;color:var(--ink-2)}
 .endpoint.set .nm{color:var(--ink);font-weight:600}
+/* An endpoint row holds either a chosen name or a search field. The field carries
+   its own 38px bordered frame, which nested inside this row gave a border inside a
+   border and a row twice the height of its neighbour, so in here it drops the
+   frame and the row's own border does the work. */
+.endpoint .searchwrap{flex:1;min-width:0}
+.endpoint .sfield{height:24px;border:0;background:none;padding:0;gap:5px}
+.endpoint .sfield.focused,.endpoint .sfield:focus-within{border:0;box-shadow:none}
+.endpoint .sfield input{font-size:.82rem}
+.endpoint .sfield input::placeholder{color:var(--ink-3)}
+.endpoint .sfield .sicon{width:12px;height:12px}
+.endpoint:focus-within{border-color:var(--brand)}
 .endpoint .x{background:none;border:0;color:var(--ink-3);font-size:15px;
   line-height:1;padding:0 2px}
 .endpoint .x:hover{color:var(--fail,#9B3724)}

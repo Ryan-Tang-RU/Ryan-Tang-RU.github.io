@@ -148,6 +148,15 @@ Vue.component("filter-rail", {
       this.$store.dispatch("reloadYears");
       if (this.topOpen) this.loadTop();
     },
+    // The search returns the same row shape the canvas stores, so the endpoint
+    // carries the name and type without a second lookup. Deliberately does not
+    // focus or draw it: choosing an endpoint must not move the view out from
+    // under the other one.
+    pick(which, row) {
+      if (!row || !row.eid) return;
+      this.$store.commit("setEndpoint", { which: which,
+        node: { eid: row.eid, name: row.name, type: row.type } });
+    },
     toggle(t) { this.$store.commit("toggleType", t); },
     showAllTypes() {
       this.hidden.slice().forEach(t => this.$store.commit("toggleType", t));
@@ -275,16 +284,27 @@ Vue.component("filter-rail", {
 
     <div class="sec">
       <label>Path between two entities</label>
+      <!-- Typed, not picked off the canvas. Both endpoints had to be on the canvas
+           first, and opening the second one replaces the neighbourhood the first
+           was in, so setting A and then B could drop A from the view. Searching
+           here touches neither the canvas nor the year window: an endpoint is a
+           reference, and the whole point of a path is usually to reach something
+           that is not on screen yet. Selecting a node and pressing A or B still
+           works and is still the quickest way to use what you are looking at. -->
       <div class="pathpick">
         <div class="endpoint" :class="{set: !!pathA}">
           <span class="tag">A</span>
-          <span class="nm">{{ pathA ? pathA.name : 'select a node, then press A' }}</span>
+          <span class="nm" v-if="pathA">{{ pathA.name }}</span>
+          <search-box v-else list-id="hitsA" placeholder="search, or press A"
+                      @choose="pick('A', $event)"></search-box>
           <button v-if="pathA" class="x" title="clear A"
                   @click="$store.commit('setEndpoint',{which:'A',node:null})">&times;</button>
         </div>
         <div class="endpoint" :class="{set: !!pathB}">
           <span class="tag">B</span>
-          <span class="nm">{{ pathB ? pathB.name : 'select a node, then press B' }}</span>
+          <span class="nm" v-if="pathB">{{ pathB.name }}</span>
+          <search-box v-else list-id="hitsB" placeholder="search, or press B"
+                      @choose="pick('B', $event)"></search-box>
           <button v-if="pathB" class="x" title="clear B"
                   @click="$store.commit('setEndpoint',{which:'B',node:null})">&times;</button>
         </div>

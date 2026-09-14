@@ -14,6 +14,15 @@
       are the string "MHC" and 96% of CD79A's are "IgA"; "IgA -> CD79A" is
       information the reader needs, not noise to hide. */
 Vue.component("search-box", {
+  // Three instances of this now exist: the rail's finder and one for each path
+  // endpoint. Everything else was already per-instance - the dropdown is placed
+  // from this box's own $refs - but the listbox id was written in, so the two
+  // later ones pointed aria-controls at the first one's list.
+  props: {
+    listId: { type: String, default: "hits" },
+    placeholder: { type: String,
+                   default: "INS, DKA, HLA-DQB1, teplizumab..." },
+  },
   data: () => ({ q: "", rows: [], ix: -1, open: false, timer: null,
                  state: "idle", error: "", box: null, inText: null }),
   computed: {
@@ -136,13 +145,13 @@ Vue.component("search-box", {
       </svg>
       <input ref="input" type="text" v-model="q" @input="onInput" @keydown="key"
              @focus="q.trim().length > 1 && show()"
-             role="combobox" :aria-expanded="String(open)" aria-controls="hits"
-             autocomplete="off" placeholder="INS, DKA, HLA-DQB1, teplizumab...">
+             role="combobox" :aria-expanded="String(open)" :aria-controls="listId"
+             autocomplete="off" :placeholder="placeholder">
       <button class="sclear" v-if="q" @click="clear" title="clear">&times;</button>
       <kbd class="skey" v-else>/</kbd>
     </div>
 
-    <div class="hits" id="hits" role="listbox" v-show="open" :style="box">
+    <div class="hits" :id="listId" role="listbox" v-show="open" :style="box">
       <p class="skeys" v-if="hasRows"><kbd>&uarr;</kbd><kbd>&darr;</kbd> move
         &middot; <kbd>&crarr;</kbd> open &middot; <kbd>esc</kbd> close</p>
       <p class="hint pad" v-if="state==='loading'">searching&hellip;</p>
