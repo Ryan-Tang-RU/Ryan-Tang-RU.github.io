@@ -635,8 +635,19 @@ window.T1DStore = new Vuex.Store({
       const row = res.rows[0];
       row.eids.forEach((eid, i) => commit("upsertNode", {
         eid: eid, type: row.types[i], name: row.names[i],
-        id: eid.split("|").slice(1).join("|")
+        id: eid.split("|").slice(1).join("|"),
+        // Without this every node on a path drew at the minimum radius, so a
+        // path through INS looked like a path through an entity with a dozen
+        // papers. Radius means corpus papers everywhere else on the canvas.
+        total_papers: Number((row.sizes || [])[i]) || 0
       }));
+      // A path may run through a type the reader has hidden, and a hidden node is
+      // not drawn: the result would be a path the inspector lists and the canvas
+      // does not show, with nothing saying why. Asking for this path is a clearer
+      // instruction than a filter set earlier, so the filter gives way.
+      (row.types || []).forEach(t => {
+        if (state.hiddenTypes.indexOf(t) !== -1) commit("toggleType", t);
+      });
       for (let i = 0; i < row.eids.length - 1; i++) {
         // No weight yet - fillSubgraph fetches the real one a moment later. A
         // placeholder 1 rendered as "1 co-mentioning papers", which is a number the

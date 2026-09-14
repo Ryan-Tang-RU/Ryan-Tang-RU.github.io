@@ -279,7 +279,7 @@ window.T1DSQL = {
     FROM entities e WHERE e.eid = $eid`,
 
   entities_by_ids: `
-    SELECT eid, type, name FROM entities
+    SELECT eid, type, name, n_papers FROM entities
     WHERE list_contains(string_split($eids, chr(31)), eid)`,
 
   // Same set, with the size, ordered: the burst tool ranks by how much literature

@@ -306,6 +306,8 @@ window.T1DApi = {
     return { rows: [{ eids: chain,
                       names: chain.map(e => (meta[e] || {}).name || e),
                       types: chain.map(e => e.split("|")[0]),
+                      // The canvas sizes a node by its corpus paper count.
+                      sizes: chain.map(e => Number((meta[e] || {}).n_papers) || 0),
                       hops: chain.length - 1 }] };
   }),
 
