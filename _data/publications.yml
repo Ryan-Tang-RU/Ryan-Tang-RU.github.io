@@ -57,11 +57,12 @@
     url: "https://arxiv.org/abs/2605.31513"
     authors: Yanshu Li, Jiaqian Li, Kuai Yu, Xi Xiao, Dongfang Liu, Tianyang Wang, <b>Ruixiang Tang</b>
     venue: <i>The European Conference on Computer Vision, <b>ECCV</b>, 2026</i>
-  - title: "HIVE: Understanding Post Hallucination Reasoning in Vision Language Models"
+  - title: "HIVE: Understanding Post-hallucination Reasoning in Vision Language Models"
     url: "https://arxiv.org/abs/2607.07507"
     authors: Feng He, Zhenting Wang, Qifan Wang, Qiang Guan, Dongfang Liu, <b>Ruixiang Tang</b>, Qiankun Li
     venue: <i>The European Conference on Computer Vision, <b>ECCV</b>, 2026</i>
-  - title: "Counting Circuits: Mechanistic Interpretability of Visual Reasoning in Large Vision-Language Models"
+  - title: "Learning from Primitive: Probing Visual Reasoning of LVLMs via Counting"
+    corresponding: [Ruixiang Tang, Vladimir Pavlovic]
     url: "https://arxiv.org/html/2603.18523v1"
     authors: Liwei Che*, Zhiyu Xue*, Yihao Quan*, Benlin Liu, Zeru Shi, <b>Ruixiang Tang</b>, Ranjay Krishna, Vladimir Pavlovic
     venue: <i>The European Conference on Computer Vision, <b>ECCV</b>, 2026</i>
@@ -116,8 +117,9 @@
     url: "https://arxiv.org/abs/2505.17098"
     authors: Yanshu Li, Jianjiang Yang, Tian Yun, Pinyuan Feng, Jinfa Huang, <b>Ruixiang Tang</b>
     venue: <i>Empirical Methods in Natural Language Processing, <b>EMNLP Main</b>, 2025</i>
-  - title: LoRA-as-an-Attack! Piercing LLM Safety Under The Share-and-Play Scenario
-    authors: Hongyi Liu, Zirui Liu, <b>Ruixiang Tang</b>, Jiayi Yuan, Shaochen Zhong, Yu-Neng Chuang, Li Li, Rui Chen, Xia Hu
+  - title: "LoRATK: LoRA Once, Backdoor Everywhere in the Share-and-Play Ecosystem"
+    url: "https://aclanthology.org/2025.findings-emnlp.1253/"
+    authors: Hongyi Liu, Shaochen Zhong, Xintong Sun, Minghao Tian, Mohsen Hariri, Zirui Liu, <b>Ruixiang Tang</b>, Zhimeng Jiang, Jiayi Yuan, Yu-Neng Chuang, Li Li, Soo-Hyun Choi, Rui Chen, Vipin Chaudhary, Xia Hu
     venue: <i>Empirical Methods in Natural Language Processing, <b>EMNLP </b><b>Findings</b>, 2025</i>
   - title: A Decoupled Multi-Agent Framework for Complex Text Style Transfer
     authors: Lingxi Zhang, Yu-Neng Chuang, Guanchu Wang, <b>Ruixiang Tang</b>, Xuanting Cai, Rajesh Shenoy, Xia Hu
