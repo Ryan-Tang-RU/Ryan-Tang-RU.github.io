@@ -255,8 +255,16 @@ window.T1DStore = new Vuex.Store({
       s.pathEids = eids;
       s.selection = eids.length ? { kind: "path", row: p.row || null } : null;
     },
-    clearEndpoints(s) { s.pathA = null; s.pathB = null; s.pathEids = [];
-      if (s.selection && s.selection.kind === "path") s.selection = null; },
+    clearEndpoints(s) {
+      s.pathA = null; s.pathB = null; s.pathEids = [];
+      // Both path selections, not just the successful one. "Clear endpoints" is
+      // offered on the failure panel too, and that selection has kind "pathfail",
+      // so the endpoints were cleared while the "No path within 4 hops" box and
+      // the button itself stayed on screen: the click did its work and looked
+      // like it had done nothing.
+      const k = s.selection && s.selection.kind;
+      if (k === "path" || k === "pathfail") s.selection = null;
+    },
     setAvoidHubs(s, v) { s.avoidHubs = v; },
     setHubs(s, h) { s.hubs = h; },
     setEdgeMode(s, m) { s.edgeMode = m; s.version++; },
