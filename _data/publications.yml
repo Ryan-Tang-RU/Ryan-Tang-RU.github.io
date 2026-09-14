@@ -66,11 +66,11 @@
     url: "https://arxiv.org/html/2603.18523v1"
     authors: Liwei Che*, Zhiyu Xue*, Yihao Quan*, Benlin Liu, Zeru Shi, <b>Ruixiang Tang</b>, Ranjay Krishna, Vladimir Pavlovic
     venue: <i>The European Conference on Computer Vision, <b>ECCV</b>, 2026</i>
-  - title: "A Single Layer to Explain Them All: Understanding Massive Values in Large Language Models"
+  - title: "A Single Layer to Explain Them All: Understanding Massive Activations in Large Language Models"
     url: "http://arxiv.org/abs/2605.08504"
     authors: Zeru Shi, Zhenting Wang, Fan Yang, Qifan Wang, <b>Ruixiang Tang</b>
     venue: <i>The International Conference on Machine Learning, <b>ICML</b>, 2026</i>
-  - title: "Train Once, Reuse Everywhere: Generalizable Implicit ICL by Routing Attention"
+  - title: "Train Once, Reuse Everywhere: Generalizable Implicit In-Context Learning by Routing Attention"
     url: "https://arxiv.org/abs/2509.22854"
     authors: Jiaqian Li*, Yanshu Li*, Ligong Han, <b>Ruixiang Tang</b>, Wenya Wang
     venue: <i>The International Conference on Machine Learning, <b>ICML</b>, 2026</i>
@@ -92,6 +92,7 @@
     authors: Yanshu Li, Jianjiang Yang, Ziteng Yang, Bozheng Li, Ligong Han, Hongyang He, Zhengtao Yao, Yingjie Victor Chen, Songlin Fei, Dongfang Liu, <b>Ruixiang Tang</b>
     venue: <i>Annual AAAI Conference on Artificial Intelligence, <b>AAAI</b>, 2026 (Oral)</i>
   - title: "CounterBench: Evaluating and Improving Counterfactual Reasoning in Large Language Models"
+    corresponding: false
     url: "https://arxiv.org/abs/2502.11008"
     authors: Yuefei Chen, Vivek K. Singh, Jing Ma, <b>Ruixiang Tang</b>
     venue: <i>Annual AAAI Conference on Artificial Intelligence, <b>AAAI</b>, 2026</i>
@@ -105,7 +106,7 @@
     venue: <i>International Conference on Learning Representations, <b>ICLR</b>, 2026</i>
   - title: "FaithLM: Towards Faithful Explanations for Large Language Models"
     url: "https://aclanthology.org/2026.eacl-long.177/"
-    authors: Yu-Neng Chuang*, Guanchu Wang*, Chia-Yuan Chang, <b>Ruixiang Tang</b>, Shaochen Zhong, Fan Yang, Andrew Wen, Mengnan Du, Xuanting Cai, Vladimir Braverman, Xia Hu
+    authors: Yu-Neng Chuang, Guanchu Wang, Chia-Yuan Chang, <b>Ruixiang Tang</b>, Shaochen Zhong, Fan Yang, Andrew Wen, Mengnan Du, Xuanting Cai, Vladimir Braverman, Xia Hu
     venue: <i>European Chapter of the Association for Computational Linguistics, <b>EACL</b>, 2026</i>
 - section: '2025'
   items:

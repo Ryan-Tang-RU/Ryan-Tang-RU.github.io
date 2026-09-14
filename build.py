@@ -373,33 +373,37 @@ NAME = "Ruixiang Tang"
 ME = f"<b>{NAME}</b>"
 
 
-def mark_corresponding(authors, explicit=None):
-    """Flag the corresponding authors of a paper.
+def mark_authors(authors, corresponding=None, used=None):
+    """Put a dagger on the corresponding authors of one paper.
 
     The convention on this site is that Ruixiang is corresponding author when
-    he is last author, so nothing needs saying for most entries. An entry can
-    override that with `corresponding:` in the YAML, either a boolean for the
-    papers where the convention does not hold, or a list of names for the ones
-    with more than one corresponding author.
+    he is last author, so most entries say nothing. `corresponding:` overrides
+    that, taking a boolean for the papers where the convention does not hold or
+    a list of names for the ones with several. Papers that state equal advising
+    rather than naming a corresponding author are listed the same way.
     """
-    if isinstance(explicit, list):
-        names = explicit
+    if isinstance(corresponding, list):
+        names = corresponding
     else:
         last = authors.rstrip().rstrip(".").rstrip().endswith(ME)
-        names = [NAME] if (last if explicit is None else explicit) else []
+        names = [NAME] if (last if corresponding is None else corresponding) else []
 
-    dagger = '<sup class="corr" title="corresponding author">&dagger;</sup>'
     for name in names:
         bold = f"<b>{name}</b>"
         needle = bold if bold in authors else name
         if needle not in authors:
             raise SystemExit(f"corresponding author {name!r} is not in: {authors!r}")
         i = authors.rfind(needle) + len(needle)
-        authors = authors[:i] + dagger + authors[i:]
+        authors = (authors[:i]
+                   + '<sup class="corr" title="corresponding author">&dagger;</sup>'
+                   + authors[i:])
+        if used is not None:
+            used.add("corr")
     return authors
 
 
 def build_publications():
+    used = set()
     scholar = next(l["url"] for l in site["links"] if l["label"] == "Google Scholar")
     blocks = ""
     for sec in pubs:
@@ -416,17 +420,22 @@ def build_publications():
             t = f'<a href="{p["url"]}">{t}</a>' if p.get("url") else t
             rows += (
                 f'<li><span class="t">{t}</span>'
-                f'<span class="a">{mark_corresponding(p["authors"], p.get("corresponding"))}</span>'
+                f'<span class="a">{mark_authors(p["authors"], p.get("corresponding"), used)}</span>'
                 f'<span class="v">{p["venue"]}</span></li>'
             )
         blocks += f'<ul class="pubs">{rows}</ul>'
+
+    marks = ["* indicates equal contribution"]
+    if "corr" in used:
+        marks.append("&dagger; indicates corresponding author")
+    note = ", ".join(marks)
 
     counts = {s["section"]: len(s["items"]) for s in pubs}
     refereed = sum(n for sec, n in counts.items()
                    if sec not in ("Preprint", "Workshop Papers"))
     body = f"""<h1 class="h-page">Conference/Journal Papers
   <a class="scholar" href="{scholar}">[google scholar]</a></h1>
-<p class="pub-note">(* indicates equal contribution, &dagger; indicates corresponding author)</p>
+<p class="pub-note">({note})</p>
 {blocks}"""
     extra = []
     if counts.get("Preprint"):
