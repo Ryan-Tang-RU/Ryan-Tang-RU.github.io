@@ -65,7 +65,7 @@
     url: "https://arxiv.org/html/2603.18523v1"
     authors: Liwei Che*, Zhiyu Xue*, Yihao Quan*, Benlin Liu, Zeru Shi, Michelle Hurst, Jacob Feldman, <b>Ruixiang Tang</b>, Ranjay Krishna, Vladimir Pavlovic
     venue: <i>The European Conference on Computer Vision, <b>ECCV</b>, 2026</i>
-  - title: "A Single Layer to Explain Them All: Understanding Massive Activations in Large Language Models"
+  - title: "A Single Layer to Explain Them All: Understanding Massive Values in Large Language Models"
     url: "http://arxiv.org/abs/2605.08504"
     authors: Zeru Shi, Zhenting Wang, Fan Yang, Qifan Wang, <b>Ruixiang Tang</b>
     venue: <i>The International Conference on Machine Learning, <b>ICML</b>, 2026</i>
@@ -297,9 +297,3 @@
     url: "https://www.spiedigitallibrary.org/conference-proceedings-of-spie/10948/2512883/Multi-organ-segmentation-in-clinical-computed-tomography-for-patient-specific/10.1117/12.2512883.short"
     authors: Wanyi Fu, Shobhit Sharma, Taylor Smith, Rui Hou, Ehsan Abadi, Vignesh Selvakumaran, <b>Ruixiang Tang</b>, Joseph Y Lo, W Paul Segars, Anuj J Kapadia, Justin B Solomon, Geoffrey D Rubin, Ehsan Samei
     venue: "<i>SPIE Medical Imaging: Physics of Medical Imaging, 2019</i>"
-- section: Workshop Papers
-  items:
-  - title: "Read the Scene, Not the Script: Outcome-Aware Safety for LLMs"
-    url: "https://www.arxiv.org/abs/2510.04320"
-    authors: Rui Wu, Yihao Quan, Zeru Shi, Zhenting Wang, Yanshu Li, <b>Ruixiang Tang</b>
-    venue: <i>International Conference on Learning Representations, <b>ICLR AIWILD Workshop</b>, 2026 (Spotlight)</i>

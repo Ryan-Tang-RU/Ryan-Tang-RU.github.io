@@ -421,12 +421,16 @@ def build_publications():
   <a class="scholar" href="{scholar}">[google scholar]</a></h1>
 <p class="pub-note">(* indicates equal contribution; &dagger; indicates corresponding author)</p>
 {blocks}"""
-    page("publications.html", f"Publications · {site['name']}", body,
+    extra = []
+    if counts.get("Preprint"):
+        extra.append(f"{counts['Preprint']} preprints")
+    if counts.get("Workshop Papers"):
+        n = counts["Workshop Papers"]
+        extra.append(f"{n} workshop paper{'s' if n != 1 else ''}")
+    tail = f", with {' and '.join(extra)} listed separately" if extra else ""
+    page("publications.html", f"Publications \u00b7 {site['name']}", body,
          f"{refereed} conference and journal papers by {site['name_full']} on trustworthy "
-         f"AI, interpretability, agent safety and AI for biomedicine, with "
-         f"{counts.get('Preprint', 0)} preprints and "
-         f"{counts.get('Workshop Papers', 0)} workshop paper"
-         f"{'s' if counts.get('Workshop Papers', 0) != 1 else ''} listed separately.")
+         f"AI, interpretability, agent safety and AI for biomedicine{tail}.")
 
 
 # ---------------------------------------------------------------- group
