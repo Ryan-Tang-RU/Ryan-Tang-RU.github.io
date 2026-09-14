@@ -92,7 +92,6 @@
     authors: Yanshu Li, Jianjiang Yang, Ziteng Yang, Bozheng Li, Ligong Han, Hongyang He, Zhengtao Yao, Yingjie Victor Chen, Songlin Fei, Dongfang Liu, <b>Ruixiang Tang</b>
     venue: <i>Annual AAAI Conference on Artificial Intelligence, <b>AAAI</b>, 2026 (Oral)</i>
   - title: "CounterBench: Evaluating and Improving Counterfactual Reasoning in Large Language Models"
-    corresponding: false
     url: "https://arxiv.org/abs/2502.11008"
     authors: Yuefei Chen, Vivek K. Singh, Jing Ma, <b>Ruixiang Tang</b>
     venue: <i>Annual AAAI Conference on Artificial Intelligence, <b>AAAI</b>, 2026</i>
