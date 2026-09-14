@@ -1,0 +1,796 @@
+/* PanKbase house palette, read from pankbase.org CSS.
+   Brand colours carry the interface; the data palette is separate and validated
+   (lightness band, chroma floor, CVD >= 8, normal-vision >= 15, contrast >= 3:1). */
+:root{
+  --navy:#16324f; --brand:#219197; --link:#175cd3;
+  --ground:#f6f9fd; --surface:#fff; --surface-2:#edf0f7; --tint:#e8f1fb;
+  --ink:#1f2937; --ink-2:#4e4e4e; --ink-3:#6b7280; --rule:#d9e6f5; --hair:#e8ecf3;
+  --warn:#c78720;
+  --t-gene:#0f9a7e; --t-disease:#1f6fc4; --t-chemical:#e0661f; --t-species:#b8336a;
+  --t-other:#6b7280;
+  --sans:"Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --rail:262px; --insp:380px;
+}
+@media (prefers-color-scheme:dark){:root{
+  --navy:#0c1826; --brand:#2fa8ae; --link:#6aa6f0;
+  --ground:#121a24; --surface:#18222e; --surface-2:#1f2b39; --tint:#1a2836;
+  --ink:#e7edf3; --ink-2:#a9b6c2; --ink-3:#7d8b99; --rule:#2a3846; --hair:#222e3c;
+  --warn:#d99b2f;
+  --t-gene:#30a67f; --t-disease:#2a71d8; --t-chemical:#b5652f; --t-species:#c23575;
+  --t-other:#8593a1;
+}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+/* The height chain has to be unbroken: a percentage height resolves against an auto
+   parent as auto, which collapsed the canvas to the SVG default of 300x150 and drew
+   the whole graph in the top-left corner. Flex links avoid the percentage entirely. */
+/* Vue 2 replaces the mount element with the component's root, so #app is not in
+   the DOM after mount and rules written against it never applied. The root itself
+   carries the class. dvh first so a mobile browser's collapsing toolbar does not
+   leave a gap, with vh as the fallback. */
+.shell{height:100vh;height:100dvh;display:flex;flex-direction:column;min-height:0}
+body{background:var(--ground);color:var(--ink);font:14px/1.5 var(--sans);
+  overflow:hidden}
+kbd{font:500 10px var(--mono);background:var(--surface-2);border:1px solid var(--rule);
+  border-bottom-width:2px;border-radius:3px;padding:1px 4px;color:var(--ink-2)}
+button{font:inherit;cursor:pointer}
+.ghost{background:var(--surface);border:1px solid var(--rule);color:var(--ink);
+  border-radius:5px;padding:5px 10px}
+.ghost:hover{background:var(--tint)}
+.primary{background:var(--brand);border:1px solid var(--brand);color:#fff;
+  border-radius:5px;padding:6px 12px;font-weight:600}
+.primary:disabled{opacity:.45;cursor:not-allowed}
+.wide{width:100%;text-align:left}
+.linkish{background:none;border:0;color:var(--link);padding:0;
+  text-decoration:underline;text-underline-offset:2px}
+a{color:var(--link)}
+
+/* header */
+.bar{height:48px;flex:none;background:var(--navy);color:#fff;display:flex;
+  align-items:center;gap:12px;padding:0 14px}
+/* The project's full title lives here, so it must degrade rather than push the
+   status and help button off the bar: one line, ellipsis, whole string on hover. */
+.brand{font-weight:700;display:flex;align-items:center;gap:8px;min-width:0;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:.92rem}
+.brand .dot{flex:none}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--brand);flex:none}
+.bsub{font-size:.76rem;opacity:.72}
+.bspacer{flex:1}
+.status{font:400 11px var(--mono);opacity:.8}
+.bar .ghost{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);
+  color:#fff;padding:3px 9px}
+
+/* layout */
+.app{display:grid;grid-template-columns:var(--rail) minmax(0,1fr) var(--insp);
+  flex:1;min-height:0}
+.rail,.inspector{background:var(--surface);overflow-y:auto;min-height:0}
+.rail{border-right:1px solid var(--hair);display:flex;flex-direction:column}
+.inspector{border-left:1px solid var(--hair);padding:14px}
+.sec{padding:13px 14px;border-bottom:1px solid var(--hair)}
+/* The rail is a flex column, so by default every section shrinks to fit and the
+   controls get squashed instead of the rail scrolling - opening the ranking panel
+   compressed the sections above and below it until their text was unreadable.
+   Sections keep their natural height and the rail scrolls; only .grow absorbs any
+   slack that is left. */
+.rail>.sec{flex:0 0 auto}
+.rail>.sec.grow{flex:1 1 auto;min-height:0;border-bottom:0}
+.sec.grow{border-bottom:0}
+.sec label{display:block;font:700 10.5px var(--sans);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.sec label.chk{display:flex;gap:7px;align-items:center;text-transform:none;
+  letter-spacing:0;font-weight:400;font-size:.82rem;color:var(--ink-2);margin:8px 0 0}
+.hint{font-size:.75rem;color:var(--ink-3);margin:7px 0 0;line-height:1.45}
+.pinhint{border-bottom:2px solid var(--warn)}
+
+/* search - the main way in, so it is the one control that reads as a control.
+   The rules here were written against #q, and the input has a ref, not an id: the
+   field rendered with no styling at all for as long as that selector has existed.
+   Same for #yslider and #rawCypher below. Classes only, now, and a test refuses any
+   id selector that no template defines. */
+.searchwrap{position:relative}
+.sfield{display:flex;align-items:center;gap:7px;padding:0 9px;height:38px;
+  border:1.5px solid var(--rule);border-radius:7px;background:var(--surface);
+  transition:border-color .12s,box-shadow .12s}
+.sfield:hover{border-color:color-mix(in oklab,var(--brand) 45%,var(--rule))}
+.sfield.focused,.sfield:focus-within{border-color:var(--brand);
+  box-shadow:0 0 0 3px color-mix(in oklab,var(--brand) 18%,transparent)}
+.sfield .sicon{flex:none;color:var(--ink-3)}
+.sfield:focus-within .sicon{color:var(--brand)}
+.sfield input{flex:1;min-width:0;border:0;background:none;padding:0;
+  color:var(--ink);font:400 13.5px var(--sans)}
+.sfield input:focus{outline:none}
+.sfield input::placeholder{color:var(--ink-3)}
+.skey{flex:none;font:500 10px var(--mono);color:var(--ink-3);border:1px solid var(--rule);
+  border-radius:3px;padding:1px 5px;background:var(--ground)}
+.sclear{flex:none;border:0;background:none;color:var(--ink-3);font-size:17px;
+  line-height:1;padding:0 2px;cursor:pointer}
+.sclear:hover{color:var(--ink)}
+
+/* Fixed, not absolute: the rail scrolls, and a scroll container clips an absolutely
+   positioned child that reaches past it. Coordinates come from the input's own
+   rectangle, recomputed on scroll and resize. */
+.hits{position:fixed;z-index:60;background:var(--surface);
+  border:1px solid var(--rule);border-radius:7px;overflow:auto;
+  box-shadow:0 10px 28px rgba(22,50,79,.18)}
+.hits button{display:flex;gap:8px;align-items:flex-start;width:100%;
+  text-align:left;background:none;border:0;padding:7px 10px;color:var(--ink);
+  font:400 13px var(--sans);cursor:pointer}
+.hits button:hover,.hits button.on{background:var(--tint)}
+.hits button>svg{flex:none;margin-top:3px}
+/* Two lines, each clipping on its own. One line with the name competing against a
+   right-aligned meta column overflowed instead of shrinking - a flex item will not
+   go below its content width without min-width:0 - and the name painted over the
+   type and the paper count. */
+.hits .snm{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+/* The name is the point of the row, so it wraps rather than being cut: two rows
+   both reading "Diabete..." are indistinguishable, which defeats the search. */
+.hits .sline{min-width:0}
+.hits .sline b{font-weight:600;overflow-wrap:anywhere}
+.hits .smeta .pill{margin-left:6px;vertical-align:1px}
+/* a hit found through a surface form says which one: "IgA" -> CD79A is the finding,
+   not a detail to hide */
+.hits .smeta{font:400 10px var(--mono);color:var(--ink-3);overflow-wrap:anywhere}
+/* the empty and error panels sit where a row would; give them a row's padding */
+.hits .pad{margin:0;padding:9px 11px}
+
+
+/* years */
+.years{display:flex;gap:6px;align-items:center}
+.years input{width:100%;padding:5px 7px;border:1px solid var(--rule);border-radius:4px;
+  background:var(--ground);color:var(--ink);font:400 12px var(--mono)}
+/* The year range: one track, two grips, both draggable, plus a band that slides
+   the whole window. The grips are buttons so they take focus and answer arrows
+   without any extra wiring. */
+.rtrack{position:relative;height:22px;margin-top:10px;cursor:ew-resize;
+  touch-action:none}
+.rtrack::before{content:"";position:absolute;left:0;right:0;top:9px;height:4px;
+  border-radius:99px;background:var(--hair)}
+.rfill{position:absolute;top:9px;height:4px;border-radius:99px;
+  background:var(--brand)}
+.rgrip{position:absolute;top:2px;width:16px;height:16px;margin-left:-8px;padding:0;
+  border:2px solid var(--surface);border-radius:50%;background:var(--brand);
+  box-shadow:0 1px 3px rgba(0,0,0,.28);cursor:grab;transition:transform .1s}
+.rgrip:hover{transform:scale(1.14)}
+.rgrip:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.rgrip.held{cursor:grabbing;transform:scale(1.18)}
+.rnow{margin:3px 0 0;font:500 11px var(--mono);color:var(--ink-3);
+  text-align:center}
+.rnow.pend{color:var(--brand)}
+@media (prefers-reduced-motion:reduce){.rgrip{transition:none}}
+/* a small segmented control; same shape as .presets but exclusive */
+.seg{display:flex;gap:0;margin-top:2px;border:1px solid var(--rule);
+  border-radius:5px;overflow:hidden}
+.seg button{flex:1;font:400 11px var(--sans);padding:4px 6px;border:0;
+  background:var(--surface);color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button[aria-pressed=true]{background:var(--brand);color:#fff;font-weight:600}
+
+.presets{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
+.presets button{font:400 10.5px var(--mono);padding:3px 7px;border:1px solid var(--rule);
+  background:var(--surface);border-radius:3px;color:var(--ink-2)}
+.presets button[aria-pressed=true]{background:var(--brand);border-color:var(--brand);
+  color:#fff}
+
+/* chips */
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{display:flex;gap:5px;align-items:center;font-size:.78rem;padding:3px 8px;
+  border:1px solid var(--rule);border-radius:99px;background:var(--surface);
+  color:var(--ink-2)}
+/* A hidden type has to be unmistakable, not just faint: opacity alone was the
+   whole feedback, so hiding a type that had no nodes on the canvas looked exactly
+   like a control that did nothing. */
+.chip .chipname{transition:none}
+.chip.off{opacity:.55;border-style:dashed;background:var(--ground)}
+.chip.off .chipname{text-decoration:line-through}
+.chip.off svg{filter:grayscale(1)}
+.chip.none{opacity:.45}
+.chipn{font:500 9.5px var(--mono);color:var(--ink-3);
+  background:var(--ground);border-radius:99px;padding:0 4px;margin-left:1px}
+.chip.off .chipn{text-decoration:line-through}
+.hidenote{margin:6px 0 0;font:400 11px var(--sans);color:var(--ink-3)}
+.linky{border:0;background:none;padding:0;color:var(--brand);
+  font:400 11px var(--sans);text-decoration:underline;cursor:pointer}
+.chip i{width:9px;height:9px;border-radius:2px;display:inline-block;flex:none}
+.chip svg{flex:none}
+/* The legend and the type filter listed the same nine types twice, so the chips now
+   carry the glyph the canvas actually draws and the legend section is gone. */
+.lbl-note{float:right;font-weight:400;text-transform:none;letter-spacing:0;
+  color:var(--ink-3);font-size:9.5px}
+
+/* stage */
+.stage{display:flex;flex-direction:column;min-width:0;min-height:0;
+  position:relative;overflow:hidden}
+.crumbs{height:34px;display:flex;align-items:center;gap:5px;padding:0 12px;
+  border-bottom:1px solid var(--hair);background:var(--surface);overflow-x:auto;
+  white-space:nowrap;font-size:.78rem;color:var(--ink-3)}
+.crumbs button{background:none;border:0;color:var(--link);padding:2px 3px;
+  font:inherit;border-radius:3px}
+.crumbs button:hover{background:var(--tint)}
+.crumbs .sep{color:var(--ink-3);opacity:.6}
+.canvaswrap{flex:1;position:relative;min-height:0;min-width:0;
+  background:var(--ground);overflow:hidden}
+/* the element has a Vue ref, not an id - select it structurally */
+.canvaswrap>svg{position:absolute;inset:0;width:100%;height:100%;display:block;
+  cursor:grab}
+.canvaswrap>svg:active{cursor:grabbing}
+.ctools{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;
+  gap:5px}
+.ctools .ghost{width:32px;height:30px;padding:0;font-size:15px;line-height:1}
+.empty{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;
+  color:var(--ink-3);text-align:center;padding:20px}
+/* The first screen of the published build, so it reads as an invitation rather
+   than as a graph that failed to draw - which is how a bare canvas was read. */
+.empty .start{pointer-events:auto;background:var(--surface);
+  border:1px solid var(--hair);border-radius:10px;padding:20px 22px;
+  max-width:min(540px,90vw);box-shadow:0 6px 24px rgba(22,50,79,.08)}
+.empty .start h2{margin:0 0 4px;font:700 1rem var(--sans);color:var(--navy)}
+.empty .start p{margin:0;font-size:.84rem;color:var(--ink-2)}
+.empty .start .hint{margin-top:12px;padding-top:11px;
+  border-top:1px solid var(--hair);line-height:1.5}
+/* label column / buttons column, so the chips line up across groups instead of
+   each row starting at its own label's width */
+.startgrid{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;
+  margin-top:12px;text-align:left;align-items:start}
+.stype{display:flex;align-items:center;gap:6px;font:600 .72rem var(--sans);
+  color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;
+  padding-top:7px;white-space:nowrap}
+.sdot{width:8px;height:8px;border-radius:50%;flex:none}
+.startrow{display:flex;flex-wrap:wrap;gap:6px}
+.seedbtn{font:600 .82rem var(--sans);padding:6px 12px;border-radius:6px;
+  border:1px solid var(--brand);background:var(--surface);color:var(--brand);
+  cursor:pointer}
+.seedbtn:hover{background:var(--brand);color:#fff}
+.empty p{pointer-events:auto;background:var(--surface);border:1px solid var(--hair);
+  border-radius:6px;padding:14px 18px;max-width:440px}
+
+/* tooltip */
+.tip{position:absolute;z-index:30;pointer-events:none;background:var(--navy);
+  color:#fff;border-radius:5px;padding:7px 10px;font-size:.78rem;max-width:320px;
+  box-shadow:0 6px 18px rgba(0,0,0,.24);line-height:1.45}
+.tip b{color:#fff}
+.tip .k{opacity:.72;font:400 10px var(--mono)}
+
+/* cypher drawer */
+.cypher{border-top:1px solid var(--hair);background:var(--surface)}
+.cyphead{width:100%;display:flex;justify-content:space-between;align-items:center;
+  background:none;border:0;padding:8px 12px;color:var(--ink-2);
+  font:600 11px var(--sans);letter-spacing:.06em;text-transform:uppercase}
+.caret{transition:transform .15s}
+.cyphead[aria-expanded=true] .caret{transform:rotate(90deg)}
+/* Bounded, so opening the drawer cannot take the canvas's space; it scrolls
+   inside itself instead. */
+.cyphbody{padding:0 12px 12px;max-height:38vh;overflow-y:auto}
+.cyphbody pre{margin:0 0 8px;font:400 11.5px/1.55 var(--mono);background:var(--ground);
+  border:1px solid var(--hair);border-radius:5px;padding:9px 11px;overflow:auto;
+  max-height:150px;color:var(--ink-2);white-space:pre-wrap}
+.rawcypher{width:100%;font:400 11.5px var(--mono);border:1px solid var(--rule);
+  border-radius:5px;padding:7px 9px;background:var(--ground);color:var(--ink);
+  resize:vertical}
+.row{display:flex;gap:9px;align-items:center;margin-top:7px}
+.rawout{margin-top:9px;max-height:190px;overflow:auto;border:1px solid var(--hair);
+  border-radius:5px}
+
+/* inspector */
+.insEmpty{color:var(--ink-3);font-size:.85rem}
+.keys{margin:10px 0 0;padding-left:16px;line-height:1.9;font-size:.8rem}
+.ihead{display:flex;gap:9px;align-items:center;margin-bottom:4px}
+/* The entity's own mark, on a disc tinted with its own colour, so the top of the
+   panel reads as the node that was clicked. `.focused` wears the canvas's focus
+   ring - the same navy stroke the canvas draws at 2.5px - which is how the panel
+   and the graph say "this one" in the same way. */
+.iglyph{flex:none;width:28px;height:28px;border-radius:50%;display:grid;
+  place-items:center;box-shadow:inset 0 0 0 1px rgba(22,50,79,.07)}
+.iglyph.focused{box-shadow:0 0 0 2px var(--navy), 0 0 0 5px
+  color-mix(in oklab,var(--navy) 14%,transparent)}
+/* --- the entity's actions ------------------------------------------------ */
+/* Grouped, because the row mixes three unrelated things: one primary action, one
+   navigation, and the two ends of a path search that lives in the other panel. */
+/* `.row` carries margin-top; this row also needs the bottom gap the inline style
+   it replaced used to give it. */
+.iacts{flex-wrap:wrap;row-gap:6px;margin:0 0 8px;min-height:30px}
+/* A value that has been asked for and not yet answered, distinct from one that is
+   genuinely absent. Without the placeholder the row was simply not drawn, and the
+   panel changed height twice for one click. */
+.kv .pend{color:var(--ink-3)}
+.iacts .ends{display:inline-flex;align-items:center;gap:4px;margin-left:auto;
+  padding:2px 4px 2px 7px;border:1px solid var(--rule);border-radius:6px;
+  background:var(--ground)}
+.endslabel{font:400 10px var(--mono);color:var(--ink-3);letter-spacing:.04em;
+  text-transform:uppercase}
+/* The A and B tags, in the left-hand panel's own type, so it is obvious which two
+   slots they fill. `.on` is the state that was missing entirely: a node already
+   chosen as an end used to look exactly like one that was not. */
+.endbtn{font:700 10px var(--mono);width:20px;height:20px;padding:0;border-radius:4px;
+  border:1px solid var(--rule);background:var(--surface);color:var(--ink-3);
+  cursor:pointer;line-height:1}
+.endbtn:hover{border-color:var(--brand);color:var(--brand);background:var(--tint)}
+.endbtn.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.endbtn.on:hover{background:color-mix(in oklab,var(--brand) 82%,#000)}
+/* Said once, as a sentence, instead of as a primary button that cannot be pressed. */
+.allshown{margin:0 0 8px}
+.pill.focus{background:color-mix(in oklab,var(--navy) 13%,transparent);
+  color:var(--navy);font-weight:600}
+
+.ihead h2{font-size:1.06rem;margin:0;line-height:1.25;word-break:break-word}
+.imeta{font:400 11px var(--mono);color:var(--ink-3);margin-bottom:9px;
+  display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.links{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 12px}
+.links a{font-size:.74rem;padding:3px 8px;border:1px solid var(--rule);
+  border-radius:99px;text-decoration:none;background:var(--surface);color:var(--link)}
+.links a:hover{background:var(--tint)}
+.links a::after{content:" ↗";font-size:.68rem;opacity:.65}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--hair);margin-bottom:11px}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;
+  padding:6px 9px;color:var(--ink-3);font:600 11px var(--sans);
+  letter-spacing:.05em;text-transform:uppercase}
+.tabs button[aria-selected=true]{color:var(--brand);border-bottom-color:var(--brand)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.82rem;
+  margin-bottom:12px}
+.kv dt{color:var(--ink-3)}
+.kv dd{margin:0;font-family:var(--mono);font-size:.78rem;word-break:break-word}
+.ilist{list-style:none;margin:0;padding:0}
+.ilist li{padding:6px 0;border-bottom:1px solid var(--hair);font-size:.82rem;
+  display:flex;gap:8px;align-items:baseline;cursor:pointer}
+.ilist li:hover{background:var(--tint)}
+.ilist .n{margin-left:auto;font:400 11px var(--mono);color:var(--ink-3)}
+.sent{border-left:2px solid var(--brand);padding:7px 0 7px 10px;margin:0 0 10px;
+  font-size:.84rem;line-height:1.55;background:var(--ground);border-radius:0 4px 4px 0}
+.sent mark{background:color-mix(in oklab,var(--brand) 22%,transparent);
+  color:inherit;padding:0 1px;border-radius:2px;font-weight:600}
+.sent .src{display:block;margin-top:5px;font:400 10.5px var(--mono);color:var(--ink-3)}
+.pill{font:500 10px var(--mono);padding:1px 6px;border-radius:99px;
+  background:var(--surface-2);color:var(--ink-2)}
+.pill.rel{background:color-mix(in oklab,var(--brand) 18%,transparent);color:var(--brand)}
+.warnbox{background:color-mix(in oklab,var(--warn) 12%,transparent);
+  border:1px solid color-mix(in oklab,var(--warn) 40%,transparent);
+  border-radius:5px;padding:8px 10px;font-size:.78rem;color:var(--ink-2);margin:9px 0}
+table.mini{width:100%;border-collapse:collapse;font-size:.78rem}
+table.mini th,table.mini td{padding:4px 7px;text-align:left;
+  border-bottom:1px solid var(--hair);white-space:nowrap}
+table.mini th{font:700 10px var(--mono);color:var(--ink-3);text-transform:uppercase;
+  background:var(--surface-2);position:sticky;top:0}
+table.mini td.n{text-align:right;font-family:var(--mono)}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(10,20,32,.45);display:grid;
+  place-items:center;z-index:60}
+.sheet{background:var(--surface);border-radius:8px;padding:20px 22px;min-width:320px;
+  box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.sheet h3{margin:0 0 12px;font-size:1rem}
+.sheet table{border-collapse:collapse;font-size:.84rem;margin-bottom:14px}
+.sheet td{padding:4px 12px 4px 0}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:1180px){:root{--rail:220px;--insp:320px}}
+
+/* ---- added with the interaction fixes ---- */
+.canvaswrap .busy{position:absolute;left:12px;top:12px;z-index:25;
+  background:var(--surface);border:1px solid var(--rule);border-radius:99px;
+  padding:3px 11px;font:500 11px var(--mono);color:var(--ink-3)}
+.pathpick{display:flex;flex-direction:column;gap:6px}
+.endpoint{display:flex;align-items:center;gap:7px;border:1px solid var(--rule);
+  border-radius:5px;padding:5px 8px;margin-bottom:5px;background:var(--ground);
+  font-size:.82rem}
+.endpoint.set{border-color:var(--brand);background:var(--tint)}
+.endpoint .tag{font:700 10px var(--mono);width:14px;color:var(--ink-3)}
+.endpoint.set .tag{color:var(--brand)}
+.endpoint .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;color:var(--ink-2)}
+.endpoint.set .nm{color:var(--ink);font-weight:600}
+/* An endpoint row holds either a chosen name or a search field. The field carries
+   its own 38px bordered frame, which nested inside this row gave a border inside a
+   border and a row twice the height of its neighbour, so in here it drops the
+   frame and the row's own border does the work. */
+.endpoint .searchwrap{flex:1;min-width:0}
+.endpoint .sfield{height:24px;border:0;background:none;padding:0;gap:5px}
+.endpoint .sfield.focused,.endpoint .sfield:focus-within{border:0;box-shadow:none}
+.endpoint .sfield input{font-size:.82rem}
+.endpoint .sfield input::placeholder{color:var(--ink-3)}
+.endpoint .sfield .sicon{width:12px;height:12px}
+.endpoint:focus-within{border-color:var(--brand)}
+.endpoint .x{background:none;border:0;color:var(--ink-3);font-size:15px;
+  line-height:1;padding:0 2px}
+.endpoint .x:hover{color:var(--fail,#9B3724)}
+
+/* The inspector is one unbroken flex column: header blocks keep their height, the
+   scrolling region takes whatever is left. An earlier version capped the scroller at
+   52vh, which is unrelated to the space actually available and left a dead band under
+   short evidence lists. */
+.inspector{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
+.inspector>div{flex:1;min-height:0;display:flex;flex-direction:column}
+.inspector>div>.ihead,.inspector>div>.imeta,.inspector>div>.links,
+.inspector>div>.row,.inspector>div>.kv,.inspector>div>.warnbox,
+.inspector>div>label,.inspector>div>h2,.inspector>div>p,
+.inspector>div>.pathlist,.inspector>div>ol{flex:none}
+.evid{display:flex;flex-direction:column;min-height:0;flex:1}
+.evid>.tabs{flex:none}
+.evidscroll{flex:1;min-height:0;overflow-y:auto;padding:0 4px 14px 0}
+.tabs{position:sticky;top:0;background:var(--surface);z-index:2}
+.tabs .cnt{margin-left:5px;font:400 10px var(--mono);color:var(--ink-3)}
+.tabs button[aria-selected=true] .cnt{color:var(--brand)}
+/* the node branch's connection list scrolls the same way */
+.connwrap{flex:1;min-height:0;display:flex;flex-direction:column}
+.connwrap>label{flex:none}
+.connwrap>.ilist{flex:1;min-height:0;overflow-y:auto;padding-right:4px}
+.ilist li{white-space:normal}
+.ilist li a{overflow-wrap:anywhere}
+.ilist .n{flex:none;white-space:nowrap}
+
+/* relation polarity, kept distinct from the categorical series colours */
+.pill.pos{background:color-mix(in oklab,#0f9a7e 18%,transparent);color:#0b7a63}
+.pill.neg{background:color-mix(in oklab,#b8336a 18%,transparent);color:#9e2b5b}
+.pill.neutral{background:var(--surface-2);color:var(--ink-2)}
+@media (prefers-color-scheme:dark){
+  .pill.pos{color:#4cc3a2} .pill.neg{color:#e06a9b}
+}
+.pathlist{list-style:none;margin:0 0 10px;padding:0}
+.pathlist li{display:flex;gap:8px;align-items:center;padding:5px 0;
+  border-bottom:1px solid var(--hair);font-size:.86rem}
+.pathlist li:last-child{border-bottom:0}
+.tsel{width:100%;padding:5px 7px;border:1px solid var(--rule);border-radius:4px;
+  background:var(--ground);color:var(--ink);font:400 12px var(--sans)}
+.toplist{list-style:none;margin:8px 0 0;padding:0;max-height:min(46vh,340px);
+  overflow-y:auto;overscroll-behavior:contain}
+.toplist li{display:flex;gap:7px;align-items:center;padding:4px 2px;cursor:pointer;
+  border-bottom:1px solid var(--hair);font-size:.8rem}
+.toplist li:hover{background:var(--tint)}
+.toplist .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.toplist .n{font:500 11px var(--mono);color:var(--ink-3)}
+.hits .pill{font:500 9px var(--mono);padding:1px 5px;border-radius:99px;
+  background:color-mix(in oklab,var(--brand) 18%,transparent);color:var(--brand)}
+
+/* ---- year strip ---- */
+/* A fixed height, deliberately. The strip is the canvas's sibling in a flex
+   column: any change to its height re-lays out the graph, so a caption that grew a
+   line or a band that appeared made the whole force layout jump. Everything inside
+   it is sized to add up to this number. */
+/* 11 padding + 22 head + 70 plot + 15 caption. The caption sat outside a 106px
+   box and was clipped by overflow:hidden - present in the DOM, invisible. */
+.tstrip{flex:0 0 auto;height:124px;box-sizing:border-box;overflow:hidden;
+  border-top:1px solid var(--hair);background:var(--surface);padding:7px 12px 4px}
+.thead{display:flex;align-items:baseline;gap:10px;margin-bottom:5px}
+/* The name is what the strip is about, so it gets the room. A 40% cap truncated
+   "Diabetic Nephropathies" to "Diabetic Neph..." while a fixed-width year box sat
+   beside it with space to spare; the box shrinks now and the name does not. */
+.thead .tt{font-weight:700;font-size:.84rem;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;flex:0 1 auto;min-width:0}
+.thead .tsub{font:400 11px var(--mono);color:var(--ink-3)}
+.thead .tspacer{flex:1}
+.thead .tsel{font:500 11px var(--mono);color:var(--brand);flex:none;
+  white-space:nowrap}
+.thead .tsub{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.ghost.tiny{padding:2px 8px;font-size:.72rem;border-radius:4px}
+/* 44 bars + 1 + 13 band + 16 years. The trim overlay stops above the year
+   row and the row sits on top of everything, because the overlay covered the
+   labels it was drawn beside. */
+.plot{position:relative;height:74px;cursor:crosshair;user-select:none}
+.plot .bars{width:100%;height:44px;display:block;overflow:visible}
+.bar{fill:var(--ink-3);opacity:.75}
+.bar.out{opacity:.2}
+.bar.burst{fill:var(--warn)}
+.wband{fill:var(--tint)}
+.shareline{fill:none;stroke:var(--brand);stroke-width:1.5;opacity:.85}
+/* the two ends of the span, dragged like the ends of a clip */
+.trim{position:absolute;inset:0 0 16px 0;pointer-events:none;z-index:2}
+.trim__band{position:absolute;top:0;bottom:0;pointer-events:auto;cursor:grab;
+  border-top:2px solid var(--brand);border-bottom:2px solid var(--brand);
+  background:color-mix(in oklab,var(--brand) 7%,transparent)}
+.trim__band:active{cursor:grabbing}
+.trim__h{position:absolute;top:0;bottom:0;width:14px;margin-left:-7px;
+  pointer-events:auto;cursor:ew-resize;display:flex;align-items:flex-start;
+  justify-content:center}
+.trim__h i{display:block;width:3px;height:100%;border-radius:2px;
+  background:var(--brand)}
+.trim__h span{position:absolute;top:-1px;font:500 9.5px var(--mono);color:#fff;
+  background:var(--brand);border-radius:3px;padding:0 4px;white-space:nowrap;
+  opacity:0;transition:opacity .12s}
+.trim__h:hover span,.trim__h:active span{opacity:1}
+.trim__h.left span{left:6px}
+.trim__h.right span{right:6px}
+.trim__h:hover i,.trim__h:active i{width:5px}
+
+.ticks{position:relative;height:16px;z-index:3;pointer-events:none}
+.ticks span{position:absolute;transform:translateX(-50%);font:400 10px var(--mono);
+  background:var(--surface);padding:0 3px;border-radius:2px;
+  color:var(--ink-3);top:1px}
+.tcursor{position:absolute;top:0;bottom:16px;width:1px;background:var(--brand);
+  pointer-events:none}
+.tcursor .tbox{position:absolute;top:-2px;left:6px;white-space:nowrap;
+  background:var(--navy);color:#fff;font:400 10.5px var(--mono);padding:2px 6px;
+  border-radius:3px}
+/* one line, clipped, with the full text in the tooltip */
+.thint{margin:1px 0 0;font-size:.7rem;color:var(--ink-3);line-height:1.35;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:help}
+
+/* ---- error bar ---- */
+.errbar{display:flex;align-items:center;gap:10px;padding:8px 12px;flex:none;
+  background:color-mix(in oklab,#9B3724 12%,var(--surface));
+  border-bottom:1px solid color-mix(in oklab,#9B3724 40%,transparent);
+  font-size:.82rem}
+.ewhere{font-weight:500;opacity:.8}
+.errbar .ei{width:18px;height:18px;border-radius:50%;flex:none;display:grid;
+  place-items:center;background:#9B3724;color:#fff;font:700 12px var(--sans)}
+.errbar .etext{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.errbar .etext b{color:var(--ink)}
+.errbar .etext span{color:var(--ink-2);font-size:.76rem;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+@media (prefers-color-scheme:dark){
+  .errbar{background:color-mix(in oklab,#D4735C 14%,var(--surface));
+    border-bottom-color:color-mix(in oklab,#D4735C 40%,transparent)}
+  .errbar .ei{background:#D4735C;color:#12181f}
+}
+
+/* ---- path hops ---- */
+/* The hop rows exist so a step can be opened without hitting a one-pixel line on
+   the canvas, which was the only way in before. */
+.hoplist{list-style:none;margin:0;padding:0}
+.hoplist li{padding:7px 8px;border:1px solid var(--hair);border-radius:6px;
+  margin-bottom:6px;cursor:pointer;background:var(--bg)}
+.hoplist li:hover{background:var(--tint);border-color:var(--brand)}
+.hoplist li.on{border-color:var(--brand);
+  box-shadow:inset 0 0 0 1px var(--brand);background:var(--tint)}
+.hoplist li:focus-visible{outline:2px solid var(--link);outline-offset:1px}
+.hoprow{display:flex;gap:6px;align-items:center;font-size:.82rem}
+.hoprow .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hoprow .ar{color:var(--ink-3)}
+.hoprow .n{margin-left:auto;font:500 11px var(--mono);color:var(--ink-3)}
+.hopmeta{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:5px}
+.hopmeta .hint{margin:0}
+.ghost.back{margin:0 0 10px;font-size:.78rem}
+
+/* the years MeSH has not caught up with, and the polarity composition band */
+.lagband{fill:color-mix(in oklab,var(--warn) 9%,transparent)}
+.polband{display:block;width:100%;height:13px;margin-top:1px}
+.polband .pneg{fill:#1f6fc4}
+.polband .ppos{fill:#e0661f}
+.swatch{display:inline-block;width:8px;height:8px;border-radius:2px;
+  vertical-align:-1px;margin:0 1px}
+.swatch.pneg{background:#1f6fc4}
+.swatch.ppos{background:#e0661f}
+
+/* what the last Expand did, and the way back out of it */
+/* the row for whatever the pointer is on, wherever the pointer is */
+.pill.unpin{border:0;cursor:pointer;font:inherit}
+.pill.unpin:hover{background:color-mix(in oklab,var(--warn) 30%,transparent)}
+
+.ilist li.on{background:var(--tint);box-shadow:inset 2px 0 0 var(--brand)}
+/* A connection row over two lines: the partner, then what is actually asserted.
+   A "REL" badge said only that something existed, which is the one thing the
+   reader could already see from the edge being solid. */
+.ilist .cnm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ilist .cline{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ilist .cmeta{display:flex;flex-wrap:wrap;gap:3px;align-items:center}
+.ilist .cmeta .hint{margin:0;font-size:.68rem}
+.ilist .cmeta .pill{font:500 9px var(--mono);padding:1px 5px}
+/* the list is complete now, so it scrolls rather than being cut at 25 */
+.connwrap .ilist{max-height:min(38vh,330px);overflow-y:auto;overscroll-behavior:contain}
+/* the remaining partners, by type, each one a way to add just that kind */
+.tchip{display:inline-flex;gap:4px;align-items:center;font:400 10.5px var(--mono);
+  padding:2px 7px;margin:3px 3px 0 0;border:1px solid var(--rule);border-radius:99px;
+  background:var(--surface);color:var(--ink-2);cursor:pointer}
+.tchip:hover{border-color:var(--brand);background:var(--tint);color:var(--ink)}
+
+/* the panel when nothing is selected: guidance, not a blank column - and not the
+   edge view rendering against a null link, which threw and blanked the whole panel */
+.inspector .empty{padding:2px 0;color:var(--ink-2)}
+.inspector .empty kbd{font:500 10px var(--mono);border:1px solid var(--rule);
+  border-radius:3px;padding:1px 4px;background:var(--ground)}
+
+.undobar{display:flex;gap:8px;align-items:center;margin:0 0 10px;padding:6px 8px;
+  border:1px solid color-mix(in oklab,var(--warn) 40%,transparent);border-radius:6px;
+  background:color-mix(in oklab,var(--warn) 10%,transparent);
+  font-size:.76rem;color:var(--ink-2)}
+.undobar span{flex:1}
+.undobar .ghost{flex:none}
+
+/* --- the assistant ------------------------------------------------------- */
+/* A floating window, not a dock and not a modal: a question is usually about what
+   is on the canvas right now, so it must not take width from the graph and must
+   not cover the thing being asked about. z-index above the tooltip (30) and the
+   modal sheet (60), because it stays open while the reader works. */
+.asktoggle{margin-left:6px;display:inline-flex;align-items:center;gap:5px}
+.asktoggle svg{flex:none}
+.asktoggle.on{background:var(--brand);border-color:var(--brand);color:#fff}
+/* Beside the inspector, not on top of it. Anchored at right:16px the window sat
+   over the whole right-hand column - so the assistant discussed an entity while
+   covering that entity's own numbers, which is the panel it exists to complement.
+   Clear of it by the inspector's own width, and only falling back to the corner
+   when the screen is too narrow to have an inspector beside it anyway.
+
+   `isolation:isolate` and an explicit opaque background because this is the one
+   element that must cover everything under it: a token that ever resolved to a
+   transparent colour would let the layer beneath read through, which is exactly
+   how it looked when this was reported. */
+.aswin{position:fixed;right:calc(var(--insp) + 16px);bottom:16px;z-index:80;
+  isolation:isolate;width:min(420px,94vw);
+  max-height:min(70vh,620px);display:flex;flex-direction:column;
+  background:var(--surface);border:1px solid var(--rule);border-radius:10px;
+  box-shadow:0 10px 34px rgba(22,50,79,.18)}
+@media (max-width:1100px){.aswin{right:16px}}
+.asbar{display:flex;align-items:center;gap:6px;padding:7px 8px 7px 12px;
+  border-bottom:1px solid var(--hair);cursor:move;user-select:none;
+  background:var(--ground);border-radius:10px 10px 0 0}
+.asbar b{font:600 .84rem var(--sans);color:var(--navy)}
+.asmodel{font:400 10px var(--mono);color:var(--ink-3)}
+.askey{padding:10px 12px;border-bottom:1px solid var(--hair);background:var(--ground)}
+.askeyin{flex:1;min-width:0;font:400 .78rem var(--mono);padding:5px 8px;
+  border:1px solid var(--rule);border-radius:5px;background:var(--surface);
+  color:var(--ink)}
+.asbody{flex:1;overflow-y:auto;padding:10px 12px;display:flex;
+  flex-direction:column;gap:7px}
+.asempty{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.asyou{align-self:flex-end;max-width:88%;background:var(--tint);
+  border:1px solid var(--rule);border-radius:9px 9px 2px 9px;padding:6px 10px;
+  font-size:.84rem;white-space:pre-wrap}
+.asai{max-width:95%;font-size:.86rem;line-height:1.5;white-space:pre-wrap;
+  color:var(--ink)}
+/* Collapsed by default and quiet, but always present: an answer with no retrieval
+   visible behind it should look incomplete. */
+.astool{font-size:.74rem;border:1px solid var(--hair);border-radius:6px;
+  background:var(--ground);padding:4px 8px}
+.astool summary{cursor:pointer;display:flex;gap:6px;align-items:baseline;
+  font:500 .74rem var(--mono);color:var(--ink-2)}
+.astool summary .hint{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.astool pre{margin:6px 0 2px;font:400 10.5px var(--mono);white-space:pre-wrap;
+  word-break:break-word;color:var(--ink-2);max-height:170px;overflow:auto}
+.astag{font:700 9px var(--mono);text-transform:uppercase;letter-spacing:.05em;
+  padding:1px 5px;border-radius:3px;background:var(--surface-2);color:var(--ink-3);
+  flex:none}
+/* An action that changed the reader's view is marked differently from a read: a
+   question should never move the canvas without saying so. */
+.astag.acts{background:color-mix(in oklab,var(--brand) 20%,transparent);
+  color:var(--brand)}
+.aslookup{font-size:.82rem;display:flex;flex-direction:column;gap:5px}
+.asfact{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;
+  border-left:2px solid var(--rule);padding-left:8px}
+.aserr{font-size:.8rem;color:var(--ink);background:color-mix(in oklab,
+  var(--warn) 14%,transparent);border:1px solid color-mix(in oklab,
+  var(--warn) 40%,transparent);border-radius:6px;padding:6px 9px}
+.asfoot{display:flex;gap:7px;align-items:flex-end;padding:8px 10px;
+  border-top:1px solid var(--hair)}
+.asinput{flex:1;min-width:0;resize:none;font:400 .84rem var(--sans);
+  padding:6px 8px;border:1px solid var(--rule);border-radius:6px;
+  background:var(--surface);color:var(--ink)}
+
+/* the assistant's guidance affordances */
+.assaid{color:var(--ink)}
+.aspmid{color:var(--link);text-decoration:none;border-bottom:1px dotted var(--link)}
+.aspmid:hover{border-bottom-style:solid}
+.asbusy{display:flex;align-items:center;gap:8px}
+/* Offered after an answer rather than left to the reader to phrase. Wrapped and
+   left-aligned so three of them do not become a row of truncated buttons. */
+.asnext{display:flex;flex-wrap:wrap;gap:5px;padding-top:2px}
+.asnext .tchip{text-align:left;white-space:normal;line-height:1.35}
+.asempty .tchip{text-align:left;white-space:normal;line-height:1.35}
+
+/* --- the assistant, as an assistant ------------------------------------- */
+/* The launcher. Bottom-right and round, which is where people look for help -
+   the same place Intercom and every messenger after it put it. Clear of the
+   canvas tools, which live inside the middle column rather than at the viewport
+   corner. */
+.aslauncher{position:fixed;right:18px;bottom:18px;z-index:79;width:48px;height:48px;
+  border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;
+  background:var(--navy);color:#fff;
+  box-shadow:0 6px 20px rgba(22,50,79,.32);transition:transform .12s}
+.aslauncher:hover{transform:scale(1.06)}
+.aslauncher:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+/* The mark, at two sizes: the window header and beside each turn. */
+.asface{flex:none;width:24px;height:24px;border-radius:50%;display:grid;
+  place-items:center;background:var(--navy);color:#fff}
+.asface.sm{width:19px;height:19px;margin-top:1px}
+.asid{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+/* A turn reads as one: the mark, then what was said. */
+.asturn{display:flex;gap:7px;align-items:flex-start}
+.asbubble{min-width:0;font-size:.84rem;line-height:1.5}
+.asbubble p{margin:0 0 6px}
+.asrole{color:var(--ink-3);font-size:.78rem}
+/* Working, shown the way waiting is normally shown, rather than as the word. */
+.astyping{display:inline-flex;gap:3px;align-items:center;height:14px}
+.astyping i{width:5px;height:5px;border-radius:50%;background:var(--ink-3);
+  animation:asdot 1.1s infinite ease-in-out}
+.astyping i:nth-child(2){animation-delay:.15s}
+.astyping i:nth-child(3){animation-delay:.3s}
+@keyframes asdot{0%,60%,100%{opacity:.25;transform:translateY(0)}
+                 30%{opacity:1;transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){
+  .astyping i{animation:none;opacity:.5}
+  .aslauncher{transition:none}
+}
+
+/* --- keyboard focus ------------------------------------------------------ */
+/* Five rules covered five controls, and everything else moved the focus with no
+   sign of where it had gone. `:focus-visible` shows it for the keyboard and stays
+   out of the way of the mouse. */
+:where(button, [role="button"], a, input, textarea, select, summary,
+       [tabindex]):focus-visible{
+  outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+.bar :where(button, a):focus-visible{outline-color:#fff}
+.seedbtn:focus-visible, .tchip:focus-visible, .chip:focus-visible{
+  outline-offset:1px}
+
+/* What is on screen, said on the screen. Quiet enough to ignore, present enough
+   that the year window is never a thing you have to remember. */
+.cstat{position:absolute;left:12px;top:10px;z-index:4;pointer-events:none;
+  font:400 11px var(--mono);color:var(--ink-3);
+  background:color-mix(in oklab,var(--surface) 82%,transparent);
+  padding:3px 8px;border-radius:5px;border:1px solid var(--hair)}
+.cstat b{color:var(--ink-2);font-weight:600}
+.cpin{position:relative}
+.cpinn{position:absolute;top:-4px;right:-4px;min-width:14px;height:14px;
+  border-radius:99px;background:var(--warn);color:#fff;
+  font:700 9px var(--sans);display:grid;place-items:center;padding:0 3px}
+
+/* --- narrow windows ------------------------------------------------------ */
+/* Two fixed columns cost 540 px of a 1024 px window and the canvas got 484; on a
+   tablet it got 228, which is not a graph. Below 1000 px the rail stops being a
+   column and becomes a drawer over the canvas, so the graph keeps the width. */
+.railtoggle{display:none;margin-left:2px}
+.railscrim{display:none}
+@media (max-width:1000px){
+  .app{grid-template-columns:minmax(0,1fr) var(--insp)}
+  .railtoggle{display:inline-flex;align-items:center}
+  .railtoggle.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .rail{position:fixed;left:0;top:48px;bottom:0;width:min(300px,86vw);z-index:70;
+    transform:translateX(-102%);transition:transform .18s ease;
+    box-shadow:2px 0 18px rgba(22,50,79,.18);border-right:1px solid var(--rule)}
+  .app.railopen .rail{transform:none}
+  .app.railopen .railscrim{display:block;position:fixed;inset:48px 0 0 0;
+    z-index:69;background:rgba(22,50,79,.22)}
+}
+/* Narrower still: the inspector goes too, and what is selected opens over the
+   canvas rather than beside it. */
+@media (max-width:720px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .inspector{position:fixed;right:0;top:48px;bottom:0;width:min(360px,92vw);
+    z-index:68;box-shadow:-2px 0 18px rgba(22,50,79,.18)}
+  .cstat{font-size:10px}
+}
+@media (prefers-reduced-motion:reduce){.rail{transition:none}}
+
+/* The one action on the canvas that could not be taken back. Shown where it
+   happened rather than in the inspector, which has nothing selected by then. */
+.cundo{position:absolute;left:50%;transform:translateX(-50%);bottom:16px;z-index:6;
+  display:flex;align-items:center;gap:8px;font-size:.82rem;
+  background:var(--surface);border:1px solid var(--rule);border-radius:8px;
+  padding:6px 8px 6px 12px;box-shadow:0 6px 20px rgba(22,50,79,.16)}
+
+/* How the dropdown is driven, where it is being driven. */
+.skeys{margin:0;padding:5px 10px;border-bottom:1px solid var(--hair);
+  font:400 10.5px var(--sans);color:var(--ink-3);background:var(--ground)}
+.skeys kbd{font:500 10px var(--mono);border:1px solid var(--rule);border-radius:3px;
+  padding:0 4px;margin-right:2px;background:var(--surface)}
+/* The window being dragged to, marked while it is still uncommitted. */
+.tsel.pend{color:var(--brand)}
+/* Shared spacing, in place of the same inline margin written three times. */
+.hint.gap{margin:0 0 10px}
+.hint.gap8{margin:0 0 8px}
+.ih2{font-size:1rem;margin:0 0 4px}
+.ilist li.nocursor{cursor:default}
+
+.row.gap12{margin:0 0 12px}
+.lblplain{font-weight:400;text-transform:none;letter-spacing:0}
+.ih2s{font-size:.98rem}
+.ih2s.gap6{margin:0 0 6px}
+.hint.nogap{margin:0}
+.dim{color:var(--ink-3)}
+
+.cdpad{padding:8px}
+.cdpad6{padding:6px 8px}
+.cdgap12{margin-top:12px}
+.cdgap8{margin-top:8px}
+
+/* The section label inside the inspector, which was written inline twice. */
+.caveat{margin:8px 0 2px;padding:7px 9px;font:400 11.5px/1.5 var(--sans);
+  color:var(--ink);background:color-mix(in oklab,var(--warn) 11%,var(--surface));
+  border:1px solid color-mix(in oklab,var(--warn) 45%,var(--rule));
+  border-left-width:3px;border-radius:5px}
+.seclbl{display:block;font:700 10.5px var(--sans);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);margin:14px 0 6px}
+.seclbl.top{margin:4px 0 6px}
+
+/* The steps the trail is not showing. Backspace still walks back through them. */
+.crumbmore{flex:none;font:600 10px var(--mono);color:var(--ink-3);
+  background:var(--surface-2);border-radius:99px;padding:1px 6px}

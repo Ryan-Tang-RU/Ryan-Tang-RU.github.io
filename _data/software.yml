@@ -1,0 +1,26 @@
+# Software page. One entry per project, newest first. Keep `summary` to a sentence
+# or two; `url` may be a page in this site or an external link. Use `>-` for any
+# text containing a colon, which YAML would otherwise read as a mapping key.
+#
+#  - title: Name
+#    url: software/slug/
+#    date: 2026
+#    status: in development      # optional
+#    summary: >-
+#      One or two sentences.
+heading: Software
+intro: Tools built in the course of research.
+projects:
+- title: Temporally Evolving T1D Knowledge Graph
+  url: software/t1d-kg/
+  date: 2026
+  status: in development
+  summary: >-
+    A temporally resolved knowledge graph of the type 1 diabetes literature,
+    built from 131,511 PubMed records spanning 1960 to 2026. Every link between
+    two entities retains its year by year paper counts, the assertions extracted
+    from the text, and the sentences supporting it, so a connection can be dated
+    to its first appearance and measured against a corpus baseline rather than
+    read as a static fact. The interface provides entity and pair timelines,
+    burst detection, shortest paths between entities never studied together, and
+    retrieval of the underlying passages.
