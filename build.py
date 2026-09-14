@@ -414,14 +414,19 @@ def build_publications():
             )
         blocks += f'<ul class="pubs">{rows}</ul>'
 
-    total = sum(len(s["items"]) for s in pubs)
+    counts = {s["section"]: len(s["items"]) for s in pubs}
+    refereed = sum(n for sec, n in counts.items()
+                   if sec not in ("Preprint", "Workshop Papers"))
     body = f"""<h1 class="h-page">Conference/Journal Papers
   <a class="scholar" href="{scholar}">[google scholar]</a></h1>
 <p class="pub-note">(* indicates equal contribution; &dagger; indicates corresponding author)</p>
 {blocks}"""
     page("publications.html", f"Publications · {site['name']}", body,
-         f"{total} publications by {site['name_full']} on trustworthy AI, interpretability, "
-         "agent safety, and AI for biomedicine.")
+         f"{refereed} conference and journal papers by {site['name_full']} on trustworthy "
+         f"AI, interpretability, agent safety and AI for biomedicine, with "
+         f"{counts.get('Preprint', 0)} preprints and "
+         f"{counts.get('Workshop Papers', 0)} workshop paper"
+         f"{'s' if counts.get('Workshop Papers', 0) != 1 else ''} listed separately.")
 
 
 # ---------------------------------------------------------------- group
