@@ -88,6 +88,8 @@ services:
   items:
   - Top Reviewer of <a href="https://nips.cc/Conferences/2023/ProgramCommittee#top-reivewers">NeurIPS 2023</a>.
 press:
+- title: Rutgers undergraduate earns first-author acceptance at COLM 2026
+  url: https://www.cs.rutgers.edu/news-events/highlights/highlight-item/rutgers-undergraduate-earns-first-author-acceptance-at-colm-2026
   # `image` is used when assets/img/<file> exists; otherwise the title renders as a text link.
 - title: Rutgers CS research team awarded AMD AI and HPC cluster compute resources
   url: https://www.cs.rutgers.edu/news-events/news/news-item/rutgers-computer-science-research-team-awarded-amd-ai-hpc-cluster-compute-resources
@@ -98,6 +100,8 @@ press:
 - title: The Science of Detecting LLM-Generated Text
   url: https://cacm.acm.org/research/the-science-of-detecting-llm-generated-text/
   image: press-cacm.jpg
+- title: Computing Reviews CR147857, a review of &ldquo;The Science of Detecting LLM-Generated Text&rdquo;
+  url: https://gwolf.org/2024/12/the-science-of-detecting-llm-generated-text.html
 - title: How large vision-language models are changing IP protection
   url: https://www.devdiscourse.com/article/technology/3276999-ai-vs-copyright-how-large-vision-language-models-are-changing-ip-protection
   image: press-devdiscourse.png
