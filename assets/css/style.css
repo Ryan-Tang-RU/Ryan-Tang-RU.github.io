@@ -179,7 +179,9 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
 
 .newscol { position: relative; min-width: 0; }
 
-.newslist { position: relative; max-height: 1440px; overflow: hidden; }
+.newslist { position: relative; max-height: 1670px; overflow: hidden; }
+/* 1670px is the press rail minus the height of the button below the list, so the
+   two columns end level. Re-measure it when a press cutting is added or removed. */
 .newslist::after {           /* the fade that says the list continues */
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 130px;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, var(--paper) 88%);
