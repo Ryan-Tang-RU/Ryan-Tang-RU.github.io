@@ -88,6 +88,7 @@ services:
   items:
   - Top Reviewer of <a href="https://nips.cc/Conferences/2023/ProgramCommittee#top-reivewers">NeurIPS 2023</a>.
 press:
+  # `image` is used when assets/img/<file> exists; otherwise the title renders as a text link.
 - title: Rutgers CS research team awarded AMD AI and HPC cluster compute resources
   url: https://www.cs.rutgers.edu/news-events/news/news-item/rutgers-computer-science-research-team-awarded-amd-ai-hpc-cluster-compute-resources
   image: press-amd.png
