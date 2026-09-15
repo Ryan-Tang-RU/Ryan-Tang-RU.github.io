@@ -29,9 +29,6 @@
     url: "https://arxiv.org/pdf/2603.27836v1"
     authors: Runjia Zeng, Priyabrata Senapati, <b>Ruixiang Tang,</b> Dongfang Liu, Qiang Guan
     venue: <i>arXiv preprint, 2026</i>
-  - title: "Sweeping Promptable Spoofs under the DirtyRAG: A Practical, Query-Blind RAG Attack Done Right"
-    authors: Shaochen Zhong, Jiamu Zhang, Hoang Anh Duy Le, Wenya Xie, Yifan Lu, Xintong Sun, Mohsen Hariri, Hongyi Liu, Guanchu Wang, Zhaozhuo Xu, Zirui Liu, Shuai Xu, Ning Xie, Li Li, Rui Chen, <b>Ruixiang Tang</b>, Xia Hu, Vipin Chaudhary
-    venue: <i>arXiv preprint, 2026</i>
   - title: "Data Augmentation for High-Fidelity Generation of CAR-T/NK Immunological Synapse Images"
     url: "https://arxiv.org/abs/2602.00949"
     authors: Xiang Zhang, Boxuan Zhang, Alireza Naghizadeh, Mohab Mohamed, Dongfang Liu, <b>Ruixiang Tang</b>, Dimitris Metaxas, Dongfang Liu
