@@ -282,7 +282,7 @@ def build_home():
     lab_logo = ident_img("logo", "ident__logo", f'{site["banner"]} logo')
     ident_lines = "".join(f"<p>{p}</p>" for p in site["identity"])
     social = "".join(
-        f'<li><a href="{l["url"]}" title="{l["label"]}" aria-label="{l["label"]}">'
+        f'<li><a href="{l["url"]}" data-tip="{l["label"]}" aria-label="{l["label"]}">'
         f'{social_icon(l["label"])}</a></li>'
         for l in site["links"]
     )
