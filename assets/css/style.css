@@ -150,6 +150,23 @@ ul.gs p { margin: 0; }
 }
 .social a:hover { background: var(--ink-head); }
 
+/* Name each icon on hover. The browser's own tooltip needs a second to appear
+   and cannot be styled, so the label is drawn here instead; aria-label carries
+   the same text for anyone not using a pointer. */
+.social a { position: relative; }
+.social a::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink); color: #fff;
+  font-size: 12px; line-height: 1; letter-spacing: .2px;
+  padding: 6px 9px; border-radius: 4px; white-space: nowrap;
+  opacity: 0; visibility: hidden; transition: opacity .12s ease;
+  pointer-events: none;
+}
+.social a:hover::after,
+.social a:focus-visible::after { opacity: 1; visibility: visible; }
+
 hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
 
 .areas {
