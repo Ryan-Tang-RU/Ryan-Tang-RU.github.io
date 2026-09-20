@@ -61,16 +61,16 @@ window.T1DSQL = {
                     = list_sort(string_split($q, ' ')) THEN 88
                WHEN starts_with(norm, $q) AND is_name THEN 84
                WHEN starts_with(norm, $q) THEN 76
-               WHEN norm LIKE '%' || $q || '%' AND is_name THEN 68
-               WHEN norm LIKE '%' || $q || '%' THEN 60
+               WHEN contains(norm, $q) AND is_name THEN 68
+               WHEN contains(norm, $q) THEN 60
                WHEN len(list_filter(string_split($toks, chr(31)),
-                        t -> NOT norm LIKE '%' || t || '%')) = 0 THEN 52
+                        t -> NOT contains(norm, t))) = 0 THEN 52
                ELSE 40 + 10 * jaro_winkler_similarity(norm, $q)
              END AS score,
              CASE WHEN is_name THEN n_papers ELSE c END AS ev
       FROM search
-      WHERE norm LIKE '%' || $q || '%'
-         OR len(list_filter(string_split($toks, chr(31)), t -> NOT norm LIKE '%' || t || '%')) = 0
+      WHERE contains(norm, $q)
+         OR len(list_filter(string_split($toks, chr(31)), t -> NOT contains(norm, t))) = 0
          -- A near-spelling, not a different word. At 0.88 the fallback answered
                -- "abatacept" with the gene ABAT and "tirzepatide" with Teriparatide -
                -- confidently wrong, and worse than nothing, because a reader cannot

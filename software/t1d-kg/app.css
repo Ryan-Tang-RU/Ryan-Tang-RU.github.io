@@ -794,3 +794,26 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 /* The steps the trail is not showing. Backspace still walks back through them. */
 .crumbmore{flex:none;font:600 10px var(--mono);color:var(--ink-3);
   background:var(--surface-2);border-radius:99px;padding:1px 6px}
+
+/* A visible twin for the Escape key. Small and quiet: it is an exit, not an action. */
+.clearsel { float: right; margin: 2px 0 0 8px; padding: 2px 8px; font-size: 11px;
+            color: var(--ink-2, #5b6472); background: transparent;
+            border: 1px solid var(--line, #d7dbe2); border-radius: 999px; cursor: pointer; }
+.clearsel:hover { color: var(--ink, #1c222b); border-color: var(--ink-3, #9aa3b0); }
+.clearsel:focus-visible { outline: 2px solid var(--focus, #2f6fdb); outline-offset: 1px; }
+
+/* Filtering the connection list is how a reader reaches an edge that is impossible
+   to click on a dense canvas. */
+.connfilter { width: 100%; margin: 4px 0 6px; padding: 4px 8px; font-size: 12px;
+              color: inherit; background: var(--bg-1, #fff);
+              border: 1px solid var(--line, #d7dbe2); border-radius: 6px; }
+.connfilter:focus-visible { outline: 2px solid var(--focus, #2f6fdb); outline-offset: 1px; }
+.ilist .nomatch { cursor: default; padding: 6px 2px; }
+
+/* Explanation that is there when wanted and silent otherwise. */
+details.legend { margin: 6px 0 2px; }
+details.legend > summary { font-size: 11px; color: var(--ink-2, #5b6472);
+                           cursor: pointer; list-style: revert; }
+details.legend > summary:focus-visible { outline: 2px solid var(--focus, #2f6fdb);
+                                         outline-offset: 2px; }
+details.legend p.hint { margin-top: 4px; }

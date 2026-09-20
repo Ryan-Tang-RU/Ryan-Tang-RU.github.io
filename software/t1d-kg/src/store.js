@@ -475,6 +475,22 @@ window.T1DStore = new Vuex.Store({
       dispatch("refreshRemaining", top.eid);
       return top.added.length;
     },
+    // Extract a subgraph: keep a chosen set of entities and the edges the data
+    // puts between them. Pinned nodes are the set, because pinning is already how
+    // a reader says "this one matters" - dragging a node pins it - and reusing it
+    // means the tool needs no second notion of selection.
+    async keepOnly({ state, commit, dispatch }, eids) {
+      const keep = {};
+      (eids || []).forEach(e => { keep[e] = true; });
+      if (Object.keys(keep).length < 2) return;
+      Object.keys(state.nodes).forEach(e => {
+        if (!keep[e]) commit("removeNode", e);
+      });
+      commit("select", null);
+      commit("setPath", []);
+      await dispatch("fillSubgraph");
+    },
+
     async fillSubgraph({ state, commit }) {
       const eids = Object.keys(state.nodes);
       if (eids.length < 2) return;

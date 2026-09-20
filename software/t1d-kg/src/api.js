@@ -91,7 +91,19 @@ async function run(name, params) {
     stmt = await conn.prepare(positional(sql));
     prepared.set(name, stmt);
   }
-  return rows(await stmt.query(...paramNames(sql).map(n => flat(params[n]))));
+  const args = paramNames(sql).map(n => flat(params[n]));
+  try {
+    return rows(await stmt.query(...args));
+  } catch (e) {
+    // Name the query and the values it carried. An engine message on its own
+    // travels as a screenshot nobody can act on: the one report of a refused
+    // query said "invalid escaped character" and named neither step nor entity,
+    // and it could not be reproduced from the words alone.
+    const shown = args.map(v => JSON.stringify(v === undefined ? null : v))
+                      .join(", ").slice(0, 200);
+    throw new Error(String((e && e.message) || e) +
+                    " [query " + name + "(" + shown + ")]");
+  }
 }
 
 async function boot(progress) {
@@ -124,6 +136,12 @@ async function boot(progress) {
   }
   return manifest;
 }
+
+// One word, as the engine will see it. Control characters and backslashes are
+// dropped rather than passed on: they cannot match anything in a passage, and a
+// trailing backslash is what some engine builds refuse outright.
+const cleanWord = s => String(s || "").toLowerCase()
+  .replace(/[\u0000-\u001f\u007f\\]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
 
 const norm = s => String(s || "").toLowerCase()
   .replace(/[^a-z0-9]+/g, " ").replace(/ +/g, " ").trim();
@@ -162,7 +180,7 @@ window.T1DApi = {
 
   // What the abstracts say, for a query the entity index could not answer.
   vocab: toks => timed("vocab", async () => ({
-    rows: await run("vocab", { toks: toks }),
+    rows: await run("vocab", { toks: (toks || []).map(cleanWord).filter(Boolean) }),
   })),
 
   /* Read the files an evidence click will need, once, in the background.
@@ -197,7 +215,7 @@ window.T1DApi = {
   // answers the same question from the same shape.
   textSearch: (eid, word, y0, y1, scan, limit) => timed("textSearch", async () => ({
     rows: await run("text_search", {
-      eid: eid, word: String(word || "").toLowerCase(), y0: y0, y1: y1,
+      eid: eid, word: cleanWord(word), y0: y0, y1: y1,
       scan: Math.max(1, Math.min(scan || 800, 4000)),
       limit: Math.max(1, Math.min(limit || 12, 30)) }),
   })),

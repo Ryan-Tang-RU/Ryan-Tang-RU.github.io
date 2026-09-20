@@ -95,6 +95,13 @@ Vue.component("graph-canvas", {
       .force("collide", d3.forceCollide().radius(d => (d.r || 10) + 16))
       .force("x", d3.forceX().strength(0.04))
       .force("y", d3.forceY().strength(0.04))
+      // Large graphs drifted for tens of seconds. With d3's defaults alpha decays
+      // slowly, and a few hundred nodes keep nudging each other long after the shape
+      // has stopped changing, which reads as a layout that never converges. Faster
+      // decay and a higher floor end the run while the picture is the same one.
+      .alphaDecay(0.045)
+      .velocityDecay(0.42)
+      .alphaMin(0.015)
       .on("tick", this.tick)
       .on("end", () => { if (this.pendingFit) { this.pendingFit = false; this.fit(); } });
     // measure, never assume: mounted() fires before the flex layout settles, so the
@@ -281,6 +288,12 @@ Vue.component("graph-canvas", {
       this.sim.nodes(nodes);
       this.sim.force("link").links(links);
       this.sim.force("collide").radius(d => (d.r || 10) + 16);
+      // Repulsion sized for thirty nodes blows four hundred apart and keeps them
+      // moving, so it is scaled down as the graph grows and the decay is raised
+      // with it. Both are set here because the node count is only known here.
+      this.sim.force("charge")
+          .strength(-500 / Math.sqrt(Math.max(1, nodes.length / 60)));
+      this.sim.alphaDecay(nodes.length > 150 ? 0.06 : 0.045);
       this.buildAdj();
       this.sim.alpha(0.6).restart();
       this.restyle();
@@ -509,6 +522,8 @@ Vue.component("graph-canvas", {
         </div>
         <p class="hint">Nodes are entities, edges are papers that mention both.
           Drag a node to move it, click an edge for the sentences behind it.</p>
+        <p class="hint">An edge is a co-mention, not an asserted relationship. Open one
+          to see what the sentences say.</p>
       </div>
     </div>
     <div class="cstat" v-if="!nothingLoaded">

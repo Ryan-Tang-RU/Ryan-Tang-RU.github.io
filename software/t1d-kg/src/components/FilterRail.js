@@ -21,6 +21,9 @@ Vue.component("filter-rail", {
     types: ["Gene","Disease","Chemical","Species","Variant","CellLine","Chromosome"]
   }),
   computed: {
+    pinnedCount() {
+      return Object.values(this.$store.state.nodes).filter(n => n.pinned).length;
+    },
     // While a handle is held, the years shown come from `pending` and the store is
     // left alone. Committing on every pixel would re-derive every edge on the
     // canvas for each intermediate year, which is the one expensive thing the year
@@ -58,6 +61,11 @@ Vue.component("filter-rail", {
     canvasSize() { return Object.keys(this.$store.state.nodes).length; }
   },
   methods: {
+    // The pinned set, extracted with the edges between its members.
+    keepPinned() {
+      this.$store.dispatch("keepOnly", Object.values(this.$store.state.nodes)
+        .filter(n => n.pinned).map(n => n.eid));
+    },
     pct(y) {
       return (100 * (y - this.Y_MIN) / (this.Y_MAX - this.Y_MIN)) + "%";
     },
@@ -208,6 +216,12 @@ Vue.component("filter-rail", {
 
     <div class="sec">
       <label>Most connected entities</label>
+      <button class="ghost wide" v-if="pinnedCount > 1" @click="keepPinned"
+              :title="'Removes every node except the ' + pinnedCount + ' pinned ones, '
+                      + 'then draws the edges the data puts between them'">
+        Keep only the {{ pinnedCount }} pinned nodes</button>
+      <p class="hint" v-else-if="pinnedCount === 1">Drag a second node to pin it, and
+        the two can be kept on their own as a subgraph.</p>
       <button class="ghost wide" @click="toggleTop">
         {{ topOpen ? 'Hide' : 'Show' }} ranking for {{ y0 }}&ndash;{{ y1 }}</button>
       <div v-if="topOpen" class="cdgap8">
@@ -257,8 +271,17 @@ Vue.component("filter-rail", {
       <p class="hidenote" v-if="hiddenCount">{{ hiddenCount }} node<span
         v-if="hiddenCount !== 1">s</span> hidden.
         <button class="linky" @click="showAllTypes">Show all</button></p>
-      <p class="hint">Circle size = papers that mention it &middot; line thickness = papers that mention both &middot; <span class="pinhint">pinned</span> nodes stay where you drop
+      <!-- Persistent instructions became noise: a reader new to the page counted
+           more sentences than controls. The legend is one click away instead, and it
+           now carries the distinction that matters most on a first visit. -->
+      <details class="legend">
+        <summary>What the drawing means</summary>
+        <p class="hint">Circle size = papers that mention it &middot; line thickness = papers that mention both &middot; <span class="pinhint">pinned</span> nodes stay where you drop
         them.</p>
+        <p class="hint">An edge means the two entities appear in the same papers. It
+          does not mean anything was asserted about them. Where a sentence does assert
+          something, the edge carries a relation chip and the panel lists the claims.</p>
+      </details>
     </div>
 
     <div class="sec">

@@ -1,6 +1,9 @@
 /* Right-hand inspector. Shows whichever object is selected, with the identifier
    and its outbound links first - that is what a curator reaches for. */
 Vue.component("inspector-panel", {
+  // The filter is per-panel state, not app state: it is a way of looking at the
+  // list, and it should not survive selecting a different node.
+  data: () => ({ connFilter: "" }),
   computed: {
     sel() { return this.$store.state.selection || {}; },
     pathRow() { return this.sel.kind === "path" ? this.sel.row : null; },
@@ -135,6 +138,15 @@ Vue.component("inspector-panel", {
         .map(l => ({ link: l, other: S.nodes[l.a === eid ? l.b : l.a] }))
         .filter(x => x.other);
     },
+    // Eighty rows are as hard to pick from as the region they stand in for.
+    // Filtering by name is the point of the list: it is how an edge is reached
+    // when the canvas is too dense to click one.
+    shownConnections() {
+      const q = (this.connFilter || "").trim().toLowerCase();
+      if (!q) return this.connections;
+      return this.connections.filter(c =>
+        (c.other.name || "").toLowerCase().indexOf(q) !== -1);
+    },
     years() { return this.$store.state.y0 + "\u2013" + this.$store.state.y1; }
   },
   watch: {
@@ -177,6 +189,12 @@ Vue.component("inspector-panel", {
       });
     },
     hoverOn(p) { this.$store.commit("setHover", p); },
+    // Escape has always cleared the selection. Nobody found it: the first outside
+    // reader asked how to clear one, so the keystroke now has a visible twin.
+    clearSel() {
+      this.$store.commit("select", null);
+      this.$store.commit("setPath", []);
+    },
     hoverOff() { this.$store.commit("setHover", null); },
     relsOf(h) { return ((h.link || {}).relation_types || []).filter(Boolean); },
     relsOfLink(l) { return ((l || {}).relation_types || []).filter(Boolean); },
@@ -294,6 +312,8 @@ Vue.component("inspector-panel", {
     </div>
 
     <div v-else-if="node">
+      <button class="clearsel" @click="clearSel"
+              title="Clears the selection. The Escape key does the same.">Clear selection</button>
       <div class="ihead">
         <!-- The same mark the canvas draws, on the same tinted disc, and wearing the
              focus ring when it is the focus - a navy stroke, as on the canvas. The
@@ -431,11 +451,19 @@ between them in the left-hand panel">
       </dl>
       <div class="connwrap">
       <label class="seclbl top">
-        On the canvas ({{ connections.length.toLocaleString() }})
+        On the canvas ({{ shownConnections.length.toLocaleString()
+        }}<template v-if="shownConnections.length !== connections.length"> of {{
+        connections.length.toLocaleString() }}</template>)
         <span class="lblplain">
           papers that mention both</span></label>
+      <input class="connfilter" type="search" v-model="connFilter"
+             v-if="connections.length > 8"
+             placeholder="Filter by name"
+             aria-label="Filter these connections by name">
       <ul class="ilist">
-        <li v-for="c in connections" :key="c.link.key"
+        <li class="hint nomatch" v-if="connFilter && !shownConnections.length">
+          No connection here carries that name.</li>
+        <li v-for="c in shownConnections" :key="c.link.key"
             @click="openConnection(c)"
             :class="{on: hoverKey === c.link.key || hoverEid === c.other.eid}"
             @mouseenter="hoverOn({eid: c.other.eid, key: c.link.key})"
@@ -467,6 +495,8 @@ between them in the left-hand panel">
          link is null and link.comention_papers throws mid-render and takes the
          whole panel with it. Clicking empty canvas did exactly that. -->
     <div v-else-if="link">
+      <button class="clearsel" @click="clearSel"
+              title="Clears the selection. The Escape key does the same.">Clear selection</button>
       <button class="ghost back" v-if="returnTo" @click="$store.commit('goBack')">
         &larr; Back to {{ backLabel }}</button>
       <div class="ihead"><h2 class="ih2s">{{ ends[0] && ends[0].name }}
