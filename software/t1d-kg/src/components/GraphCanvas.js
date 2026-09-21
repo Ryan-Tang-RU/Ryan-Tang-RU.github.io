@@ -572,8 +572,8 @@ Vue.component("graph-canvas", {
       <!-- Only when there is a selection to clear, for the same reason as the pin
            release below it. -->
       <button class="ghost" v-if="$store.state.selection" @click="clearSelection"
-              data-tip="Clear the selection, and the panel with it (Esc)"
-              aria-label="Clear the selection">&#10005;</button>
+              data-tip="Deselect, and close the panel. The nodes stay (Esc)"
+              aria-label="Deselect">&#10005;</button>
       <!-- Only when there is something to release, and saying how many. A filled
            circle labelled "release pinned nodes" is a control whose meaning is
            only in its tooltip, sitting there whether or not it does anything. -->

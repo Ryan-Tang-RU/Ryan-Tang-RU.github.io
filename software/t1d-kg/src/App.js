@@ -166,7 +166,7 @@ window.App = {
         <h3>Shortcuts</h3>
         <table>
           <tr><td><kbd>/</kbd></td><td>focus search</td></tr>
-          <tr><td><kbd>Esc</kbd></td><td>clear selection</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>deselect, and close the panel</td></tr>
           <tr><td><kbd>E</kbd></td><td>expand the selected node</td></tr>
           <tr><td><kbd>F</kbd></td><td>make it the focus</td></tr>
           <tr><td><kbd>A</kbd> / <kbd>B</kbd></td><td>set as path endpoint</td></tr>

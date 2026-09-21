@@ -189,8 +189,9 @@ Vue.component("inspector-panel", {
       });
     },
     hoverOn(p) { this.$store.commit("setHover", p); },
-    // Escape has always cleared the selection. Nobody found it: the first outside
-    // reader asked how to clear one, so the keystroke now has a visible twin.
+    // Escape has always deselected. Nobody found it: the first outside reader asked
+    // how to clear a selection, so the keystroke has a visible twin. It is called
+    // Deselect, not Clear: Clear reads as "remove every node", which it never does.
     clearSel() {
       this.$store.commit("select", null);
       this.$store.commit("setPath", []);
@@ -315,7 +316,7 @@ Vue.component("inspector-panel", {
 
     <div v-else-if="node">
       <button class="clearsel" @click="clearSel"
-              title="Clears the selection. The Escape key does the same.">Clear selection</button>
+              title="Deselect. The nodes stay on the canvas. Escape does the same.">Deselect</button>
       <div class="ihead">
         <!-- The same mark the canvas draws, on the same tinted disc, and wearing the
              focus ring when it is the focus - a navy stroke, as on the canvas. The
@@ -502,7 +503,7 @@ between them in the left-hand panel">
          whole panel with it. Clicking empty canvas did exactly that. -->
     <div v-else-if="link">
       <button class="clearsel" @click="clearSel"
-              title="Clears the selection. The Escape key does the same.">Clear selection</button>
+              title="Deselect. The nodes stay on the canvas. Escape does the same.">Deselect</button>
       <button class="ghost back" v-if="returnTo" @click="$store.commit('goBack')">
         &larr; Back to {{ backLabel }}</button>
       <div class="ihead"><h2 class="ih2s">{{ ends[0] && ends[0].name }}
