@@ -795,33 +795,40 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 .crumbmore{flex:none;font:600 10px var(--mono);color:var(--ink-3);
   background:var(--surface-2);border-radius:99px;padding:1px 6px}
 
-/* A visible twin for the Escape key. Small and quiet: it is an exit, not an action. */
-.clearsel { float: right; margin: 2px 0 0 8px; padding: 2px 8px; font-size: 11px;
-            color: var(--ink-2, #5b6472); background: transparent;
-            border: 1px solid var(--line, #d7dbe2); border-radius: 999px; cursor: pointer; }
-.clearsel:hover { color: var(--ink, #1c222b); border-color: var(--ink-3, #9aa3b0); }
-.clearsel:focus-visible { outline: 2px solid var(--focus, #2f6fdb); outline-offset: 1px; }
+/* A visible twin for the Escape key, in the row that already carries the node's
+   state. It was a floated button above the name, and floats do nothing in a flex
+   column: it stretched into a full-width bar over the entity's own glyph. */
+.pill.deselect{margin-left:auto;border:1px solid var(--rule);background:var(--surface);
+  color:var(--ink-2);cursor:pointer}
+.pill.deselect:hover{background:var(--tint);color:var(--ink)}
+
+/* Anything that takes something away wears the palette's negative hue, the same
+   pink the relation chips use for a negative correlation. */
+.ghost.danger{border-color:color-mix(in oklab,var(--t-species) 34%,transparent);
+  background:color-mix(in oklab,var(--t-species) 7%,transparent);
+  color:color-mix(in oklab,var(--t-species) 82%,var(--ink))}
+.ghost.danger:hover{background:color-mix(in oklab,var(--t-species) 15%,transparent);
+  border-color:color-mix(in oklab,var(--t-species) 55%,transparent)}
+.ctools .ghost.cwipe{color:color-mix(in oklab,var(--t-species) 78%,var(--ink));
+  border-color:color-mix(in oklab,var(--t-species) 30%,transparent)}
+.ctools .ghost.cwipe:hover{background:color-mix(in oklab,var(--t-species) 14%,transparent);
+  border-color:color-mix(in oklab,var(--t-species) 55%,transparent)}
 
 /* Filtering the connection list is how a reader reaches an edge that is impossible
    to click on a dense canvas. */
-.connfilter { width: 100%; margin: 4px 0 6px; padding: 4px 8px; font-size: 12px;
-              color: inherit; background: var(--bg-1, #fff);
-              border: 1px solid var(--line, #d7dbe2); border-radius: 6px; }
-.connfilter:focus-visible { outline: 2px solid var(--focus, #2f6fdb); outline-offset: 1px; }
+.connfilter{width:100%;margin:4px 0 6px;padding:4px 8px;font-size:12px;color:inherit;
+  background:var(--surface);border:1px solid var(--rule);border-radius:6px}
 .ilist .nomatch { cursor: default; padding: 6px 2px; }
 
 /* Explanation that is there when wanted and silent otherwise. */
 details.legend { margin: 6px 0 2px; }
-details.legend > summary { font-size: 11px; color: var(--ink-2, #5b6472);
-                           cursor: pointer; list-style: revert; }
-details.legend > summary:focus-visible { outline: 2px solid var(--focus, #2f6fdb);
-                                         outline-offset: 2px; }
+details.legend>summary{font-size:11px;color:var(--ink-2);cursor:pointer;list-style:revert}
 details.legend p.hint { margin-top: 4px; }
 
 /* The pin control, quieter than the state it produces. */
-.pill.dopin { cursor: pointer; background: transparent;
-              border: 1px dashed var(--line, #d7dbe2); color: var(--ink-2, #5b6472); }
-.pill.dopin:hover { border-style: solid; color: var(--ink, #1c222b); }
+.pill.dopin{cursor:pointer;background:transparent;border:1px dashed var(--rule);
+  color:var(--ink-2)}
+.pill.dopin:hover{border-style:solid;color:var(--ink)}
 
 /* Hover labels for the canvas tools. The glyphs are small, and a native title
    arrives a second too late to answer "what is this". */
@@ -831,4 +838,4 @@ details.legend p.hint { margin-top: 4px; }
   content:attr(data-tip); position:absolute; right:calc(100% + 8px); top:50%;
   transform:translateY(-50%); white-space:nowrap; font-size:11px; line-height:1;
   padding:5px 8px; border-radius:6px; pointer-events:none; z-index:6;
-  color:var(--bg-1,#fff); background:var(--ink,#1c222b); box-shadow:0 1px 4px rgba(0,0,0,.18)}
+  color:var(--surface); background:var(--navy); box-shadow:0 1px 4px rgba(0,0,0,.18)}

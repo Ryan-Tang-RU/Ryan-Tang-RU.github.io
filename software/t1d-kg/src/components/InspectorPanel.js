@@ -315,8 +315,6 @@ Vue.component("inspector-panel", {
     </div>
 
     <div v-else-if="node">
-      <button class="clearsel" @click="clearSel"
-              title="Deselect. The nodes stay on the canvas. Escape does the same.">Deselect</button>
       <div class="ihead">
         <!-- The same mark the canvas draws, on the same tinted disc, and wearing the
              focus ring when it is the focus - a navy stroke, as on the canvas. The
@@ -344,6 +342,9 @@ Vue.component("inspector-panel", {
                 @click="$store.commit('pinNode', node.eid)"
                 title="Hold this node where it is. Pin two or more and the rail can
                        keep just those, with the edges between them.">pin</button>
+        <button class="pill deselect" @click="clearSel"
+                title="Deselect. The nodes stay on the canvas. Escape does the same."
+                >deselect</button>
       </div>
       <div class="links">
         <a v-for="l in links" :key="l[1]" :href="l[1]" target="_blank"
@@ -416,7 +417,7 @@ between them in the left-hand panel">
         Layouts above 150 nodes are hard to read. Narrow the years or remove
         nodes before expanding.</div>
       <div class="row gap12">
-        <button class="ghost" @click="$store.commit('removeNode', node.eid)">
+        <button class="ghost danger" @click="$store.commit('removeNode', node.eid)">
           Remove from canvas</button>
       </div>
       <!-- A hand-curated note, and only that. The comment above says why there is
@@ -502,8 +503,6 @@ between them in the left-hand panel">
          link is null and link.comention_papers throws mid-render and takes the
          whole panel with it. Clicking empty canvas did exactly that. -->
     <div v-else-if="link">
-      <button class="clearsel" @click="clearSel"
-              title="Deselect. The nodes stay on the canvas. Escape does the same.">Deselect</button>
       <button class="ghost back" v-if="returnTo" @click="$store.commit('goBack')">
         &larr; Back to {{ backLabel }}</button>
       <div class="ihead"><h2 class="ih2s">{{ ends[0] && ends[0].name }}
@@ -514,6 +513,9 @@ between them in the left-hand panel">
           link.comention_papers.toLocaleString() }} co-mentioning papers</span>
         <span v-else>counting papers&hellip;</span>
         <span v-if="link.y_first">{{ link.y_first }}&ndash;{{ link.y_last }}</span>
+        <button class="pill deselect" @click="clearSel"
+                title="Deselect. The nodes stay on the canvas. Escape does the same."
+                >deselect</button>
       </div>
       <div class="imeta" v-if="rel.length">
         <span class="pill rel">relation</span><span>{{ rel.join(', ') }}</span>
