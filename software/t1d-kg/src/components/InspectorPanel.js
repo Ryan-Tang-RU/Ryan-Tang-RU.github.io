@@ -103,7 +103,12 @@ Vue.component("inspector-panel", {
     crowded() { return this.canvasSize >= 120; },
     link() { return this.$store.getters.selectedLink; },
     links() { return this.node ? T1DLinks(this.node) : []; },
-    rel() { return this.link ? (this.link.relation_types || []).filter(Boolean) : []; },
+    // Signed types first, and each one wears its own colour below: as a comma
+    // list in one grey line, the three read as a single undifferentiated label.
+    rel() {
+      return this.link
+        ? T1DRel.order((this.link.relation_types || []).filter(Boolean)) : [];
+    },
     ends() {
       if (!this.link) return [null, null];
       const S = this.$store.state;
@@ -212,7 +217,8 @@ Vue.component("inspector-panel", {
         out.push({ type: d.types[i], pct: pct,
                    short: String(d.types[i]).replace("_Correlation", "") });
       }
-      return out;
+      // Signed first here too: this list is the same claim, one line shorter.
+      return T1DRel.order(out, r => r.type);
     },
     // "co-mention only" was jargon, and it also flattened two different facts into
     // one phrase. Whether a relation is missing because the extractor never covers
@@ -240,11 +246,7 @@ Vue.component("inspector-panel", {
     },
     // The same three-way colouring the evidence panel uses, so a direction reads
     // the same everywhere.
-    polarity(t) {
-      if (t === "Positive_Correlation") return "pos";
-      if (t === "Negative_Correlation") return "neg";
-      return "neutral";
-    }
+    polarity(t) { return T1DRel.polarity(t); }
   },
   template: `
   <aside class="inspector">
@@ -518,7 +520,9 @@ between them in the left-hand panel">
                 >deselect</button>
       </div>
       <div class="imeta" v-if="rel.length">
-        <span class="pill rel">relation</span><span>{{ rel.join(', ') }}</span>
+        <span class="pill rel">relation</span>
+        <span class="pill" v-for="t in rel" :key="t" :class="polarity(t)"
+              :title="t">{{ t.replace('_Correlation', '') }}</span>
         <span class="n" v-if="link.n_relations">{{ link.n_relations.toLocaleString()
           }} assertions</span>
         <span class="n" v-if="link.rel_score_max != null"

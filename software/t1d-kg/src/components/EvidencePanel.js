@@ -43,6 +43,9 @@ Vue.component("evidence-panel", {
         (m[r.pmid] = m[r.pmid] || []).indexOf(r.relation_type) === -1 &&
           m[r.pmid].push(r.relation_type);
       });
+      // Signed claims first on every sentence, so the eye does not have to read
+      // past "Association" to find out which way the finding went.
+      Object.keys(m).forEach(k => { m[k] = T1DRel.order(m[k]); });
       return m;
     },
     // Straight from the server, counted over the whole pair. Counting `rels` here
@@ -52,9 +55,10 @@ Vue.component("evidence-panel", {
       const sum = this.$store.state.relationsSummary;
       if (!sum) return [];
       const tot = sum.reduce((a, r) => a + Number(r.n), 0) || 1;
-      return sum.map(r => ({ type: r.relation_type, n: Number(r.n),
-                             pct: Math.round((Number(r.n) / tot) * 100) }))
+      const byCount = sum.map(r => ({ type: r.relation_type, n: Number(r.n),
+                                      pct: Math.round((Number(r.n) / tot) * 100) }))
         .sort((x, y) => y.n - x.n);
+      return T1DRel.order(byCount, r => r.type);
     },
     moreSentences() { return this.nSent > this.sentences.length; },
     // The sentence scan is capped; the paper count is not. Glucose - Diabetes
@@ -84,11 +88,11 @@ Vue.component("evidence-panel", {
         e(t.slice(sp[1][0], sp[1][1])) + "</mark>" + e(t.slice(sp[1][1]));
     },
     pubmed: pmid => "https://pubmed.ncbi.nlm.nih.gov/" + pmid + "/",
-    polarity(t) {
-      if (t === "Positive_Correlation") return "pos";
-      if (t === "Negative_Correlation") return "neg";
-      return "neutral";
-    },
+    polarity(t) { return T1DRel.polarity(t); },
+    // "Positive_Correlation 2,450 (38%)" wrapped over three lines and read as a
+    // file name. The direction is the word that matters, and the full type stays
+    // in the title for anyone matching it against the extractor's own labels.
+    short(t) { return String(t || "").replace("_Correlation", ""); },
     async more() {
       this.loadingMore = true;
       await this.$store.dispatch("loadEvidence",
@@ -125,15 +129,15 @@ Vue.component("evidence-panel", {
         <p class="hint">{{ relTotal.toLocaleString() }} claims found in the text<span
             v-if="relCapped">, showing the {{ rels.length }} highest-confidence</span>.
           <span v-for="r in relSummary" :key="r.type" class="pill"
-                :class="polarity(r.type)">{{ r.type }}
+                :class="polarity(r.type)" :title="r.type">{{ short(r.type) }}
             {{ r.n.toLocaleString() }} ({{ r.pct }}%)</span></p>
         <p class="hint" v-if="relSummary.length > 1">Claims come from different papers and different sentences. Both directions
           on one pair is normal for a well-studied link: among pairs with fifty
           claims or more, 68% carry both.</p>
         <ul class="ilist">
           <li v-for="(r,i) in rels" :key="i" class="nocursor">
-            <span class="pill" :class="polarity(r.relation_type)">{{
-              r.relation_type }}</span>
+            <span class="pill" :class="polarity(r.relation_type)"
+                  :title="r.relation_type">{{ short(r.relation_type) }}</span>
             <a :href="pubmed(r.pmid)" target="_blank" rel="noopener">PMID {{ r.pmid }}</a>
             <span class="n">{{ r.year }} &middot; {{ r.score == null ? '-' :
               r.score.toFixed(2) }}</span>

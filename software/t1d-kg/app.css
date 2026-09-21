@@ -420,9 +420,14 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 /* relation polarity, kept distinct from the categorical series colours */
 .pill.pos{background:color-mix(in oklab,#0f9a7e 18%,transparent);color:#0b7a63}
 .pill.neg{background:color-mix(in oklab,#b8336a 18%,transparent);color:#9e2b5b}
-.pill.neutral{background:var(--surface-2);color:var(--ink-2)}
+/* Association is a claim, not a missing one. As plain grey on grey it read as a
+   disabled chip next to the green and the pink, so it wears the brand navy at a
+   tenth: visibly a third colour, without competing with the signed pair. */
+.pill.neutral{background:color-mix(in oklab,var(--navy) 11%,transparent);
+  color:color-mix(in oklab,var(--navy) 88%,var(--ink))}
 @media (prefers-color-scheme:dark){
   .pill.pos{color:#4cc3a2} .pill.neg{color:#e06a9b}
+  .pill.neutral{background:color-mix(in oklab,#6aa6f0 16%,transparent);color:#9cc2f5}
 }
 .pathlist{list-style:none;margin:0 0 10px;padding:0}
 .pathlist li{display:flex;gap:8px;align-items:center;padding:5px 0;
