@@ -306,7 +306,9 @@ Vue.component("inspector-panel", {
       <ul class="keys">
         <li><b>Click</b> a node to inspect it</li>
         <li><b>Double-click</b> to expand its neighbours</li>
-        <li><b>Drag</b> to move and pin</li>
+        <li><b>Drag</b> to move and pin, or use <b>pin</b> in this panel</li>
+        <li><b>Pin two or more</b> nodes to keep only those, with the edges
+          between them, from the rail on the left</li>
         <li><b>Click</b> an edge for papers and sentences</li>
       </ul>
     </div>
@@ -337,6 +339,10 @@ Vue.component("inspector-panel", {
                 @click="$store.commit('unpinNode', node.eid)"
                 title="release this node so the layout can move it again">pinned
           &times;</button>
+        <button class="pill dopin" v-else
+                @click="$store.commit('pinNode', node.eid)"
+                title="Hold this node where it is. Pin two or more and the rail can
+                       keep just those, with the edges between them.">pin</button>
       </div>
       <div class="links">
         <a v-for="l in links" :key="l[1]" :href="l[1]" target="_blank"

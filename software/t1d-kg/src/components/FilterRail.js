@@ -220,8 +220,9 @@ Vue.component("filter-rail", {
               :title="'Removes every node except the ' + pinnedCount + ' pinned ones, '
                       + 'then draws the edges the data puts between them'">
         Keep only the {{ pinnedCount }} pinned nodes</button>
-      <p class="hint" v-else-if="pinnedCount === 1">Drag a second node to pin it, and
-        the two can be kept on their own as a subgraph.</p>
+      <p class="hint" v-else-if="pinnedCount === 1">One node is pinned. Pin a second,
+        by dragging it or with <b>pin</b> in the panel on the right, and the two can be
+        kept on their own with the edges between them.</p>
       <button class="ghost wide" @click="toggleTop">
         {{ topOpen ? 'Hide' : 'Show' }} ranking for {{ y0 }}&ndash;{{ y1 }}</button>
       <div v-if="topOpen" class="cdgap8">

@@ -284,6 +284,15 @@ window.T1DStore = new Vuex.Store({
     // Dragging pins a node, and the only way out was a toolbar button that released
     // every pin at once - so fixing one node's position meant losing all of them to
     // undo it.
+    // Pinning was only ever a side effect of dragging, which left the subgraph
+    // tool unreachable for anyone who had not dragged two nodes by accident.
+    pinNode(s, eid) {
+      const n = s.nodes[eid];
+      if (!n) return;
+      if (typeof n.x === "number") { n.fx = n.x; n.fy = n.y; }
+      n.pinned = true;
+      s.version++;
+    },
     unpinNode(s, eid) {
       const n = s.nodes[eid];
       if (!n) return;
