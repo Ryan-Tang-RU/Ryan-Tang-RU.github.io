@@ -798,9 +798,14 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
 /* A visible twin for the Escape key, in the row that already carries the node's
    state. It was a floated button above the name, and floats do nothing in a flex
    column: it stretched into a full-width bar over the entity's own glyph. */
-.pill.deselect{margin-left:auto;border:1px solid var(--rule);background:var(--surface);
-  color:var(--ink-2);cursor:pointer}
-.pill.deselect:hover{background:var(--tint);color:var(--ink)}
+/* The same negative hue as the removal controls, one step quieter: no fill until
+   hover, so Remove and Clear still read as the stronger pair. Deselect takes
+   nothing away. */
+.pill.deselect{margin-left:auto;cursor:pointer;background:transparent;
+  border:1px solid color-mix(in oklab,var(--t-species) 30%,transparent);
+  color:color-mix(in oklab,var(--t-species) 78%,var(--ink))}
+.pill.deselect:hover{background:color-mix(in oklab,var(--t-species) 12%,transparent);
+  border-color:color-mix(in oklab,var(--t-species) 52%,transparent)}
 
 /* Anything that takes something away wears the palette's negative hue, the same
    pink the relation chips use for a negative correlation. */
