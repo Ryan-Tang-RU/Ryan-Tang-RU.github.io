@@ -201,11 +201,12 @@ window.T1DStore = new Vuex.Store({
       s.version++;
     },
     forgetRemoved(s) { s.lastRemoved = null; },
-    keepSnapshot(s, kept) {
+    keepSnapshot(s, p) {
       s.keptBack = { nodes: Object.assign({}, s.nodes),
                      links: Object.assign({}, s.links),
                      focus: s.focus, before: Object.keys(s.nodes).length,
-                     kept: kept };
+                     kept: (p && p.kept) || 0,
+                     what: (p && p.what) || "kept" };
     },
     restoreKept(s) {
       const b = s.keptBack;
@@ -217,6 +218,21 @@ window.T1DStore = new Vuex.Store({
       s.version++;
     },
     forgetKept(s) { s.keptBack = null; },
+    wipeGraph(s) {
+      s.nodes = {};
+      s.links = {};
+      s.focus = null;
+      s.selection = null;
+      s.history = [];
+      s.returnTo = null;
+      s.pathA = null; s.pathB = null; s.pathEids = [];
+      s.expandStack = [];
+      s.lastRemoved = null;
+      s.neighbourRemaining = {};
+      s.neighbourTotals = {};
+      s.evidence = null; s.relations = null;
+      s.version++;
+    },
     // The ring the canvas already draws for a freshly expanded batch, for one
     // node. The assistant loading an entity moved the view with nothing saying
     // which of the nodes on it was the new one.
@@ -509,11 +525,20 @@ window.T1DStore = new Vuex.Store({
     // puts between them. Pinned nodes are the set, because pinning is already how
     // a reader says "this one matters" - dragging a node pins it - and reusing it
     // means the tool needs no second notion of selection.
+    // Start again without reloading the page. Everything that points at a node
+    // goes with the nodes, or the canvas comes back empty while the rail still
+    // counts types and the trail still offers to walk back to a node that is gone.
+    clearGraph({ state, commit }) {
+      if (!Object.keys(state.nodes).length) return;
+      commit("keepSnapshot", { kept: 0, what: "cleared" });
+      commit("wipeGraph");
+    },
+
     async keepOnly({ state, commit, dispatch }, eids) {
       const keep = {};
       (eids || []).forEach(e => { keep[e] = true; });
       if (Object.keys(keep).length < 2) return;
-      commit("keepSnapshot", Object.keys(keep).length);
+      commit("keepSnapshot", { kept: Object.keys(keep).length, what: "kept" });
       Object.keys(state.nodes).forEach(e => {
         if (!keep[e]) commit("removeNode", e);
       });

@@ -168,11 +168,9 @@ Vue.component("graph-canvas", {
       this.tickN = (this.tickN || 0) + 1;
       if (this.tickN % 6 === 0) this.placeLabels();
     },
-    // The same thing Escape does, where the reader is already pointing.
-    clearSelection() {
-      this.$store.commit("select", null);
-      this.$store.commit("setPath", []);
-    },
+    // Start again. Undo is the reason this can be one press rather than a dialog:
+    // the canvas is held, and the bar under it offers the whole thing back.
+    clearGraph() { this.$store.dispatch("clearGraph"); },
     labelText(d) {
       const nm = d.name || "";
       return nm.length > 28 ? nm.slice(0, 27) + "\u2026" : nm;
@@ -552,7 +550,9 @@ Vue.component("graph-canvas", {
     <!-- The same bar for the bulk case. One at a time: two undo offers over one
          canvas would not say which of them the button belongs to. -->
     <div class="cundo" v-else-if="$store.state.keptBack">
-      <span>Kept <b>{{ $store.state.keptBack.kept }}</b> of {{
+      <span v-if="$store.state.keptBack.what === 'cleared'">Cleared <b>{{
+        $store.state.keptBack.before }}</b> nodes</span>
+      <span v-else>Kept <b>{{ $store.state.keptBack.kept }}</b> of {{
         $store.state.keptBack.before }} nodes</span>
       <button class="ghost tiny" @click="$store.commit('restoreKept')">Undo</button>
       <button class="ghost tiny" @click="$store.commit('forgetKept')"
@@ -569,11 +569,16 @@ Vue.component("graph-canvas", {
               data-tip="Zoom out" aria-label="Zoom out">&minus;</button>
       <button class="ghost" @click="fit"
               data-tip="Fit the graph to the view" aria-label="Fit the graph to the view">&#8690;</button>
-      <!-- Only when there is a selection to clear, for the same reason as the pin
-           release below it. -->
-      <button class="ghost" v-if="$store.state.selection" @click="clearSelection"
-              data-tip="Deselect, and close the panel. The nodes stay (Esc)"
-              aria-label="Deselect">&#10005;</button>
+      <!-- Only when there is something to clear, for the same reason as the pin
+           release below it. This empties the canvas: Deselect, which only closes the
+           panel, lives in the panel itself and on Escape. -->
+      <button class="ghost cwipe" v-if="nodes.length" @click="clearGraph"
+              data-tip="Clear the graph. Every node goes, and Undo brings them back."
+              aria-label="Clear the graph">
+        <svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.7 9h5.6l.7-9M7 7v4M9 7v4"
+                stroke="currentColor" stroke-width="1.3" fill="none"
+                stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
       <!-- Only when there is something to release, and saying how many. A filled
            circle labelled "release pinned nodes" is a control whose meaning is
            only in its tooltip, sitting there whether or not it does anything. -->
