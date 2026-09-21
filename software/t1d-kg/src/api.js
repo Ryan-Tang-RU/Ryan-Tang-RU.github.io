@@ -27,6 +27,7 @@ const SENT_RE = /[^.!?]*[.!?]+(?:\s|$)|[^.!?]+$/g;
 const TABLES = ["entities", "entity_year", "pair_year", "corpus_year", "papers",
                 "passages", "mentions", "relations", "search", "coverage", "vocab"];
 
+let db = null;
 let conn = null;
 let manifest = null;
 let warmed = false;
@@ -83,16 +84,36 @@ function rows(table) {
   return out;
 }
 
+const VIEW = t => "CREATE OR REPLACE VIEW " + t
+  + " AS SELECT * FROM read_parquet('" + t + ".parquet')";
+
+// A fault inside the WASM module poisons everything that came out of it: a
+// prepared statement is a handle into a heap that no longer exists, so the next
+// call on it throws the same thing again and every Retry fails. One report read
+// "null function" from the step that loads the asserted relations, which is that
+// shape. Rebuilding the connection and dropping the cache makes Retry a real
+// offer rather than a button that repeats the error.
+const FATAL = /null function|function signature mismatch|memory access out of bounds|unreachable|RuntimeError|abort\(|Aborted/i;
+
+async function recover() {
+  prepared.clear();
+  try { if (conn) await conn.close(); } catch (e) { /* replacing it is the point */ }
+  conn = await db.connect();
+  for (const t of TABLES) await conn.query(VIEW(t));
+}
+
 async function run(name, params) {
   const sql = window.T1DSQL[name];
   if (!sql) throw new Error("no such query: " + name);
-  let stmt = prepared.get(name);
-  if (!stmt) {
-    stmt = await conn.prepare(positional(sql));
-    prepared.set(name, stmt);
-  }
   const args = paramNames(sql).map(n => flat(params[n]));
   try {
+    let stmt = prepared.get(name);
+    if (!stmt) {
+      // Inside the try on purpose: a crash while preparing used to travel with no
+      // query name attached, which is how the first report of this arrived.
+      stmt = await conn.prepare(positional(sql));
+      prepared.set(name, stmt);
+    }
     return rows(await stmt.query(...args));
   } catch (e) {
     // Name the query and the values it carried. An engine message on its own
@@ -101,8 +122,19 @@ async function run(name, params) {
     // and it could not be reproduced from the words alone.
     const shown = args.map(v => JSON.stringify(v === undefined ? null : v))
                       .join(", ").slice(0, 200);
-    throw new Error(String((e && e.message) || e) +
-                    " [query " + name + "(" + shown + ")]");
+    const msg = String((e && e.message) || e);
+    // This statement is suspect either way, so it is never reused.
+    prepared.delete(name);
+    let note = "";
+    if (FATAL.test(msg)) {
+      try {
+        await recover();
+        note = " The engine was restarted, so Retry should work.";
+      } catch (e2) {
+        note = " The engine could not be restarted, so reload the page.";
+      }
+    }
+    throw new Error(msg + " [query " + name + "(" + shown + ")]" + note);
   }
 }
 
@@ -118,7 +150,7 @@ async function boot(progress) {
   // The worker script is cross-origin, which `new Worker(url)` refuses; this
   // helper fetches it and starts it from a blob instead.
   const worker = await duckdb.createWorker(bundle.mainWorker);
-  const db = new duckdb.AsyncDuckDB(new duckdb.VoidLogger(), worker);
+  db = new duckdb.AsyncDuckDB(new duckdb.VoidLogger(), worker);
   await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
   conn = await db.connect();
 
@@ -131,8 +163,7 @@ async function boot(progress) {
     // 350 KB of a 10 MB file rather than the whole file.
     await db.registerFileURL(file, new URL("data/" + file, location.href).href,
                              duckdb.DuckDBDataProtocol.HTTP, false);
-    await conn.query("CREATE OR REPLACE VIEW " + t
-                     + " AS SELECT * FROM read_parquet('" + file + "')");
+    await conn.query(VIEW(t));
   }
   return manifest;
 }

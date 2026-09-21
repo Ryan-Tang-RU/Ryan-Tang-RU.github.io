@@ -147,10 +147,16 @@ Vue.component("evidence-panel", {
       <template v-else>
         <p class="hint" v-if="pairTotal === 0">No claim was found, and none could be: the text-reading step never produces one for a
           <b>{{ pairType }}</b> pair, not once in {{ (relCorpusTotal || 0).toLocaleString() }} claims across all these papers. It reads claims only between genes, diseases, chemicals and variants, so nothing is missing here: this kind of pair is outside what it looks for. The sentences are the evidence.</p>
-        <p class="hint" v-else>No claim was found for this pair, although <b>{{ pairType }}</b> pairs carry
+        <!-- v-else-if, not v-else: pairTotal is null until the pair-type totals come
+             back, and null is neither zero nor a number to print. As a bare v-else
+             this branch rendered with pairTotal null and the render threw on
+             toLocaleString, which takes the whole panel down with it. -->
+        <p class="hint" v-else-if="pairTotal > 0">No claim was found for this pair, although <b>{{ pairType }}</b> pairs carry
           {{ pairTotal.toLocaleString() }} claims elsewhere in these papers.
           Here it is this pair that has none, not the kind of pair. The sentences
           below show where the two appear together.</p>
+        <p class="hint" v-else>No claim was found for this pair. The sentences below
+          show where the two appear together.</p>
       </template>
     </div>
 
