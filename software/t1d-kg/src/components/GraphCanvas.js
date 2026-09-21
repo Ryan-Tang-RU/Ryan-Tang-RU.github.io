@@ -168,6 +168,11 @@ Vue.component("graph-canvas", {
       this.tickN = (this.tickN || 0) + 1;
       if (this.tickN % 6 === 0) this.placeLabels();
     },
+    // The same thing Escape does, where the reader is already pointing.
+    clearSelection() {
+      this.$store.commit("select", null);
+      this.$store.commit("setPath", []);
+    },
     labelText(d) {
       const nm = d.name || "";
       return nm.length > 28 ? nm.slice(0, 27) + "\u2026" : nm;
@@ -544,16 +549,38 @@ Vue.component("graph-canvas", {
               title="dismiss">&times;</button>
     </div>
 
+    <!-- The same bar for the bulk case. One at a time: two undo offers over one
+         canvas would not say which of them the button belongs to. -->
+    <div class="cundo" v-else-if="$store.state.keptBack">
+      <span>Kept <b>{{ $store.state.keptBack.kept }}</b> of {{
+        $store.state.keptBack.before }} nodes</span>
+      <button class="ghost tiny" @click="$store.commit('restoreKept')">Undo</button>
+      <button class="ghost tiny" @click="$store.commit('forgetKept')"
+              title="dismiss">&times;</button>
+    </div>
+
+    <!-- Every control here says what it does on hover. The glyphs are small and
+         several of them are not obvious, and a native title arrives too late to be
+         read as an answer to "what is this". -->
     <div class="ctools">
-      <button class="ghost" @click="$root.$emit('graph:zoom',1.4)" title="Zoom in">+</button>
-      <button class="ghost" @click="$root.$emit('graph:zoom',1/1.4)" title="Zoom out">&minus;</button>
-      <button class="ghost" @click="fit" title="Fit to view">&#8690;</button>
+      <button class="ghost" @click="$root.$emit('graph:zoom',1.4)"
+              data-tip="Zoom in" aria-label="Zoom in">+</button>
+      <button class="ghost" @click="$root.$emit('graph:zoom',1/1.4)"
+              data-tip="Zoom out" aria-label="Zoom out">&minus;</button>
+      <button class="ghost" @click="fit"
+              data-tip="Fit the graph to the view" aria-label="Fit the graph to the view">&#8690;</button>
+      <!-- Only when there is a selection to clear, for the same reason as the pin
+           release below it. -->
+      <button class="ghost" v-if="$store.state.selection" @click="clearSelection"
+              data-tip="Clear the selection, and the panel with it (Esc)"
+              aria-label="Clear the selection">&#10005;</button>
       <!-- Only when there is something to release, and saying how many. A filled
            circle labelled "release pinned nodes" is a control whose meaning is
            only in its tooltip, sitting there whether or not it does anything. -->
       <button class="ghost cpin" v-if="pinnedCount" @click="releaseAll"
-              :title="'release ' + pinnedCount + ' pinned node'
-                      + (pinnedCount > 1 ? 's' : '')">
+              :data-tip="'Release ' + pinnedCount + ' pinned node'
+                         + (pinnedCount > 1 ? 's' : '')"
+              :aria-label="'Release ' + pinnedCount + ' pinned nodes'">
         &#9679;<span class="cpinn">{{ pinnedCount }}</span></button>
     </div>
   </div>`

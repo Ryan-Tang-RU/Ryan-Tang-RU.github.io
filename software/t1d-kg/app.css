@@ -822,3 +822,13 @@ details.legend p.hint { margin-top: 4px; }
 .pill.dopin { cursor: pointer; background: transparent;
               border: 1px dashed var(--line, #d7dbe2); color: var(--ink-2, #5b6472); }
 .pill.dopin:hover { border-style: solid; color: var(--ink, #1c222b); }
+
+/* Hover labels for the canvas tools. The glyphs are small, and a native title
+   arrives a second too late to answer "what is this". */
+.ctools .ghost{position:relative}
+.ctools .ghost[data-tip]:hover::after,
+.ctools .ghost[data-tip]:focus-visible::after{
+  content:attr(data-tip); position:absolute; right:calc(100% + 8px); top:50%;
+  transform:translateY(-50%); white-space:nowrap; font-size:11px; line-height:1;
+  padding:5px 8px; border-radius:6px; pointer-events:none; z-index:6;
+  color:var(--bg-1,#fff); background:var(--ink,#1c222b); box-shadow:0 1px 4px rgba(0,0,0,.18)}

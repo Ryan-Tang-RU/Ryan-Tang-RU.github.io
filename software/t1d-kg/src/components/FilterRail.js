@@ -21,6 +21,9 @@ Vue.component("filter-rail", {
     types: ["Gene","Disease","Chemical","Species","Variant","CellLine","Chromosome"]
   }),
   computed: {
+    // Offering to keep only the pinned nodes when every node is pinned is an
+    // offer to do nothing, which reads as a control that has stopped working.
+    nodeCount() { return Object.keys(this.$store.state.nodes).length; },
     pinnedCount() {
       return Object.values(this.$store.state.nodes).filter(n => n.pinned).length;
     },
@@ -216,7 +219,8 @@ Vue.component("filter-rail", {
 
     <div class="sec">
       <label>Most connected entities</label>
-      <button class="ghost wide" v-if="pinnedCount > 1" @click="keepPinned"
+      <button class="ghost wide" v-if="pinnedCount > 1 && pinnedCount < nodeCount"
+              @click="keepPinned"
               :title="'Removes every node except the ' + pinnedCount + ' pinned ones, '
                       + 'then draws the edges the data puts between them'">
         Keep only the {{ pinnedCount }} pinned nodes</button>

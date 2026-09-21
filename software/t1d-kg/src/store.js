@@ -48,6 +48,10 @@ window.T1DStore = new Vuex.Store({
     // has to walk back the same way: one batch per press, newest first.
     expandStack: [],
     lastRemoved: null,   // the node and edges Undo would put back
+    // Keeping only a chosen set removes many nodes at once, and the one-node
+    // slot above cannot describe that: it would offer to put back whichever node
+    // happened to be removed last. This holds the canvas as it was.
+    keptBack: null,
     // What is still not shown for a node, and how it breaks down by type. Both are
     // computed server-side with the canvas contents excluded, which is what lets a
     // button state an exact number instead of an upper bound.
@@ -197,6 +201,22 @@ window.T1DStore = new Vuex.Store({
       s.version++;
     },
     forgetRemoved(s) { s.lastRemoved = null; },
+    keepSnapshot(s, kept) {
+      s.keptBack = { nodes: Object.assign({}, s.nodes),
+                     links: Object.assign({}, s.links),
+                     focus: s.focus, before: Object.keys(s.nodes).length,
+                     kept: kept };
+    },
+    restoreKept(s) {
+      const b = s.keptBack;
+      if (!b) return;
+      s.nodes = b.nodes;
+      s.links = b.links;
+      s.focus = b.focus;
+      s.keptBack = null;
+      s.version++;
+    },
+    forgetKept(s) { s.keptBack = null; },
     // The ring the canvas already draws for a freshly expanded batch, for one
     // node. The assistant loading an entity moved the view with nothing saying
     // which of the nodes on it was the new one.
@@ -381,6 +401,7 @@ window.T1DStore = new Vuex.Store({
       // A focus reload replaces the neighbourhood wholesale, so the batches Undo
       // would walk back no longer describe anything the user can see.
       commit("clearExpands");
+      commit("forgetKept");   // a rebuilt canvas is not the one that was kept
       commit("setCypher", window.T1DCypher.neighbours(eid, state.y0, state.y1));
       commit("setNeighbourTotal", { eid: eid, total: res.total_neighbours });
       commit("setNeighbourRemaining", { eid: eid, total: res.remaining,
@@ -492,9 +513,13 @@ window.T1DStore = new Vuex.Store({
       const keep = {};
       (eids || []).forEach(e => { keep[e] = true; });
       if (Object.keys(keep).length < 2) return;
+      commit("keepSnapshot", Object.keys(keep).length);
       Object.keys(state.nodes).forEach(e => {
         if (!keep[e]) commit("removeNode", e);
       });
+      // removeNode leaves its own one-node Undo behind, and after a bulk removal
+      // that offer is a lie: it would put back the last node of twenty-nine.
+      commit("forgetRemoved");
       commit("select", null);
       commit("setPath", []);
       await dispatch("fillSubgraph");
