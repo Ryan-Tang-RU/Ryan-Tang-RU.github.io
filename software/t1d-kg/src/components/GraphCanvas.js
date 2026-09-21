@@ -18,6 +18,7 @@
      and filled the screen with two enormous nodes. */
 Vue.component("graph-canvas", {
   data: () => ({ tipHtml: "", tipX: 0, tipY: 0,
+                 dragMoved: false, dragWasPinned: false,
                  clickTimer: null, clickEid: null, clickNode: null,
                  seeds: window.T1D_SEEDS }),
   computed: {
@@ -275,15 +276,27 @@ Vue.component("graph-canvas", {
                 self.$emit("pick-node", d);
               }, 220);
             })
+            // A click is not a drag. d3-drag reports start and end for a press and
+            // release that never moved, and pinning on end meant every node a reader
+            // selected was frozen where it stood: after a few minutes the whole
+            // canvas was pinned, the layout could no longer settle, and "keep only
+            // the pinned nodes" had nothing left to exclude.
             .call(d3.drag()
               .on("start", (e, d) => {
                 if (!e.active) self.sim.alphaTarget(0.2).restart();
+                self.dragMoved = false;
+                self.dragWasPinned = !!d.pinned;
                 d.fx = d.x; d.fy = d.y;
               })
-              .on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; })
+              .on("drag", (e, d) => {
+                self.dragMoved = true;
+                d.fx = e.x; d.fy = e.y;
+              })
               .on("end", (e, d) => {
                 if (!e.active) self.sim.alphaTarget(0);
-                d.pinned = true; self.restyle();
+                if (self.dragMoved) d.pinned = true;
+                else if (!self.dragWasPinned) { d.fx = null; d.fy = null; }
+                self.restyle();
               }));
           return g;
         }, up => up, ex => ex.remove());
