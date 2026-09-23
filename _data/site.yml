@@ -80,7 +80,7 @@ services:
   - "Area Chair: International Conference on Learning Representations (ICLR), 2027"
   - "Senior PC: ACM International Conference on Information and Knowledge Management (CIKM), 2023, 2024, 2025, 2026"
   - "Senior PC: Association for the Advancement of Artificial Intelligence (AAAI), 2027"
-  - "Research Mentor: <a href=\"https://www.matsprogram.org/\">ML Alignment &amp; Theory Scholars (MATS)</a>"
+  - "Research Mentor: <a href=\"https://www.matsprogram.org/mentor/tang\">ML Alignment &amp; Theory Scholars (MATS)</a>"
 - label: 'Editorial Board:'
   items:
   - Associate Editor, Smart Health Journal
