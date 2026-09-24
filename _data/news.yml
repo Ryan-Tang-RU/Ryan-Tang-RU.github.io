@@ -1,5 +1,8 @@
 # News, ported from the Google Sites original. `tag` renders as the bracketed [paper]/[award] label.
 - date: 9/2026
+  tag: paper
+  text: Two papers accepted to <b>NeurIPS 2026</b>. We introduced online auditing for early failure prediction in multi-agent systems, and studied token value inequality for efficient reasoning.
+- date: 9/2026
   text: I am joining the <a href="https://www.matsprogram.org/mentor/tang"><b>ML Alignment &amp; Theory Scholars (MATS)</b></a> program as a research mentor, working with fellows on AI control and monitoring and on interpretability.
 - date: 8/2026
   text: I'm happy to serve as guest editor for the <b>Pattern Recognition</b> Special Issue on <a href="https://www.sciencedirect.com/special-issue/336704/world-modeling-for-dynamic-video-understanding">“<b>World Modeling for Dynamic Video Understanding</b>.”</a> Submissions are warmly welcome.

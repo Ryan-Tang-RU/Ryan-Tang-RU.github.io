@@ -15,6 +15,7 @@
   --green: #188038;        /* blog tags */
   --tag-paper: #1155cc;    /* [paper] on the news list, as on the original */
   --tag-award: #b45f06;    /* [award] */
+  --honor: #a5402f;        /* (Oral), (Best Student Paper) and other distinctions */
   --banner: #3c4043;
 
   --sans: Roboto, Arial, Helvetica, sans-serif;
@@ -258,6 +259,8 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
 .pubs .a { display: block; }
 .pubs .corr { font-weight: 700; color: var(--tag-award); }
 .pubs .v { display: block; font-style: italic; color: var(--ink-head); }
+/* a distinction noted after the venue, kept a muted brick red rather than a bright one */
+.pubs .v .honor { color: var(--honor); }
 
 /* ---------------------------------------------------------------- group / teaching / awards */
 

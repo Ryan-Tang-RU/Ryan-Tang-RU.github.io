@@ -5,10 +5,6 @@
     url: "https://arxiv.org/pdf/2605.15128"
     authors: Minghao Guo, Qingyue Jiao, Zeru Shi, Yihao Quan, Boxuan Zhang, Danrui Li, Liwei Che, Wujiang Xu, Shilong Liu, Zirui Liu, Mubbasir Kapadia, Vladimir Pavlovic, Jiang Liu, Mengdi Wang, Yiyu Shi, Dimitris N. Metaxas, and <b>Ruixiang Tang</b>
     venue: <i>arXiv preprint, 2026</i>
-  - title: "AgentForesight: Online Auditing for Early Failure Prediction in Multi-Agent Systems"
-    url: "https://arxiv.org/pdf/2605.08715"
-    authors: Boxuan Zhang, Jianing Zhu, Zeru Shi, Dongfang Liu, <b>Ruixiang Tang</b>
-    venue: <i>arXiv preprint, 2026</i>
   - title: "Micro-Defects Expose Macro-Fakes: Detecting AI-Generated Images via Local Distributional Shifts"
     url: "https://arxiv.org/abs/2605.09296"
     authors: Boxuan Zhang, Jianing Zhu, Qifan Wang, Jiang Liu, <b>Ruixiang Tang</b>
@@ -38,6 +34,13 @@
     venue: <i>arXiv preprint, 2025</i>
 - section: '2026'
   items:
+  - title: "AgentForesight: Online Auditing for Early Failure Prediction in Multi-Agent Systems"
+    url: "https://arxiv.org/pdf/2605.08715"
+    authors: Boxuan Zhang, Jianing Zhu, Zeru Shi, Dongfang Liu, <b>Ruixiang Tang</b>
+    venue: <i>Conference on Neural Information Processing Systems, <b>NeurIPS</b>, 2026</i>
+  - title: On the Token Value Inequality in Efficient Reasoning
+    authors: Runjia Zeng, Hang Hua, Yiyang Liu, Zhiqiang Tao, <b>Ruixiang Tang</b>, Qifan Wang, Cheng Han, Dongfang Liu
+    venue: <i>Conference on Neural Information Processing Systems, <b>NeurIPS</b>, 2026</i>
   - title: "TRACES: Proactive Safety Auditing for Multi-Turn LLM Agents via Trajectory-State Modeling"
     url: "https://arxiv.org/abs/2605.27690"
     authors: Jiaqian Li, Yanshu Li, Boxuan Zhang, <b>Ruixiang Tang</b>, Kuan-Hao Huang
@@ -79,7 +82,7 @@
   - title: "Shifting Uncertainty to Critical Moments: Towards Reliable Uncertainty Quantification for VLA Model"
     url: "https://arxiv.org/pdf/2603.18342"
     authors: Yanchuan Tang*, Taowen Wang*, Yuefei Chen, Boxuan Zhang, Qiang Guan, <b>Ruixiang Tang</b>
-    venue: <i>IEEE International Conference on Multimedia and Expo, <b>ICME</b>, 2026 (Best Paper Candidate)</i>
+    venue: <i>IEEE International Conference on Multimedia and Expo, <b>ICME</b>, 2026 <span class="honor">(Best Paper Candidate)</span></i>
   - title: "Distilling Counterfactual Reasoning from Language to Vision: Causal Graph-Guided Post-Training for Video Understanding"
     url: "https://arxiv.org/abs/2511.19923"
     authors: Yuefei Chen, Jiang Liu, Xiaodong Lin, <b>Ruixiang Tang</b>
@@ -87,7 +90,7 @@
   - title: "Make LVLMs Focus: Context-Aware Attention Modulation for Better Multimodal In-Context Learning"
     url: "https://arxiv.org/abs/2505.17097"
     authors: Yanshu Li, Jianjiang Yang, Ziteng Yang, Bozheng Li, Ligong Han, Hongyang He, Zhengtao Yao, Yingjie Victor Chen, Songlin Fei, Dongfang Liu, <b>Ruixiang Tang</b>
-    venue: <i>Annual AAAI Conference on Artificial Intelligence, <b>AAAI</b>, 2026 (Oral)</i>
+    venue: <i>Annual AAAI Conference on Artificial Intelligence, <b>AAAI</b>, 2026 <span class="honor">(Oral)</span></i>
   - title: "CounterBench: Evaluating and Improving Counterfactual Reasoning in Large Language Models"
     url: "https://arxiv.org/abs/2502.11008"
     authors: Yuefei Chen, Vivek K. Singh, Jing Ma, <b>Ruixiang Tang</b>
@@ -95,7 +98,7 @@
   - title: "CATP: Contextually Adaptive Token Pruning for Efficient and Enhanced Multimodal In‐Context Learning"
     url: "https://arxiv.org/abs/2508.07871"
     authors: Yanshu Li, Jianjiang Yang, Zhennan Shen, Ligong Han, Haoyan Xu, <b>Ruixiang Tang</b>
-    venue: <i>Annual AAAI Conference on Artificial Intelligence, <b>AAAI</b>, 2026 (Oral)</i>
+    venue: <i>Annual AAAI Conference on Artificial Intelligence, <b>AAAI</b>, 2026 <span class="honor">(Oral)</span></i>
   - title: "TokenSeek: Memory Efficient Fine Tuning via Instance-Aware Token Ditching"
     url: "https://arxiv.org/abs/2601.19739"
     authors: Runjia Zeng, Qifan Wang, Qiang Guan, <b>Ruixiang Tang</b>, Lifu Huang, Zhenting Wang, Xueling Zhang, Cheng Han, Dongfang Liu
@@ -210,7 +213,7 @@
   - title: "Large Language Models for Healthcare Data Augmentation: An Example on Patient-Trial Matching"
     url: "https://arxiv.org/abs/2303.16756"
     authors: Jiayi Yuan,<b> Ruixiang Tang</b>, Xiaoqian Jiang, Xia Hu
-    venue: <i><b>AMIA</b> 2023 Annual Symposium (Best Student Paper )</i>
+    venue: <i><b>AMIA</b> 2023 Annual Symposium <span class="honor">(Best Student Paper)</span></i>
   - title: Winner-Take-All Column Row Sampling for Memory Efficient Adaptation of Language Model
     url: "https://papers.nips.cc/paper_files/paper/2023/hash/0a6059857ae5c82ea9726ee9282a7145-Abstract-Conference.html"
     authors: Zirui Liu*, Guanchu Wang*, Shaochen Zhong, Zhaozhuo Xu, Daochen Zha, <b>Ruixiang Tang</b>, Zhimeng Jiang, Kaixiong Zhou, Vipin Chaudhary, Shuai Xu, Xia Hu
@@ -225,7 +228,7 @@
   - title: "DiscoverPath: A Knowledge Refinement and Retrieval System for Interdisciplinarity on Biomedical Research"
     url: "https://www.researchgate.net/profile/Ruixiang-Tang/publication/369755614_DiscoverPath_A_Knowledge_Refinement_and_Retrieval_System_for_Interdisciplinarity_on_Biomedical_Research/links/642b513fad9b6d17dc3216e6/DiscoverPath-A-Knowledge-Refinement-and-Retrieval-System-for-Interdisciplinarity-on-Biomedical-Research.pdf"
     authors: Yu-Neng Chuang, Guanchu Wang, Chia-Yuan Chang, Kwei-Herng Lai, Daochen Zha, <b>Ruixiang Tang</b>, Fan Yang, Alfredo Costilla Reyes, Kaixiong Zhou, Xiaoqian Jiang, Xia Hu
-    venue: <i>Conference on Information and Knowledge Management, demo paper, <b>CIKM</b> 2023 (Best Demo Paper Honorable Mention)</i>
+    venue: <i>Conference on Information and Knowledge Management, demo paper, <b>CIKM</b> 2023 <span class="honor">(Best Demo Paper Honorable Mention)</span></i>
   - title: "PheME: A Deep Ensemble Framework for Improving Phenotype Prediction from Multi-modal Data"
     url: "https://arxiv.org/abs/2303.10794"
     authors: Shenghan Zhang*, Haoxuan Li*, <b>Ruixiang Tang</b>*, Sirui Ding*, Laila Rasmy, Degui Zhi, Na Zou, Xia Hu.
@@ -259,7 +262,7 @@
   - title: Fairly Predicting Graft Failure in Liver Transplant for Organ Assigning
     url: "https://arxiv.org/abs/2302.09400"
     authors: Sirui Ding, <b>Ruixiang Tang</b>, Daochen Zha, Na Zou, Kai Zhang, Xiaoqian Jiang, Xia Hu
-    venue: <i><b>AMIA</b> 2022 Annual Symposium (Best Student Paper Finalist)</i>
+    venue: <i><b>AMIA</b> 2022 Annual Symposium <span class="honor">(Best Student Paper Finalist)</span></i>
   - title: Towards Debiasing DNN Models From Spurious Feature Influence
     url: "https://ojs.aaai.org/index.php/AAAI/article/view/21185"
     authors: Mengnan Du, <b>Ruixiang Tang</b>, Weijie Fu, Xia Hu
