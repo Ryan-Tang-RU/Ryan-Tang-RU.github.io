@@ -5,10 +5,6 @@
     url: "https://arxiv.org/pdf/2605.15128"
     authors: Minghao Guo, Qingyue Jiao, Zeru Shi, Yihao Quan, Boxuan Zhang, Danrui Li, Liwei Che, Wujiang Xu, Shilong Liu, Zirui Liu, Mubbasir Kapadia, Vladimir Pavlovic, Jiang Liu, Mengdi Wang, Yiyu Shi, Dimitris N. Metaxas, and <b>Ruixiang Tang</b>
     venue: <i>arXiv preprint, 2026</i>
-  - title: "AgentForesight: Online Auditing for Early Failure Prediction in Multi-Agent Systems"
-    url: "https://arxiv.org/pdf/2605.08715"
-    authors: Boxuan Zhang, Jianing Zhu, Zeru Shi, Dongfang Liu, <b>Ruixiang Tang</b>
-    venue: <i>arXiv preprint, 2026</i>
   - title: "Micro-Defects Expose Macro-Fakes: Detecting AI-Generated Images via Local Distributional Shifts"
     url: "https://arxiv.org/abs/2605.09296"
     authors: Boxuan Zhang, Jianing Zhu, Qifan Wang, Jiang Liu, <b>Ruixiang Tang</b>
@@ -38,6 +34,13 @@
     venue: <i>arXiv preprint, 2025</i>
 - section: '2026'
   items:
+  - title: "AgentForesight: Online Auditing for Early Failure Prediction in Multi-Agent Systems"
+    url: "https://arxiv.org/pdf/2605.08715"
+    authors: Boxuan Zhang, Jianing Zhu, Zeru Shi, Dongfang Liu, <b>Ruixiang Tang</b>
+    venue: <i>Conference on Neural Information Processing Systems, <b>NeurIPS</b>, 2026</i>
+  - title: On the Token Value Inequality in Efficient Reasoning
+    authors: Runjia Zeng, Hang Hua, Yiyang Liu, Zhiqiang Tao, <b>Ruixiang Tang</b>, Qifan Wang, Cheng Han, Dongfang Liu
+    venue: <i>Conference on Neural Information Processing Systems, <b>NeurIPS</b>, 2026</i>
   - title: "TRACES: Proactive Safety Auditing for Multi-Turn LLM Agents via Trajectory-State Modeling"
     url: "https://arxiv.org/abs/2605.27690"
     authors: Jiaqian Li, Yanshu Li, Boxuan Zhang, <b>Ruixiang Tang</b>, Kuan-Hao Huang
