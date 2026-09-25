@@ -122,6 +122,7 @@
     authors: Hongyi Liu, Shaochen Zhong, Xintong Sun, Minghao Tian, Mohsen Hariri, Zirui Liu, <b>Ruixiang Tang</b>, Zhimeng Jiang, Jiayi Yuan, Yu-Neng Chuang, Li Li, Soo-Hyun Choi, Rui Chen, Vipin Chaudhary, Xia Hu
     venue: <i>Empirical Methods in Natural Language Processing, <b>EMNLP </b><b>Findings</b>, 2025</i>
   - title: A Decoupled Multi-Agent Framework for Complex Text Style Transfer
+    url: "https://aclanthology.org/2025.findings-emnlp.1166/"
     authors: Lingxi Zhang, Yu-Neng Chuang, Guanchu Wang, <b>Ruixiang Tang</b>, Xuanting Cai, Rajesh Shenoy, Xia Hu
     venue: <i>Empirical Methods in Natural Language Processing, <b>EMNLP Findings</b>, 2025</i>
   - title: Exploring the Adversarial Vulnerabilities of Vision-Language-Action Models in Robotics
