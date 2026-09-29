@@ -68,13 +68,19 @@ window.T1DStore = new Vuex.Store({
     // the extractor's vocabulary and calls it filtering the literature: it would
     // take type 1 diabetes' edges to Diabetes Mellitus and to type 2 out of the
     // graph, which are among the most substantive links in this corpus.
-    edgeMode: "emphasise",
+    // Relation-first by default: a reader asked for the graph to start from the
+    // links something was actually asserted about, rather than from every pair
+    // that shares papers. The other two modes are one click away in the rail.
+    edgeMode: "only",   // fixed: the rail no longer offers the other two
     // What "strongest partner" means, and the default. By co-mentions the top of
     // the list is the pair types that can never carry a relation - ten of type 1
     // diabetes' first thirty partners have anything to open. By relations it is
     // thirty of thirty, so that is the default: a reader clicking an edge should
     // find something behind it. Co-mention order is one click away, and it is still
     // what the edge thickness means.
+    // Claims first, to match the edges the canvas now draws: a partner added by
+    // "show more" is one the literature asserts something about, not one that
+    // merely shares papers.
     rankBy: "relations",
     expandBatch: EXPAND_BATCH,
     pairTypes: null,
@@ -310,8 +316,6 @@ window.T1DStore = new Vuex.Store({
     },
     setAvoidHubs(s, v) { s.avoidHubs = v; },
     setHubs(s, h) { s.hubs = h; },
-    setEdgeMode(s, m) { s.edgeMode = m; s.version++; },
-    setRankBy(s, r) { s.rankBy = r; },
     setPairTypes(s, rows) {
       const m = {};
       (rows || []).forEach(r => {

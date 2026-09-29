@@ -852,7 +852,12 @@ details.legend p.hint { margin-top: 4px; }
 
 /* Who publishes this. Collapsed until it is asked for, and quiet when open: it is
    context for the finding, not the finding. */
-.whobox{margin:10px 0 2px}
+/* flex:none, or the panel's flex column squeezes the open section to nothing and
+   the rows below the fold cannot be reached. Its own scroll, capped like the
+   connection list above it, so the panel keeps one screenful of structure. */
+.whobox{margin:10px 0 2px;flex:none}
+.whobox[open] .who{max-height:min(46vh,420px);overflow-y:auto;
+  overscroll-behavior:contain;padding-right:4px}
 .whobox>summary{font:500 11px var(--mono);color:var(--ink-2);cursor:pointer;
   list-style:revert;padding:2px 0}
 .whobox>summary:hover{color:var(--ink)}

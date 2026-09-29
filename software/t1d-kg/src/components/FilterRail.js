@@ -1,4 +1,10 @@
-/* Left rail: years, type filters, path endpoints, legend. */
+/* Left rail: search, years, the ranking, type filters, path endpoints.
+
+   The edge-display and partner-ranking groups and every explanatory line were
+   taken out at the owner's request: the rail had grown more sentences than
+   controls. Edges now start from the ones a claim was extracted for, which is
+   what the removed default chose, and the count that line used to carry sits in
+   the canvas status bar where the drawing is. */
 // The corpus bounds, in one place. They were written into the two number inputs
 // and into the "all" preset separately, and the track would have been a fourth
 // copy. Not read from the manifest: this file is shared with the bridge build,
@@ -11,11 +17,6 @@ Vue.component("filter-rail", {
     Y_MIN: Y_MIN, Y_MAX: Y_MAX,
     grab: null, pending: null,
     topOpen: false, topRows: [], topType: "", topBusy: false, topErr: "",
-    edgeModes: [["all", "all", "every link"],
-                ["emphasise", "emphasise", "links with a claim solid, the rest faint"],
-                ["only", "relations only", "hide links with no claim behind them"]],
-    ranks: [["papers", "co-mentions", "how many papers mention both"],
-            ["relations", "relations", "how many claims were found in the text"]],
     presets: [["all",1960,2025],["1990s",1990,1999],["2000s",2000,2009],
               ["2010s",2010,2019],["2020+",2020,2025]],
     types: ["Gene","Disease","Chemical","Species","Variant","CellLine","Chromosome"]
@@ -50,7 +51,6 @@ Vue.component("filter-rail", {
     },
     edgeMode() { return this.$store.state.edgeMode; },
     rankBy() { return this.$store.state.rankBy; },
-    stats() { return this.$store.getters.edgeStats; },
     y0: { get() { return this.$store.state.y0; },
           set(v) { this.$store.commit("setYears", {y0:+v, y1:this.$store.state.y1}); } },
     y1: { get() { return this.$store.state.y1; },
@@ -61,7 +61,6 @@ Vue.component("filter-rail", {
     pathB() { return this.$store.state.pathB; },
     hubs() { return this.$store.state.hubs; },
     hidden() { return this.$store.state.hiddenTypes; },
-    canvasSize() { return Object.keys(this.$store.state.nodes).length; }
   },
   methods: {
     // The pinned set, extracted with the edges between its members.
@@ -148,12 +147,6 @@ Vue.component("filter-rail", {
       this.topOpen = !this.topOpen;
       if (this.topOpen && !this.topRows.length) this.loadTop();
     },
-    setMode(m) { this.$store.commit("setEdgeMode", m); },
-    setRank(r) {
-      if (r === this.rankBy) return;
-      this.$store.commit("setRankBy", r);
-      this.$store.dispatch("reloadYears");   // re-ask in the new order
-    },
     isPreset(p) { return this.y0===p[1] && this.y1===p[2]; },
     apply() {
       this.$store.dispatch("reloadYears");
@@ -209,8 +202,6 @@ Vue.component("filter-rail", {
                 @keydown="railKey($event, 'right')"></button>
       </div>
       <p class="rnow" :class="{pend: !!pending}">{{ selY0 }}&ndash;{{ selY1 }}</p>
-      <p class="hint" v-if="canvasSize > 1">Changing the years redraws the edges.
-        Your {{ canvasSize }} open nodes stay.</p>
       <div class="presets">
         <button v-for="p in presets" :key="p[0]" @click="preset(p)"
                 :aria-pressed="String(isPreset(p))">{{ p[0] }}</button>
@@ -224,9 +215,6 @@ Vue.component("filter-rail", {
               :title="'Removes every node except the ' + pinnedCount + ' pinned ones, '
                       + 'then draws the edges the data puts between them'">
         Keep only the {{ pinnedCount }} pinned nodes</button>
-      <p class="hint" v-else-if="pinnedCount === 1">One node is pinned. Pin a second,
-        by dragging it or with <b>pin</b> in the panel on the right, and the two can be
-        kept on their own with the edges between them.</p>
       <button class="ghost wide" @click="toggleTop">
         {{ topOpen ? 'Hide' : 'Show' }} ranking for {{ y0 }}&ndash;{{ y1 }}</button>
       <div v-if="topOpen" class="cdgap8">
@@ -276,38 +264,6 @@ Vue.component("filter-rail", {
       <p class="hidenote" v-if="hiddenCount">{{ hiddenCount }} node<span
         v-if="hiddenCount !== 1">s</span> hidden.
         <button class="linky" @click="showAllTypes">Show all</button></p>
-      <!-- Persistent instructions became noise: a reader new to the page counted
-           more sentences than controls. The legend is one click away instead, and it
-           now carries the distinction that matters most on a first visit. -->
-      <details class="legend">
-        <summary>What the drawing means</summary>
-        <p class="hint">Circle size = papers that mention it &middot; line thickness = papers that mention both &middot; <span class="pinhint">pinned</span> nodes stay where you drop
-        them.</p>
-        <p class="hint">An edge means the two entities appear in the same papers. It
-          does not mean anything was asserted about them. Where a sentence does assert
-          something, the edge carries a relation chip and the panel lists the claims.</p>
-      </details>
-    </div>
-
-    <div class="sec">
-      <label>Edges</label>
-      <div class="seg" role="group" aria-label="edge display">
-        <button v-for="m in edgeModes" :key="m[0]" @click="setMode(m[0])"
-                :aria-pressed="String(edgeMode === m[0])" :title="m[2]">{{ m[1] }}</button>
-      </div>
-      <p class="hint" v-if="edgeMode === 'only' && stats">Showing
-        {{ stats.withRel }} of {{ stats.total }} edges.
-        <template v-if="stats.impossible">{{ stats.impossible }} of the
-          {{ stats.hidden }} hidden ones are pair types that can never carry a
-          relation, such as disease&ndash;disease or any pair with a species.</template></p>
-      <p class="hint" v-else-if="edgeMode === 'emphasise'">Links with a claim are solid. Links with only shared papers are faint. Nothing is hidden.</p>
-
-      <label class="cdgap12">Rank partners by</label>
-      <div class="seg" role="group" aria-label="partner ranking">
-        <button v-for="r in ranks" :key="r[0]" @click="setRank(r[0])"
-                :aria-pressed="String(rankBy === r[0])" :title="r[2]">{{ r[1] }}</button>
-      </div>
-      <p class="hint">Claims ranks by extracted assertions. Papers ranks by shared papers. Line thickness always shows shared papers.</p>
     </div>
 
     <div class="sec">
@@ -338,9 +294,6 @@ Vue.component("filter-rail", {
         </div>
       </div>
       <label class="chk"><input type="checkbox" v-model="avoidHubs"> avoid the most connected nodes</label>
-      <p class="hint" v-if="hubs.length">Without this, paths route through
-        <em v-for="(h,i) in hubs.slice(0,3)" :key="h.eid">{{ h.name }}<span
-          v-if="i<2">, </span></em>, which is true and useless.</p>
       <button class="primary wide" :disabled="!pathA || !pathB"
               @click="$emit('find-path')">Find shortest path</button>
     </div>

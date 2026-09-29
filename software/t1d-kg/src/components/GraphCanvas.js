@@ -49,6 +49,9 @@ Vue.component("graph-canvas", {
     // so the reader had to select something to find out how much they were
     // looking at, and the year window - which silently governs every number -
     // was legible only from the strip's handles.
+    // The rail used to print this next to a control that no longer exists. The
+    // number still matters: without it the canvas looks like the whole graph.
+    edgeStats() { return this.$store.getters.edgeStats; },
     pinnedCount() {
       return Object.keys(this.$store.state.nodes)
         .filter(k => this.$store.state.nodes[k].pinned).length;
@@ -536,15 +539,15 @@ Vue.component("graph-canvas", {
             </div>
           </template>
         </div>
-        <p class="hint">Nodes are entities, edges are papers that mention both.
+        <p class="hint">Nodes are entities. An edge is drawn where a sentence asserted
+          something about the pair, and its thickness is how many papers mention both.
           Drag a node to move it, click an edge for the sentences behind it.</p>
-        <p class="hint">An edge is a co-mention, not an asserted relationship. Open one
-          to see what the sentences say.</p>
       </div>
     </div>
     <div class="cstat" v-if="!nothingLoaded">
       <b>{{ nodes.length.toLocaleString() }}</b> entities
-      &middot; <b>{{ links.length.toLocaleString() }}</b> links
+      &middot; <b>{{ links.length.toLocaleString() }}</b> of {{
+        edgeStats.total.toLocaleString() }} links carry a claim
       &middot; {{ $store.state.y0 }}&ndash;{{ $store.state.y1 }}
       <span v-if="hiddenNow.length">&middot; {{ hiddenNow.length }} type<span
         v-if="hiddenNow.length > 1">s</span> hidden</span>
