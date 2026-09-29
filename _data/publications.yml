@@ -1,6 +1,11 @@
 # Publications, ported from the Google Sites original. Inline <b>/<i>/<a> is kept as authored there.
 - section: Preprint
   items:
+  - title: "JIVE: Jacobian-Informed Volume Expansion for Diverse Generative Sampling"
+    url: "https://arxiv.org/pdf/2609.33906"
+    authors: Guangxun Zhang*, Brian Cai*, Boxuan Zhang, Chao Chen, <b>Ruixiang Tang</b>
+    corresponding: ["Chao Chen", "Ruixiang Tang"]
+    venue: <i>arXiv preprint, 2026</i>
   - title: "MemEye: A Visual-Centric Evaluation Framework for Multimodal Agent Memory"
     url: "https://arxiv.org/pdf/2605.15128"
     authors: Minghao Guo, Qingyue Jiao, Zeru Shi, Yihao Quan, Boxuan Zhang, Danrui Li, Liwei Che, Wujiang Xu, Shilong Liu, Zirui Liu, Mubbasir Kapadia, Vladimir Pavlovic, Jiang Liu, Mengdi Wang, Yiyu Shi, Dimitris N. Metaxas, and <b>Ruixiang Tang</b>
