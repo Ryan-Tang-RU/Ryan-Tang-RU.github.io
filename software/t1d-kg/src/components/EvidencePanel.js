@@ -75,7 +75,20 @@ Vue.component("evidence-panel", {
       if (w == null) return 0;                 // not measured yet, nothing to explain
       return this.nPapers > w ? this.nPapers - w : 0;
     },
-    scanned() { return (this.ev && this.ev.scanned_papers) || 0; }
+    scanned() { return (this.ev && this.ev.scanned_papers) || 0; },
+    whoData() {
+      const p = this.$store.state.people, s = this.$store.state;
+      if (!p || !this.link) return null;
+      const want = "edge:" + this.link.a + "|" + this.link.b + ":" + s.y0 + "-" + s.y1;
+      return p.scope === want ? p : null;
+    },
+    // Both names, so the PubMed search a reader follows is about this link and not
+    // about everything one of its ends has ever appeared in.
+    whoTerm() {
+      const S = this.$store.state;
+      const a = S.nodes[this.link && this.link.a], b = S.nodes[this.link && this.link.b];
+      return a && b ? '"' + a.name + '" AND "' + b.name + '"' : "";
+    }
   },
   watch: { link() { this.tab = "relations"; } },
   methods: {
@@ -93,6 +106,13 @@ Vue.component("evidence-panel", {
     // file name. The direction is the word that matters, and the full type stays
     // in the title for anyone matching it against the extractor's own labels.
     short(t) { return String(t || "").replace("_Correlation", ""); },
+    pickPeople() {
+      this.tab = "people";
+      if (this.link) {
+        this.$store.dispatch("loadPeople",
+          { kind: "edge", a: this.link.a, b: this.link.b });
+      }
+    },
     async more() {
       this.loadingMore = true;
       await this.$store.dispatch("loadEvidence",
@@ -115,6 +135,10 @@ Vue.component("evidence-panel", {
               @click="tab='papers'">Papers
         <span class="cnt" v-if="nPapers && !failed">{{
           nPapers.toLocaleString() }}</span></button>
+      <!-- Who works on this link, which is the question the rest of the panel
+           cannot answer: the claims say what was found, not by whom. -->
+      <button role="tab" :aria-selected="String(tab==='people')"
+              @click="pickPeople">People</button>
     </div>
 
     <p v-if="loading" class="hint">loading evidence&hellip;</p>
@@ -196,6 +220,11 @@ Vue.component("evidence-panel", {
         {{ loadingMore ? 'loading...' : 'Show ' + Math.min(8, nSent - sentences.length) +
            ' more of ' + nSent }}
       </button>
+    </div>
+
+    <div v-else-if="tab==='people'" class="evidscroll">
+      <people-list :data="whoData" :loading="$store.state.peopleLoading"
+                   :scope="whoTerm"></people-list>
     </div>
 
     <div v-else class="evidscroll">

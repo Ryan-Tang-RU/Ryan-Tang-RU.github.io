@@ -40,6 +40,69 @@ window.T1DSQL = {
     ORDER BY c.year DESC, c.pmid DESC
     LIMIT $limit`,
 
+  // ---- who publishes this ------------------------------------------------
+  // The last author stands in for the lab. It is a convention, not a fact in the
+  // data, and the panel says so. The paper set is the same one the rest of the
+  // panel counts, so the answer moves with the year window.
+  people_entity: `
+    WITH p AS (
+      SELECT DISTINCT pmid FROM mentions
+      WHERE eid = $eid AND year BETWEEN $y0 AND $y1
+    ), j AS (
+      SELECT pp.* FROM p JOIN paper_people pp ON pp.pmid = p.pmid
+      WHERE pp.role = 'last'
+    )
+    SELECT name_key, any_value(display) AS display, max(is_group) AS is_group,
+           max(orcid) AS orcid, count(*) AS n,
+           min(year) AS y_first, max(year) AS y_last
+    FROM j GROUP BY name_key ORDER BY n DESC, display LIMIT $limit`,
+
+  // Institutions, with their own denominator: an affiliation is on record for
+  // every author only from about 2014, so the count is of the papers that carry
+  // one, and the panel prints both numbers rather than a bare ranking.
+  orgs_entity: `
+    WITH p AS (
+      SELECT DISTINCT pmid FROM mentions
+      WHERE eid = $eid AND year BETWEEN $y0 AND $y1
+    ), j AS (
+      SELECT pp.* FROM p JOIN paper_people pp ON pp.pmid = p.pmid
+      WHERE pp.role = 'last'
+    )
+    SELECT org_key, any_value(org) AS org, count(*) AS n,
+           min(year) AS y_first, max(year) AS y_last,
+           (SELECT count(*) FROM j) AS papers,
+           (SELECT count(org) FROM j) AS papers_with_org
+    FROM j WHERE org IS NOT NULL GROUP BY org_key ORDER BY n DESC LIMIT $limit`,
+
+  people_pair: `
+    WITH p AS (
+      SELECT pmid FROM mentions WHERE eid = $a AND year BETWEEN $y0 AND $y1
+      INTERSECT
+      SELECT pmid FROM mentions WHERE eid = $b AND year BETWEEN $y0 AND $y1
+    ), j AS (
+      SELECT pp.* FROM p JOIN paper_people pp ON pp.pmid = p.pmid
+      WHERE pp.role = 'last'
+    )
+    SELECT name_key, any_value(display) AS display, max(is_group) AS is_group,
+           max(orcid) AS orcid, count(*) AS n,
+           min(year) AS y_first, max(year) AS y_last
+    FROM j GROUP BY name_key ORDER BY n DESC, display LIMIT $limit`,
+
+  orgs_pair: `
+    WITH p AS (
+      SELECT pmid FROM mentions WHERE eid = $a AND year BETWEEN $y0 AND $y1
+      INTERSECT
+      SELECT pmid FROM mentions WHERE eid = $b AND year BETWEEN $y0 AND $y1
+    ), j AS (
+      SELECT pp.* FROM p JOIN paper_people pp ON pp.pmid = p.pmid
+      WHERE pp.role = 'last'
+    )
+    SELECT org_key, any_value(org) AS org, count(*) AS n,
+           min(year) AS y_first, max(year) AS y_last,
+           (SELECT count(*) FROM j) AS papers,
+           (SELECT count(org) FROM j) AS papers_with_org
+    FROM j WHERE org IS NOT NULL GROUP BY org_key ORDER BY n DESC LIMIT $limit`,
+
   // ---- how often a word occurs in the abstracts ------------------------
   // Asked only when the entity search found nothing, to separate "this graph has
   // no node for it" from "the literature does not mention it". The two look the

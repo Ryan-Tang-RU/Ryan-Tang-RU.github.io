@@ -48,6 +48,11 @@ window.T1DStore = new Vuex.Store({
     // has to walk back the same way: one batch per press, newest first.
     expandStack: [],
     lastRemoved: null,   // the node and edges Undo would put back
+    // Who publishes the selected thing. Loaded only when a reader opens the
+    // section, because it reads the whole paper list of an entity, and keyed by
+    // the year window so moving the window does not leave a stale answer.
+    people: null,
+    peopleLoading: false,
     // Keeping only a chosen set removes many nodes at once, and the one-node
     // slot above cannot describe that: it would offer to put back whichever node
     // happened to be removed last. This holds the canvas as it was.
@@ -201,6 +206,8 @@ window.T1DStore = new Vuex.Store({
       s.version++;
     },
     forgetRemoved(s) { s.lastRemoved = null; },
+    setPeople(s, p) { s.people = p; },
+    setPeopleLoading(s, v) { s.peopleLoading = v; },
     keepSnapshot(s, p) {
       s.keptBack = { nodes: Object.assign({}, s.nodes),
                      links: Object.assign({}, s.links),
@@ -548,6 +555,27 @@ window.T1DStore = new Vuex.Store({
       commit("select", null);
       commit("setPath", []);
       await dispatch("fillSubgraph");
+    },
+
+    async loadPeople({ state, commit }, p) {
+      const scope = (p.kind === "edge" ? "edge:" + p.a + "|" + p.b : "node:" + p.eid)
+        + ":" + state.y0 + "-" + state.y1;
+      if (state.people && state.people.scope === scope) return;
+      commit("setPeopleLoading", true);
+      // Chosen first, awaited once: two awaits in one expression put the second
+      // call between the first and its own error check, which is exactly what the
+      // wiring rule looks for and exactly the shape that drops an error on the floor.
+      const ask = p.kind === "edge"
+        ? () => T1DApi.peoplePair(p.a, p.b, state.y0, state.y1)
+        : () => T1DApi.people(p.eid, state.y0, state.y1);
+      const res = await ask();
+      commit("setPeopleLoading", false);
+      if (res.error) {
+        commit("setError", { op: "people", message: res.error });
+        commit("setRetry", { action: "loadPeople", payload: p });
+        return;
+      }
+      commit("setPeople", Object.assign({ scope: scope }, res));
     },
 
     async fillSubgraph({ state, commit }) {

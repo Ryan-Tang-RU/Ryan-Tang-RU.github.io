@@ -849,3 +849,19 @@ details.legend p.hint { margin-top: 4px; }
   transform:translateY(-50%); white-space:nowrap; font-size:11px; line-height:1;
   padding:5px 8px; border-radius:6px; pointer-events:none; z-index:6;
   color:var(--surface); background:var(--navy); box-shadow:0 1px 4px rgba(0,0,0,.18)}
+
+/* Who publishes this. Collapsed until it is asked for, and quiet when open: it is
+   context for the finding, not the finding. */
+.whobox{margin:10px 0 2px}
+.whobox>summary{font:500 11px var(--mono);color:var(--ink-2);cursor:pointer;
+  list-style:revert;padding:2px 0}
+.whobox>summary:hover{color:var(--ink)}
+.whobox>summary:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.who .ilist li{cursor:default;align-items:baseline;gap:6px}
+.who .wholink{color:var(--link);text-decoration:none;flex:1;min-width:0}
+.who .wholink:hover{text-decoration:underline}
+/* The ORCID mark, in ORCID's own green, so a reader who knows it reads it at a
+   glance and a reader who does not sees a dot. */
+.who .orcid{color:#a6ce39;margin-left:5px;font-size:9px;vertical-align:1px}
+.who .n{white-space:nowrap;font:400 11px var(--mono);color:var(--ink-2)}
+.who .dim{color:var(--ink-3)}

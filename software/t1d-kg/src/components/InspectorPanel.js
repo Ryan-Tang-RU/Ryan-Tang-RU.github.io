@@ -152,6 +152,14 @@ Vue.component("inspector-panel", {
       return this.connections.filter(c =>
         (c.other.name || "").toLowerCase().indexOf(q) !== -1);
     },
+    // The answer on file, but only if it is the answer to what is on screen: a
+    // different node, or a different year window, makes it stale rather than wrong.
+    whoData() {
+      const p = this.$store.state.people, s = this.$store.state;
+      if (!p || !this.node) return null;
+      return p.scope === "node:" + this.node.eid + ":" + s.y0 + "-" + s.y1 ? p : null;
+    },
+    whoTerm() { return this.node ? '"' + this.node.name + '"' : ""; },
     years() { return this.$store.state.y0 + "\u2013" + this.$store.state.y1; }
   },
   watch: {
@@ -197,6 +205,10 @@ Vue.component("inspector-panel", {
     // Escape has always deselected. Nobody found it: the first outside reader asked
     // how to clear a selection, so the keystroke has a visible twin. It is called
     // Deselect, not Clear: Clear reads as "remove every node", which it never does.
+    whoToggle(e) {
+      if (!e.target.open || !this.node) return;
+      this.$store.dispatch("loadPeople", { kind: "node", eid: this.node.eid });
+    },
     clearSel() {
       this.$store.commit("select", null);
       this.$store.commit("setPath", []);
@@ -459,6 +471,15 @@ between them in the left-hand panel">
             <span class="n">&times;{{ f.n.toLocaleString() }}</span></span></dd>
         </template>
       </dl>
+      <!-- Collapsed on purpose. The answer reads the entity's whole paper list,
+           which is not a cost to pay on every selection, and the panel is already
+           long. Opening it is the request. -->
+      <details class="whobox" @toggle="whoToggle">
+        <summary>Who publishes this</summary>
+        <people-list :data="whoData" :loading="$store.state.peopleLoading"
+                     :scope="whoTerm"></people-list>
+      </details>
+
       <div class="connwrap">
       <label class="seclbl top">
         On the canvas ({{ shownConnections.length.toLocaleString()

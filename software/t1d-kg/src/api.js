@@ -25,7 +25,8 @@ const SENT_PAGE = 8;
 const SENT_RE = /[^.!?]*[.!?]+(?:\s|$)|[^.!?]+$/g;
 
 const TABLES = ["entities", "entity_year", "pair_year", "corpus_year", "papers",
-                "passages", "mentions", "relations", "search", "coverage", "vocab"];
+                "passages", "mentions", "relations", "search", "coverage", "vocab",
+                "paper_people"];
 
 let db = null;
 let conn = null;
@@ -173,6 +174,22 @@ async function boot(progress) {
 // trailing backslash is what some engine builds refuse outright.
 const cleanWord = s => String(s || "").toLowerCase()
   .replace(/[\u0000-\u001f\u007f\\]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
+
+// One shape for both scopes. `papers` and `papers_with_org` ride on every row of
+// the institution query, which is how one query answers "who" and "out of how many"
+// at once; they are lifted here so the panel reads them as what they are.
+function shapePeople(who, orgs) {
+  const first = orgs[0] || {};
+  return {
+    people: who.map(r => ({ key: r.name_key, display: r.display,
+                            is_group: !!Number(r.is_group), orcid: r.orcid,
+                            n: Number(r.n), y_first: r.y_first, y_last: r.y_last })),
+    orgs: orgs.map(r => ({ key: r.org_key, org: r.org, n: Number(r.n),
+                           y_first: r.y_first, y_last: r.y_last })),
+    papers: Number(first.papers || 0),
+    papers_with_org: Number(first.papers_with_org || 0),
+  };
+}
 
 const norm = s => String(s || "").toLowerCase()
   .replace(/[^a-z0-9]+/g, " ").replace(/ +/g, " ").trim();
@@ -379,6 +396,23 @@ window.T1DApi = {
              truncated: rows.length < tot,
              pair_type: ta + "-" + tb, pair_type_total: pairTotal,
              relation_types_total: all };
+  }),
+
+  // Who publishes this, and where. Both lists come back together because the
+  // panel shows them together, and the institution query carries the denominator
+  // the panel has to print next to them.
+  people: (eid, y0, y1) => timed("people", async () => {
+    const who = await run("people_entity", { eid: eid, y0: y0, y1: y1, limit: 8 });
+    const orgs = await run("orgs_entity", { eid: eid, y0: y0, y1: y1, limit: 6 });
+    return shapePeople(who, orgs);
+  }),
+
+  peoplePair: (a, b, y0, y1) => timed("peoplePair", async () => {
+    const pair = [a, b].slice().sort();
+    const q = { a: pair[0], b: pair[1], y0: y0, y1: y1, limit: 8 };
+    const who = await run("people_pair", q);
+    const orgs = await run("orgs_pair", Object.assign({}, q, { limit: 6 }));
+    return shapePeople(who, orgs);
   }),
 
   node: (eid, y0, y1) => timed("node", async () => {
