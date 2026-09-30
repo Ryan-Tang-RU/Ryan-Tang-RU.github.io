@@ -511,6 +511,10 @@ window.T1DApi = {
 
   // Which pair types carry relations at all, so an empty Relations tab and a
   // faint edge can be explained rather than just shown.
+  // The same two numbers the bridge computes, read out of the manifest that the
+  // publish step wrote them into.
+  span: async () => ({ year_min: manifest.year_min, year_max: manifest.year_max }),
+
   pairTypes: () => timed("pair_types", async () => ({
     rows: await run("pair_type_totals", {}),
   })),

@@ -7,21 +7,27 @@
    the canvas status bar where the drawing is. */
 // The corpus bounds, in one place. They were written into the two number inputs
 // and into the "all" preset separately, and the track would have been a fourth
-// copy. Not read from the manifest: this file is shared with the bridge build,
-// which has no manifest, and a year control that silently falls back to a
-// different range in one build is worse than one constant.
-const Y_MIN = 1960, Y_MAX = 2025;
+// copy. The bounds come from the store, which asks the corpus for them at boot:
+// retrieval starts at 1960 for every corpus and the papers do not, so a slider
+// fixed at 1960 offers a GLP-1 reader eighteen years with nothing in them.
 
 Vue.component("filter-rail", {
   data: () => ({
-    Y_MIN: Y_MIN, Y_MAX: Y_MAX,
     grab: null, pending: null,
     topOpen: false, topRows: [], topType: "", topBusy: false, topErr: "",
-    presets: [["all",1960,2025],["1990s",1990,1999],["2000s",2000,2009],
-              ["2010s",2010,2019],["2020+",2020,2025]],
     types: ["Gene","Disease","Chemical","Species","Variant","CellLine","Chromosome"]
   }),
   computed: {
+    Y_MIN() { return this.$store.state.yMin; },
+    Y_MAX() { return this.$store.state.yMax; },
+    // "all" is the corpus, and a decade button is offered only where the corpus
+    // has that decade. A button that selects nothing is not a filter.
+    presets() {
+      const lo = this.Y_MIN, hi = this.Y_MAX;
+      return [["all", lo, hi]].concat(
+        [["1990s",1990,1999],["2000s",2000,2009],["2010s",2010,2019],
+         ["2020+",2020,2025]].filter(p => p[2] >= lo && p[1] <= hi));
+    },
     // Offering to keep only the pinned nodes when every node is pinned is an
     // offer to do nothing, which reads as a control that has stopped working.
     nodeCount() { return Object.keys(this.$store.state.nodes).length; },

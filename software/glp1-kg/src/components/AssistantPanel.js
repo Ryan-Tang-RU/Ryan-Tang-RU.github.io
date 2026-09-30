@@ -63,7 +63,7 @@ Vue.component("assistant-panel", {
         out.push("What does " + f + " connect to most strongly?");
         out.push("Has " + f + " been studied more or less over time?");
       }
-      if (S.y0 > 1960 || S.y1 < 2025)
+      if (S.y0 > S.yMin || S.y1 < S.yMax)
         out.push("What surged between " + S.y0 + " and " + S.y1 + "?");
       else out.push("What surged in the 1990s?");
       const fallback = [

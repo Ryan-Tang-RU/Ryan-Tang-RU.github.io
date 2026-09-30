@@ -26,6 +26,22 @@ Vue.component("time-strip", {
                  loadKey: null, err: "", denom: "cov",
                  grab: null, pending: null }),
   computed: {
+    yMin() { return this.$store.state.yMin; },
+    yMax() { return this.$store.state.yMax; },
+    // Five labels along the axis, taken from the years the strip is actually
+    // drawing. A fixed list starting at 1960 labelled ticks this corpus has no
+    // room for, and the first label sat outside the bar.
+    tickYears() {
+      const ys = (this.data && this.data.years) || [];
+      if (ys.length < 2) return [];
+      const step = (ys.length - 1) / 4;
+      const out = [];
+      for (let i = 0; i < 5; i++) {
+        const y = ys[Math.round(i * step)];
+        if (out.indexOf(y) < 0) out.push(y);
+      }
+      return out;
+    },
     // One accessor for the chosen denominator: the geometry, the burst test, the
     // hover box and the caption all have to agree about which share they mean.
     share() {
@@ -229,7 +245,8 @@ Vue.component("time-strip", {
       this.$store.dispatch("reloadYears");
     },
     reset() {
-      this.$store.commit("setYears", { y0: 1960, y1: 2025 });
+      this.$store.commit("setYears",
+        { y0: this.$store.state.yMin, y1: this.$store.state.yMax });
       this.$store.dispatch("reloadYears");
     },
     hover(ev) { if (this.data) this.hoverYear = this.yearAt(ev); },
@@ -270,7 +287,7 @@ Vue.component("time-strip", {
       <!-- The handles show the years being dragged to; this showed the ones being
            dragged from, so mid-drag the strip stated two different windows. -->
       <span class="tsel" :class="{pend: !!pending}">{{ selY0 }}&ndash;{{ selY1 }}</span>
-      <button class="ghost tiny" @click="reset" v-if="y0 !== 1960 || y1 !== 2025">
+      <button class="ghost tiny" @click="reset" v-if="y0 !== yMin || y1 !== yMax">
         all years</button>
       <button class="ghost tiny" @click="mode = mode === 'count' ? 'share' : 'count'">
         {{ mode === 'count' ? 'bars: papers' : 'bars: share' }}</button>
@@ -316,7 +333,7 @@ Vue.component("time-strip", {
              :title="'to ' + selY1"><i></i><span>{{ selY1 }}</span></div>
       </div>
       <div class="ticks">
-        <span v-for="y in [1960,1975,1990,2005,2020]" :key="y"
+        <span v-for="y in tickYears" :key="y"
               :style="{left: x(data.years.indexOf(y)) + '%'}">{{ y }}</span>
       </div>
       <div class="tcursor" v-if="hoverYear"
