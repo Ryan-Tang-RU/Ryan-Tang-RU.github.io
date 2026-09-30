@@ -15,6 +15,9 @@ Vue.component("people-list", {
   computed: {
     people() { return (this.data && this.data.people) || []; },
     orgs() { return (this.data && this.data.orgs) || []; },
+    // What to narrow the PubMed search with: the words the papers use for the
+    // entities this panel is about, which the query returns alongside the people.
+    terms() { return (this.data && this.data.terms) || []; },
     papers() { return (this.data && this.data.papers) || 0; },
     withOrg() { return (this.data && this.data.papers_with_org) || 0; },
     orgPct() {
@@ -27,20 +30,46 @@ Vue.component("people-list", {
       return r.y_first === r.y_last ? String(r.y_first)
                                     : r.y_first + "–" + r.y_last;
     },
+    // PubMed indexes an author as surname first: "Badenhoop K", never
+    // "K Badenhoop", which is how this panel writes the name and how the link
+    // used to ask for it - and a reversed name matches nothing at all rather than
+    // matching loosely, so every one of these links returned an empty page.
+    // The surname is taken from the grouping key, which was built from PubMed's
+    // own last-name field, and its spelling is read back out of the display name
+    // so the reader sees the name cased the way the papers case it.
+    auTerm(p) {
+      const k = String(p.key || "").split("|");
+      const last = (k[0] || "").trim(), ini = (k[1] || "").trim();
+      const disp = String(p.display || "").trim();
+      if (!last) return disp;
+      const at = disp.toLowerCase().lastIndexOf(last);
+      const surname = at >= 0 ? disp.slice(at, at + last.length)
+                              : last.replace(/(^|[\s'-])([a-z])/g,
+                                             (m, a, b) => a + b.toUpperCase());
+      return ini ? surname + " " + ini.toUpperCase() : surname;
+    },
     // An ORCID is the person, not a string that happens to match a name. Where the
     // papers carry one it is the link; otherwise the reader gets the search that
     // comes closest, scoped to what they were looking at so the homonyms fall away.
     personUrl(p) {
       if (p.orcid) return "https://orcid.org/" + p.orcid;
-      return this.search('"' + p.display + '"[Author]');
+      // A study group is a corporate author. [Author] does not hold those at all:
+      // "FinnDiane Study Group"[Author] is zero papers, [cn] is a hundred and ninety.
+      if (p.is_group) return this.search('"' + p.display + '"[cn]');
+      return this.search('"' + this.auTerm(p) + '"[Author]');
     },
     personTitle(p) {
-      return p.orcid ? "ORCID " + p.orcid
-                     : "Search PubMed for this name, within " + (this.scope || "the corpus");
+      if (p.orcid) return "ORCID " + p.orcid;
+      const who = p.is_group ? p.display : this.auTerm(p);
+      return "Search PubMed for " + who + ", within " + (this.scope || "the corpus");
     },
     orgUrl(o) { return this.search('"' + o.org + '"[Affiliation]'); },
     search(term) {
-      const q = this.scope ? term + " AND " + this.scope : term;
+      // Narrowed by how the papers write these entities, not by what the graph
+      // calls them. Scoping the insulin gene as "INS" cut a search of forty five
+      // thousand papers down to five hundred and some labs down to none at all.
+      const by = this.terms.map(t => '"' + t + '"').join(" AND ");
+      const q = by ? term + " AND " + by : (this.scope ? term + " AND " + this.scope : term);
       return "https://pubmed.ncbi.nlm.nih.gov/?term=" + encodeURIComponent(q);
     }
   },

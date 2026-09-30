@@ -178,9 +178,10 @@ const cleanWord = s => String(s || "").toLowerCase()
 // One shape for both scopes. `papers` and `papers_with_org` ride on every row of
 // the institution query, which is how one query answers "who" and "out of how many"
 // at once; they are lifted here so the panel reads them as what they are.
-function shapePeople(who, orgs) {
+function shapePeople(who, orgs, terms) {
   const first = orgs[0] || {};
   return {
+    terms: (terms || []).filter(Boolean),
     people: who.map(r => ({ key: r.name_key, display: r.display,
                             is_group: !!Number(r.is_group), orcid: r.orcid,
                             n: Number(r.n), y_first: r.y_first, y_last: r.y_last })),
@@ -189,6 +190,16 @@ function shapePeople(who, orgs) {
     papers: Number(first.papers || 0),
     papers_with_org: Number(first.papers_with_org || 0),
   };
+}
+
+// The word to hand PubMed for an entity, which is not the graph's name for it.
+// The gene node is called INS; the phrase "INS" is in 549 abstracts, insulin is in
+// forty five thousand, and a lab that published on insulin for thirty years came
+// back with nothing at all. The corpus already records how the papers write it.
+async function topForm(eid) {
+  const rows = await run("node_forms", { eid: eid });
+  const t = rows.length ? String(rows[0].text || "") : "";
+  return t.replace(/["\[\]()]/g, " ").replace(/\s+/g, " ").trim();
 }
 
 const norm = s => String(s || "").toLowerCase()
@@ -404,7 +415,7 @@ window.T1DApi = {
   people: (eid, y0, y1) => timed("people", async () => {
     const who = await run("people_entity", { eid: eid, y0: y0, y1: y1, limit: 8 });
     const orgs = await run("orgs_entity", { eid: eid, y0: y0, y1: y1, limit: 6 });
-    return shapePeople(who, orgs);
+    return shapePeople(who, orgs, [await topForm(eid)]);
   }),
 
   peoplePair: (a, b, y0, y1) => timed("peoplePair", async () => {
@@ -412,7 +423,7 @@ window.T1DApi = {
     const q = { a: pair[0], b: pair[1], y0: y0, y1: y1, limit: 8 };
     const who = await run("people_pair", q);
     const orgs = await run("orgs_pair", Object.assign({}, q, { limit: 6 }));
-    return shapePeople(who, orgs);
+    return shapePeople(who, orgs, [await topForm(a), await topForm(b)]);
   }),
 
   node: (eid, y0, y1) => timed("node", async () => {
