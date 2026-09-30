@@ -585,11 +585,15 @@ def build_software():
   <p>{pr['summary']}</p>
   <p class="go"><a href="{pr['url']}">[Open it &rarr;]</a></p>
 </li>"""
+    # `intro` may be one string or a list of paragraphs. The meta description is
+    # taken from `description` when the intro is too long to serve as one.
+    intro = software["intro"]
+    paras = intro if isinstance(intro, list) else [intro]
     body = (f'<h1 class="h-page">{software["heading"]}</h1>'
-            f'<p>{software["intro"]}</p>'
-            f'<ul class="posts">{rows}</ul>')
+            + "".join(f"<p>{p}</p>" for p in paras)
+            + f'<ul class="posts">{rows}</ul>')
     page("software.html", f"Software &middot; {site['name']}", body,
-         description=software["intro"])
+         description=software.get("description") or paras[0])
 
 
 # ---------------------------------------------------------------- misc

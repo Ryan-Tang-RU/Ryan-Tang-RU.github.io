@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A Multi-Agent Framework for Constructing Temporally Evolving T1D Knowledge Graphs</title>
+<title>A Multi-Agent Framework for Constructing Temporally Evolving GLP-1 Knowledge Graphs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<meta name="description" content="A temporally resolved knowledge graph of the type 1 diabetes literature. 131,511 PubMed records from 1960 to 2026, with year by year counts, extracted assertions, and the sentences supporting every link.">
-<meta property="og:title" content="A Multi-Agent Framework for Constructing Temporally Evolving T1D Knowledge Graphs">
-<meta property="og:description" content="A temporally resolved knowledge graph of the type 1 diabetes literature. 131,511 PubMed records from 1960 to 2026, with year by year counts, extracted assertions, and the sentences supporting every link.">
+<meta name="description" content="A temporally resolved knowledge graph of the GLP-1 literature, the hormone and the drugs that act on its receptor. 41,234 PubMed records from 1960 to 2026, with year by year counts, extracted assertions, and the sentences supporting every link.">
+<meta property="og:title" content="A Multi-Agent Framework for Constructing Temporally Evolving GLP-1 Knowledge Graphs">
+<meta property="og:description" content="A temporally resolved knowledge graph of the GLP-1 literature, the hormone and the drugs that act on its receptor. 41,234 PubMed records from 1960 to 2026, with year by year counts, extracted assertions, and the sentences supporting every link.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://www.ruixiangtang.net/software/t1d-kg/">
-<link rel="canonical" href="https://www.ruixiangtang.net/software/t1d-kg/">
+<meta property="og:url" content="https://www.ruixiangtang.net/software/glp1-kg/">
+<link rel="canonical" href="https://www.ruixiangtang.net/software/glp1-kg/">
 <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="app.css?v=dede4fd276">
 <style>
@@ -41,10 +41,10 @@
 <body>
 <div class="boot" id="boot" role="status" aria-live="polite">
   <div class="boot__card">
-    <div class="boot__t">Temporally Evolving T1D Knowledge Graph</div>
+    <div class="boot__t">Temporally Evolving GLP-1 Knowledge Graph</div>
     <div class="boot__s" id="bootmsg">Starting&hellip;</div>
     <div class="boot__track"><div class="boot__fill"></div></div>
-    <div class="boot__n" id="bootn">131,511 PubMed records, 1960&ndash;2026</div>
+    <div class="boot__n" id="bootn">41,234 PubMed records, 1960&ndash;2026</div>
   </div>
 </div>
 
@@ -61,9 +61,9 @@
 <script src="src/api.js?v=b7992246dc"></script>
 <script src="src/cypher.js?v=4a938ce808"></script>
 <script src="src/store.js?v=ffb14dde67"></script>
-<script src="src/components/SearchBox.js?v=d179616c79"></script>
+<script src="src/components/SearchBox.js?v=443b6af339"></script>
 <script src="src/components/FilterRail.js?v=75fa9f2b36"></script>
-<script src="src/seeds.js?v=110eeb51e5"></script>
+<script src="src/seeds.js?v=e9ace3f2e5"></script>
 <script src="src/components/GraphCanvas.js?v=101682a3f1"></script>
 <script src="src/components/PeopleList.js?v=9fe794ff19"></script>
 <script src="src/components/EvidencePanel.js?v=8880686f0e"></script>
@@ -71,9 +71,9 @@
 <script src="src/components/ErrorBar.js?v=39d9b0469d"></script>
 <script src="src/components/TimeStrip.js?v=ee10e67c4c"></script>
 <script src="src/components/CypherDrawer.js?v=72266ebdab"></script>
-<script src="src/assistant.js?v=b472922024"></script>
-<script src="src/components/AssistantPanel.js?v=8dadade9a7"></script>
-<script src="src/App.js?v=e57bcc4a78"></script>
+<script src="src/assistant.js?v=7dcacbffd3"></script>
+<script src="src/components/AssistantPanel.js?v=6977d55f2a"></script>
+<script src="src/App.js?v=bed9e31051"></script>
 
 <script>
 // Nothing here should be able to fail quietly. An exception inside a store action
@@ -135,6 +135,5 @@
   }
 })();
 </script>
-<!-- analytics --><script>(function(){var k='gcskip';function set(){var h=location.hash;try{if(h==='#gc-off'){localStorage.setItem(k,'1');alert('Visits from this browser are no longer counted.');return 1;}if(h==='#gc-on'){localStorage.removeItem(k);alert('Visits from this browser are counted again.');}}catch(e){}return 0;}addEventListener('hashchange',set);if(set())return;try{if(localStorage.getItem(k))return;}catch(e){}var s=document.createElement('script');s.async=true;s.src='//gc.zgo.at/count.js';s.setAttribute('data-goatcounter','https://ryan-tang.goatcounter.com/count');document.head.appendChild(s);})();</script><!-- /analytics -->
 </body>
 </html>

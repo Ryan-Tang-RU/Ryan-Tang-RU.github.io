@@ -9,8 +9,32 @@
 #    summary: >-
 #      One or two sentences.
 heading: Software
-intro: Tools built in the course of research.
+description: Temporally evolving knowledge graphs of the research literature.
+intro:
+- Both projects below are <b>temporally evolving knowledge graphs</b> of a research
+  literature. A link between two entities is not a fact the graph states once. It
+  carries the year by year count of papers reporting it, the assertions extracted
+  from those papers, and the sentences those came from, so a connection can be
+  dated to its first appearance, watched as it strengthens or fades, and measured
+  against the growth of the field rather than read as a fixed fact.
+- The same pipeline has been applied to two literatures so far. Each graph is built
+  from its own PubMed corpus, annotated with PubTator 3.0, and queried in the
+  browser over the published tables. The two are separate graphs and separate
+  corpora, and neither contains the other.
 projects:
+- title: Temporally Evolving GLP-1 Knowledge Graph
+  url: software/glp1-kg/
+  date: 2026
+  status: in development
+  summary: >-
+    A temporally resolved knowledge graph of the GLP-1 literature, the hormone
+    and the drugs that act on its receptor, built from 41,234 PubMed records.
+    The corpus has doubled since 2022, so most of this field is recent, and the
+    graph dates each connection rather than flattening it. One caveat travels
+    with it: PubTator tags the older drugs but almost never the newer ones, so
+    semaglutide, tirzepatide and liraglutide are written in thousands of these
+    abstracts and are not entities in the graph. Searching for one reaches the
+    abstract word counts, which say so.
 - title: Temporally Evolving T1D Knowledge Graph
   url: software/t1d-kg/
   date: 2026
