@@ -450,6 +450,12 @@ window.T1DApi = {
       first_year: base ? base.first_year : null,
       last_year: base ? base.last_year : null,
       partners_all: Number((par && par.n) || 0),
+      // The note on a tagging artifact. The query has always selected it and the
+      // panel has always had a line waiting to render it, and this object never
+      // carried it across, so on the published build the warning did not exist:
+      // the A1C variant led the list with nothing to say it is haemoglobin.
+      // The bridge build returned it all along, which is why it was never seen.
+      caveat: (base && base.caveat) || null,
     }] };
   }),
 
