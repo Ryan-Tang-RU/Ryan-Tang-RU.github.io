@@ -190,13 +190,7 @@ Vue.component("evidence-panel", {
            a count over the corpus. One list would let the weaker evidence borrow
            the authority of the stronger. -->
       <template v-if="curated.length">
-        <label class="seclbl top">Also asserted by a curated source
-          <span class="lblplain">not from these papers</span></label>
-        <p class="hint">{{ curated[0].source_name }} states the following. It is a
-          summary of the field written by people who work in it, read into this
-          graph's relation vocabulary by a model. No paper stands behind an
-          individual line, so treat one of these as weaker than an edge carrying
-          many papers, not stronger.</p>
+        <label class="seclbl top">The following is from {{ curated[0].source }}</label>
         <!-- One block per assertion, not a list of triples above a list of
              sentences. Twelve rows reading "GLP-1 -> hypoglycemia" differ only in
              the sentence behind them, and splitting the two apart left a reader

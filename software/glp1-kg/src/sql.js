@@ -339,7 +339,7 @@ window.T1DSQL = {
   // they came from, because a reader who cannot tell a mined claim from a curated
   // one has lost the reason to trust either.
   curated_pair: `
-    SELECT rel, subject_text, object_text, evidence, url, source_name
+    SELECT rel, subject_text, object_text, evidence, url, source
     FROM curated WHERE a = $a AND b = $b AND linked
     ORDER BY rel, subject_text`,
 
