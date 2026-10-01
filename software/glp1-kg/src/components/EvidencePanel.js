@@ -197,16 +197,17 @@ Vue.component("evidence-panel", {
           graph's relation vocabulary by a model. No paper stands behind an
           individual line, so treat one of these as weaker than an edge carrying
           many papers, not stronger.</p>
-        <ul class="ilist plain">
-          <li v-for="(c,i) in curated" :key="'c'+i" class="nocursor">
-            <span class="pill" :class="polarity(c.rel)" :title="c.rel">{{ short(c.rel) }}</span>
-            <span>{{ c.subject_text }} &rarr; {{ c.object_text }}</span>
-          </li>
-        </ul>
-        <p class="sent" v-for="(c,i) in curated" :key="'e'+i">
-          <span>{{ c.evidence }}</span>
+        <!-- One block per assertion, not a list of triples above a list of
+             sentences. Twelve rows reading "GLP-1 -> hypoglycemia" differ only in
+             the sentence behind them, and splitting the two apart left a reader
+             with twelve identical lines and no way to tell which sentence was
+             which. The sentence is the row. -->
+        <p class="sent" v-for="(c,i) in curated" :key="'c'+i">
+          <span class="pill" :class="polarity(c.rel)" :title="c.rel">{{ short(c.rel) }}</span>
+          <b>{{ c.subject_text }} &rarr; {{ c.object_text }}</b>
+          <br><span>{{ c.evidence }}</span>
           <span class="src"><a :href="c.url" target="_blank"
-                               rel="noopener">{{ c.url }}</a></span>
+                               rel="noopener">{{ c.page }}</a></span>
         </p>
       </template>
     </div>
