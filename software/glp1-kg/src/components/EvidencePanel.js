@@ -15,6 +15,7 @@ Vue.component("evidence-panel", {
   computed: {
     ev() { return this.$store.state.evidence; },
     rels() { return this.$store.state.relations; },
+    curated() { return this.$store.state.curated || []; },
     relTotal() {
       const t = this.$store.state.relationsTotal;
       return t == null ? (this.rels || []).length : t;
@@ -181,6 +182,32 @@ Vue.component("evidence-panel", {
           below show where the two appear together.</p>
         <p class="hint" v-else>No claim was found for this pair. The sentences below
           show where the two appear together.</p>
+      </template>
+
+      <!-- A second source, under its own heading and never mixed into the list
+           above. What is read from a curated page is one lab's summary of a
+           field, with no paper behind the individual claim; what is above it is
+           a count over the corpus. One list would let the weaker evidence borrow
+           the authority of the stronger. -->
+      <template v-if="curated.length">
+        <label class="seclbl top">Also asserted by a curated source
+          <span class="lblplain">not from these papers</span></label>
+        <p class="hint">{{ curated[0].source_name }} states the following. It is a
+          summary of the field written by people who work in it, read into this
+          graph's relation vocabulary by a model. No paper stands behind an
+          individual line, so treat one of these as weaker than an edge carrying
+          many papers, not stronger.</p>
+        <ul class="ilist plain">
+          <li v-for="(c,i) in curated" :key="'c'+i" class="nocursor">
+            <span class="pill" :class="polarity(c.rel)" :title="c.rel">{{ short(c.rel) }}</span>
+            <span>{{ c.subject_text }} &rarr; {{ c.object_text }}</span>
+          </li>
+        </ul>
+        <p class="sent" v-for="(c,i) in curated" :key="'e'+i">
+          <span>{{ c.evidence }}</span>
+          <span class="src"><a :href="c.url" target="_blank"
+                               rel="noopener">{{ c.url }}</a></span>
+        </p>
       </template>
     </div>
 

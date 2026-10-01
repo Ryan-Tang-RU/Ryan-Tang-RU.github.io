@@ -90,6 +90,9 @@ window.T1DStore = new Vuex.Store({
     expandBatch: EXPAND_BATCH,
     pairTypes: null,
     relations: null,
+    // Assertions from a curated source for the open pair, kept in their own
+    // field so nothing can render them as if they came from the text.
+    curated: null,
     relationsTotal: null,
     relationsSummary: null,
     relationsPairType: null,
@@ -380,6 +383,7 @@ window.T1DStore = new Vuex.Store({
     },
     // The list is capped at 200, the total is not: keep them apart, or the tab badge
     // reports the cap as the number of assertions that exist.
+    setCurated(s, r) { s.curated = r; },
     setRelations(s, r) {
       s.relations = r.rows;
       s.relationsTotal = r.total;
@@ -666,6 +670,7 @@ window.T1DStore = new Vuex.Store({
       const res = await T1DApi.span();
       if (res && res.error) {
         commit("setError", { op: "span", message: res.error });
+        commit("setRetry", { action: "loadSpan" });
         return;
       }
       if (res && res.year_min) commit("setSpan", res);
@@ -744,6 +749,16 @@ window.T1DStore = new Vuex.Store({
         commit("setRelations", Object.assign({}, rel, {
           rows: rel.rows || [],
           total: rel.total != null ? rel.total : (rel.rows || []).length }));
+        // A failure here must not read as "this pair has no curated assertion",
+        // which is a claim about the source rather than about the request.
+        const cur = await T1DApi.curated(link.a, link.b);
+        if (cur && cur.error) {
+          commit("setError", { op: "curated", message: cur.error });
+          commit("setRetry", { action: "loadEvidence", payload: p });
+          commit("setCurated", null);
+        } else {
+          commit("setCurated", (cur && cur.rows) || []);
+        }
       }
     },
     async findPath({ state, commit, dispatch }) {

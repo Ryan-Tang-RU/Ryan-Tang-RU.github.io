@@ -333,6 +333,16 @@ window.T1DSQL = {
            count(*) AS n
     FROM relations GROUP BY 1, 2`,
 
+  // ---- a second source, kept apart ---------------------------------------
+  // Assertions from a curated page rather than from PubTator. Never unioned with
+  // `relations`: the interface shows them under their own heading, with the page
+  // they came from, because a reader who cannot tell a mined claim from a curated
+  // one has lost the reason to trust either.
+  curated_pair: `
+    SELECT rel, subject_text, object_text, evidence, url, source_name
+    FROM curated WHERE a = $a AND b = $b AND linked
+    ORDER BY rel, subject_text`,
+
   // ---- one entity's facts ------------------------------------------------
   node: `
     SELECT e.eid, e.type, split_part(e.eid, '|', 2) AS id, e.name,

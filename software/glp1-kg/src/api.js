@@ -26,7 +26,7 @@ const SENT_RE = /[^.!?]*[.!?]+(?:\s|$)|[^.!?]+$/g;
 
 const TABLES = ["entities", "entity_year", "pair_year", "corpus_year", "papers",
                 "passages", "mentions", "relations", "search", "coverage", "vocab",
-                "paper_people"];
+                "paper_people", "curated"];
 
 let db = null;
 let conn = null;
@@ -517,6 +517,17 @@ window.T1DApi = {
 
   // Which pair types carry relations at all, so an empty Relations tab and a
   // faint edge can be explained rather than just shown.
+  // Curated assertions for one pair, or an empty list where the table is absent,
+  // because a corpus with no curated source still has to answer this call.
+  curated: (a, b) => timed("curated", async () => {
+    const pair = [a, b].slice().sort();
+    try {
+      return { rows: await run("curated_pair", { a: pair[0], b: pair[1] }) };
+    } catch (e) {
+      return { rows: [] };
+    }
+  }),
+
   // The same two numbers the bridge computes, read out of the manifest that the
   // publish step wrote them into.
   span: async () => ({ year_min: manifest.year_min, year_max: manifest.year_max }),
