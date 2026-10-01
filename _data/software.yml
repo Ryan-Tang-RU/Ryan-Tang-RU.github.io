@@ -31,11 +31,12 @@ projects:
     and the drugs that act on its receptor, built from 41,234 PubMed records
     spanning 1978 to 2026, which is as far back as this literature goes.
     The corpus has doubled since 2022, so most of this field is recent, and the
-    graph dates each connection rather than flattening it. One caveat travels
-    with it: PubTator tags the older drugs but almost never the newer ones, so
-    semaglutide, tirzepatide and liraglutide are written in thousands of these
-    abstracts and are not entities in the graph. Searching for one reaches the
-    abstract word counts, which say so.
+    graph dates each connection rather than flattening it. The tagger it is built
+    on does not know the drugs this field now turns on, so semaglutide,
+    tirzepatide, liraglutide and four others are matched by name against the same
+    text and marked as such: their links are co-mentions, and they carry none of
+    the extracted assertions the rest of the graph does. Opening one says so
+    before it says anything else.
 - title: Temporally Evolving T1D Knowledge Graph
   url: software/t1d-kg/
   date: 2026

@@ -7,13 +7,12 @@
    checked against this corpus' index; tests/test_semantics.py re-checks them,
    because the index changes whenever the corpus is rebuilt.
 
-   Not offered, deliberately: semaglutide, tirzepatide, liraglutide. They are the
-   drugs this field is about and they are not entities in this graph. PubTator
-   tagged semaglutide once in the 5,068 abstracts that write it, liraglutide
-   three times in 5,272, tirzepatide never in 2,270. Searching for them reaches
-   the abstract word counts instead, which says so. Exenatide is here because it
-   is the one GLP-1 receptor agonist with a MeSH descriptor old enough to be
-   tagged throughout. */
+   Semaglutide and tirzepatide are here, and they did not come from PubTator:
+   its entity list does not contain them, so src/s2d_drugs.py matched the names
+   against the same passage text. Those nodes carry co-mention edges and no
+   extracted assertions, and the panel says so when one is opened. Offering them
+   anyway, because a GLP-1 graph whose first screen omits the two drugs the field
+   is about teaches the reader something false about the field. */
 window.T1D_SEEDS = [
   { type: "Disease", items: [
     { label: "type 2 diabetes", q: "Diabetes Mellitus Type 2" },
@@ -28,11 +27,11 @@ window.T1D_SEEDS = [
     { label: "GIP", q: "GIP" },
     { label: "DPP4", q: "DPP4" }]},
   { type: "Chemical", items: [
+    { label: "semaglutide", q: "Semaglutide" },
+    { label: "tirzepatide", q: "Tirzepatide" },
+    { label: "liraglutide", q: "Liraglutide" },
     { label: "exenatide", q: "Exenatide" },
-    { label: "metformin", q: "Metformin" },
-    { label: "sitagliptin", q: "Sitagliptin Phosphate" },
-    { label: "glucose", q: "Glucose" },
-    { label: "streptozocin", q: "Streptozocin" }]},
+    { label: "metformin", q: "Metformin" }]},
   { type: "Variant", items: [
     { label: "rs6923761", q: "rs6923761" },
     { label: "rs7903146", q: "rs7903146" }]}
