@@ -34,7 +34,11 @@ Vue.component("assistant-panel", {
     showKey: false,
     hasKey: !!window.T1DAssistant.getKey(),
     x: null, y: null,      // null until first dragged, so CSS places it
-    drag: null,
+    // The launcher has its own position for the same reason, and remembers it:
+    // parked in the corner it sits on top of the inspector's last line, and a
+    // reader who moves it once should not have to move it again.
+    bx: null, by: null,
+    drag: null, bdrag: null, bmoved: false,
     stopping: false,
     followups: [],         // offered after an answer, seeded from what it read
   }),
@@ -63,13 +67,13 @@ Vue.component("assistant-panel", {
         out.push("What does " + f + " connect to most strongly?");
         out.push("Has " + f + " been studied more or less over time?");
       }
-      if (S.y0 > 1960 || S.y1 < 2025)
+      if (S.y0 > S.yMin || S.y1 < S.yMax)
         out.push("What surged between " + S.y0 + " and " + S.y1 + "?");
       else out.push("What surged in the 1990s?");
       const fallback = [
-        "When did teplizumab and C-peptide start appearing together?",
-        "Which genes carry the most assertions with type 1 diabetes?",
-        "Is liraglutide in this graph?"];
+        "When did GLP1R and obesity start appearing together?",
+        "Which diseases carry the most assertions with GLP1R?",
+        "Is semaglutide in this graph?"];
       fallback.forEach(x => { if (out.length < 3) out.push(x); });
       return out.slice(0, 3);
     },
@@ -100,7 +104,7 @@ Vue.component("assistant-panel", {
     use(ex) { this.q = ex; this.send(); },
     /* What a tool call did, in words.
 
-       The row used to read `find_entity {"name":"teplizumab"}`. The reader opening
+       The row used to read `find_entity {"name":"exenatide"}`. The reader opening
        it wants to know whether the answer rests on the right lookup, and a
        function signature makes them translate before they can tell. The result
        itself stays as JSON underneath - that is the thing being checked. */
@@ -163,7 +167,7 @@ Vue.component("assistant-panel", {
       if (done.indexOf("partners") === -1)
         out.push("What does " + nm + " connect to most strongly?");
       if (done.indexOf("sentences") === -1)
-        out.push("Show me sentences about " + nm + " and type 1 diabetes");
+        out.push("Show me sentences about " + nm + " and obesity");
       return out.slice(0, 3);
     },
     stop() { this.stopping = true; },
@@ -280,8 +284,51 @@ Vue.component("assistant-panel", {
       window.removeEventListener("mousemove", this.move);
       window.removeEventListener("mouseup", this.drop);
     },
+    // The launcher, by the same rules. A press that never moved is a click and
+    // still opens the assistant: making it draggable must not cost the button
+    // the one thing it is for.
+    bgrab(ev) {
+      const r = ev.currentTarget.getBoundingClientRect();
+      this.bdrag = { dx: ev.clientX - r.left, dy: ev.clientY - r.top };
+      this.bmoved = false;
+      this.bx = r.left; this.by = r.top;
+      window.addEventListener("mousemove", this.bmove);
+      window.addEventListener("mouseup", this.bdrop);
+    },
+    bmove(ev) {
+      if (!this.bdrag) return;
+      this.bmoved = true;
+      const S = 48;
+      this.bx = Math.min(Math.max(ev.clientX - this.bdrag.dx, 0),
+                         window.innerWidth - S);
+      this.by = Math.min(Math.max(ev.clientY - this.bdrag.dy, 0),
+                         window.innerHeight - S);
+    },
+    bdrop() {
+      this.bdrag = null;
+      window.removeEventListener("mousemove", this.bmove);
+      window.removeEventListener("mouseup", this.bdrop);
+      if (this.bmoved) {
+        try {
+          localStorage.setItem("t1dAskPos", JSON.stringify([this.bx, this.by]));
+        } catch (e) { /* a private window refuses, and the position is not worth
+                         failing a drag over */ }
+      }
+    },
+    bclick() { if (!this.bmoved) this.toggle(); },
   },
   mounted() {
+    // Where the reader last put the launcher. Wrapped because storage throws in
+    // a private window, and clamped because a window narrower than the one it
+    // was parked in would otherwise hide it off the edge.
+    try {
+      const at = JSON.parse(localStorage.getItem("t1dAskPos") || "null");
+      if (at && at.length === 2) {
+        this.bx = Math.min(Math.max(+at[0] || 0, 0), window.innerWidth - 48);
+        this.by = Math.min(Math.max(+at[1] || 0, 0), window.innerHeight - 48);
+      }
+    } catch (e) { /* no stored position, the corner is the default */ }
+
     // Reachable from the thing being looked at, not only from the header. The
     // inspector puts the question together and hands it over, so asking about an
     // entity is one click rather than typing its name back out.
@@ -303,9 +350,12 @@ Vue.component("assistant-panel", {
          first-time reader finds: a round bubble in the bottom-right is where two
          decades of messengers have taught people to look for help, which is both
          the discoverability fix and most of the "assistant" feeling. -->
-    <button class="aslauncher" v-if="!open" @click="toggle"
-            :title="'Ask ' + agent.name + ' about this graph'"
-            aria-label="Open the assistant">
+    <button class="aslauncher" v-if="!open" @click="bclick"
+            @mousedown.prevent="bgrab"
+            :style="bx === null ? null : {left: bx + 'px', top: by + 'px',
+                                          right: 'auto', bottom: 'auto'}"
+            :title="'Ask ' + agent.name + ' about this graph, or drag it aside'"
+            aria-label="Open the assistant. Drag to move it.">
       <svg width="21" height="21" viewBox="0 0 16 16" aria-hidden="true">
         <path d="M8 1.6l5.4 3.1v6.6L8 14.4 2.6 11.3V4.7z" fill="none"
               stroke="currentColor" stroke-width="1.3"></path>

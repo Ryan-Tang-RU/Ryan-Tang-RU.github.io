@@ -680,6 +680,8 @@ table.mini td.n{text-align:right;font-family:var(--mono)}
   border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;
   background:var(--navy);color:#fff;
   box-shadow:0 6px 20px rgba(22,50,79,.32);transition:transform .12s}
+.aslauncher{cursor:grab}
+.aslauncher:active{cursor:grabbing}
 .aslauncher:hover{transform:scale(1.06)}
 .aslauncher:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 /* The mark, at two sizes: the window header and beside each turn. */
