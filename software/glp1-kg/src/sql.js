@@ -119,7 +119,17 @@ window.T1DSQL = {
       SELECT eid, type, name, n_papers, species_name, term, is_name, c,
              CASE
                WHEN norm = $q AND is_name THEN 100
-               WHEN norm = $q THEN 92
+               -- A canonical name is one kind of evidence that the reader means
+               -- this entity. A surface form the corpus assigned to it twenty
+               -- thousand times is another, and at that scale it is the stronger
+               -- one. "glp-1" is the canonical name of a C. elegans Notch
+               -- receptor with 248 papers here, and is also what this corpus
+               -- calls GLP1R 20,310 times: on a graph of the GLP-1 literature,
+               -- answering "GLP-1" with the worm gene is the search answering a
+               -- question nobody asked. The bonus reaches its ceiling at 8,000
+               -- occurrences, so it moves nothing that is merely common, and a
+               -- tie is then broken by evidence, which is already the next key.
+               WHEN norm = $q THEN 92 + least(8, c / 1000.0)
                WHEN list_sort(string_split(norm, ' '))
                     = list_sort(string_split($q, ' ')) THEN 88
                WHEN starts_with(norm, $q) AND is_name THEN 84
