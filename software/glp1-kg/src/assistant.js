@@ -630,7 +630,7 @@ window.T1DAssistant = (function () {
     "- An assertion count is not a paper count. `claims` returns assertions, and the",
     "  number of papers mentioning both is `co_mentioning_papers` from `sentences`,",
     "  or the summed series from `pair_trend`. They differ by a lot - Glucose and",
-    "  type 2 diabetes carry 605 assertions across 6,500 co-mentioning papers -",
+    "  type 2 diabetes carry 605 assertions across 6,499 co-mentioning papers -",
     "  and reporting one as the other is the commonest way to be confidently wrong",
     "  here. If you are asked how many papers, fetch the paper count.",
     "- MeSH indexing lags about four years, so 2022-2026 are under-indexed. The",
