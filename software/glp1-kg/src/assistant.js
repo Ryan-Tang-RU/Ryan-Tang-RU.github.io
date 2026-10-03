@@ -585,7 +585,7 @@ window.T1DAssistant = (function () {
   // without them will say "strongly associated" about a rising raw count, answer
   // "abatacept" with the gene ABAT, and read a missing relation as an absent one.
   const SYSTEM = [
-    "You answer questions about a knowledge graph built from 41,234 PubMed records",
+    "You answer questions about a knowledge graph built from 40,991 PubMed records",
     "on GLP-1, the hormone and the drugs acting on its receptor, 1978-2025.",
     "Entities and relations come from PubTator 3.0;",
     "relations are BioRED types with scores.",
@@ -622,7 +622,7 @@ window.T1DAssistant = (function () {
     "  everything rises. Use the normalised",
     "  series for any claim about a trend, and say which denominator you used.",
     "- Zero assertions for a pair is usually structural. Relations exist only among",
-    "  Gene, Disease, Chemical and Variant. Species appears in none of 152,013, and",
+    "  Gene, Disease, Chemical and Variant. Species appears in none of 151,306, and",
     "  Disease-Disease is zero by BioRED's design. Check pair_type before reading",
     "  anything into an absence.",
     "- Report relation types as shares of the total, not as a list. One assertion",
