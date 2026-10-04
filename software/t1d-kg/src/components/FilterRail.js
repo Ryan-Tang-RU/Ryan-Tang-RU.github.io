@@ -7,21 +7,27 @@
    the canvas status bar where the drawing is. */
 // The corpus bounds, in one place. They were written into the two number inputs
 // and into the "all" preset separately, and the track would have been a fourth
-// copy. Not read from the manifest: this file is shared with the bridge build,
-// which has no manifest, and a year control that silently falls back to a
-// different range in one build is worse than one constant.
-const Y_MIN = 1960, Y_MAX = 2025;
+// copy. The bounds come from the store, which asks the corpus for them at boot:
+// retrieval starts at 1960 for every corpus and the papers do not, so a slider
+// fixed at 1960 offers a GLP-1 reader eighteen years with nothing in them.
 
 Vue.component("filter-rail", {
   data: () => ({
-    Y_MIN: Y_MIN, Y_MAX: Y_MAX,
     grab: null, pending: null,
     topOpen: false, topRows: [], topType: "", topBusy: false, topErr: "",
-    presets: [["all",1960,2025],["1990s",1990,1999],["2000s",2000,2009],
-              ["2010s",2010,2019],["2020+",2020,2025]],
     types: ["Gene","Disease","Chemical","Species","Variant","CellLine","Chromosome"]
   }),
   computed: {
+    Y_MIN() { return this.$store.state.yMin; },
+    Y_MAX() { return this.$store.state.yMax; },
+    // "all" is the corpus, and a decade button is offered only where the corpus
+    // has that decade. A button that selects nothing is not a filter.
+    presets() {
+      const lo = this.Y_MIN, hi = this.Y_MAX;
+      return [["all", lo, hi]].concat(
+        [["1990s",1990,1999],["2000s",2000,2009],["2010s",2010,2019],
+         ["2020+",2020,2025]].filter(p => p[2] >= lo && p[1] <= hi));
+    },
     // Offering to keep only the pinned nodes when every node is pinned is an
     // offer to do nothing, which reads as a control that has stopped working.
     nodeCount() { return Object.keys(this.$store.state.nodes).length; },
@@ -276,21 +282,23 @@ Vue.component("filter-rail", {
            that is not on screen yet. Selecting a node and pressing A or B still
            works and is still the quickest way to use what you are looking at. -->
       <div class="pathpick">
+        <!-- The box stays a box after a choice is made, holding the chosen
+             name so it can be typed over. It used to be replaced by static text
+             and a small clear button, which meant changing an endpoint was two
+             actions and neither of them was the obvious one: typing. -->
         <div class="endpoint" :class="{set: !!pathA}">
           <span class="tag">A</span>
-          <span class="nm" v-if="pathA">{{ pathA.name }}</span>
-          <search-box v-else list-id="hitsA" placeholder="search, or press A"
-                      @choose="pick('A', $event)"></search-box>
-          <button v-if="pathA" class="x" title="clear A"
-                  @click="$store.commit('setEndpoint',{which:'A',node:null})">&times;</button>
+          <search-box list-id="hitsA" placeholder="search, or press A"
+                      :initial="pathA ? pathA.name : ''"
+                      @choose="pick('A', $event)"
+                      @cleared="$store.commit('setEndpoint',{which:'A',node:null})"></search-box>
         </div>
         <div class="endpoint" :class="{set: !!pathB}">
           <span class="tag">B</span>
-          <span class="nm" v-if="pathB">{{ pathB.name }}</span>
-          <search-box v-else list-id="hitsB" placeholder="search, or press B"
-                      @choose="pick('B', $event)"></search-box>
-          <button v-if="pathB" class="x" title="clear B"
-                  @click="$store.commit('setEndpoint',{which:'B',node:null})">&times;</button>
+          <search-box list-id="hitsB" placeholder="search, or press B"
+                      :initial="pathB ? pathB.name : ''"
+                      @choose="pick('B', $event)"
+                      @cleared="$store.commit('setEndpoint',{which:'B',node:null})"></search-box>
         </div>
       </div>
       <label class="chk"><input type="checkbox" v-model="avoidHubs"> avoid the most connected nodes</label>

@@ -93,6 +93,7 @@ window.App = {
   mounted() {
     T1DApi.onStatus(s => this.$store.commit("setStatus", s));
     this.$root.$on("assistant:open", v => { this.askOpen = v; });
+    this.$store.dispatch("loadSpan");
     this.$store.dispatch("loadHubs");
     this.$store.dispatch("loadPairTypes");
     document.addEventListener("keydown", this.keys);

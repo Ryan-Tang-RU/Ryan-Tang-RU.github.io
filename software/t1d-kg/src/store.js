@@ -33,7 +33,12 @@ window.T1DStore = new Vuex.Store({
     focus: null,
     selection: null,      // {kind:'node', eid} | {kind:'edge', key}
     history: [],
+    // The window, and the corpus' own bounds. Both start at the widest
+    // retrieval range and are narrowed to what the corpus holds as soon as
+    // `loadSpan` answers, because a slider offering years with no papers in
+    // them invites a reader to select an empty graph and wonder why.
     y0: 1960, y1: 2025,
+    yMin: 1960, yMax: 2025,
     hiddenTypes: [],
     pathA: null, pathB: null, pathEids: [], avoidHubs: true,
     hubs: [],
@@ -288,10 +293,14 @@ window.T1DStore = new Vuex.Store({
     // "to" is an easy slip, and every query then matched nothing: an empty canvas,
     // an empty inspector and no hint that the window, not the data, was the reason.
     setYears(s, p) {
-      const lo = Math.max(1960, Math.min(2025, Math.round(+p.y0 || 1960)));
-      const hi = Math.max(1960, Math.min(2025, Math.round(+p.y1 || 2025)));
+      const lo = Math.max(s.yMin, Math.min(s.yMax, Math.round(+p.y0 || s.yMin)));
+      const hi = Math.max(s.yMin, Math.min(s.yMax, Math.round(+p.y1 || s.yMax)));
       s.y0 = Math.min(lo, hi);
       s.y1 = Math.max(lo, hi);
+    },
+    setSpan(s, p) {
+      s.yMin = p.year_min; s.yMax = p.year_max;
+      s.y0 = p.year_min; s.y1 = p.year_max;
     },
     toggleType(s, t) {
       const i = s.hiddenTypes.indexOf(t);
@@ -652,6 +661,16 @@ window.T1DStore = new Vuex.Store({
       await dispatch("focusOn", { eid: row.eid });
       return row;
     },
+    // Asked once, before anything else reads the year window.
+    async loadSpan({ commit }) {
+      const res = await T1DApi.span();
+      if (res && res.error) {
+        commit("setError", { op: "span", message: res.error });
+        commit("setRetry", { action: "loadSpan" });
+        return;
+      }
+      if (res && res.year_min) commit("setSpan", res);
+    },
     async loadPairTypes({ commit }) {
       const r = await T1DApi.pairTypes();
       if (r.error) return;            // the hint is optional, the graph is not
@@ -733,7 +752,7 @@ window.T1DStore = new Vuex.Store({
       const res = await T1DApi.path(state.pathA.eid, state.pathB.eid, 4,
         state.avoidHubs);
       commit("setCypher", window.T1DCypher.path(state.pathA.eid, state.pathB.eid,
-        4, state.avoidHubs));
+        4, state.avoidHubs, state.y0, state.y1));
       if (res.error || !res.rows.length) {
         commit("setPath", { eids: [], row: null });
         commit("select", { kind: "pathfail" });

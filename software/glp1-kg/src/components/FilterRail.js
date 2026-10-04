@@ -282,21 +282,23 @@ Vue.component("filter-rail", {
            that is not on screen yet. Selecting a node and pressing A or B still
            works and is still the quickest way to use what you are looking at. -->
       <div class="pathpick">
+        <!-- The box stays a box after a choice is made, holding the chosen
+             name so it can be typed over. It used to be replaced by static text
+             and a small clear button, which meant changing an endpoint was two
+             actions and neither of them was the obvious one: typing. -->
         <div class="endpoint" :class="{set: !!pathA}">
           <span class="tag">A</span>
-          <span class="nm" v-if="pathA">{{ pathA.name }}</span>
-          <search-box v-else list-id="hitsA" placeholder="search, or press A"
-                      @choose="pick('A', $event)"></search-box>
-          <button v-if="pathA" class="x" title="clear A"
-                  @click="$store.commit('setEndpoint',{which:'A',node:null})">&times;</button>
+          <search-box list-id="hitsA" placeholder="search, or press A"
+                      :initial="pathA ? pathA.name : ''"
+                      @choose="pick('A', $event)"
+                      @cleared="$store.commit('setEndpoint',{which:'A',node:null})"></search-box>
         </div>
         <div class="endpoint" :class="{set: !!pathB}">
           <span class="tag">B</span>
-          <span class="nm" v-if="pathB">{{ pathB.name }}</span>
-          <search-box v-else list-id="hitsB" placeholder="search, or press B"
-                      @choose="pick('B', $event)"></search-box>
-          <button v-if="pathB" class="x" title="clear B"
-                  @click="$store.commit('setEndpoint',{which:'B',node:null})">&times;</button>
+          <search-box list-id="hitsB" placeholder="search, or press B"
+                      :initial="pathB ? pathB.name : ''"
+                      @choose="pick('B', $event)"
+                      @cleared="$store.commit('setEndpoint',{which:'B',node:null})"></search-box>
         </div>
       </div>
       <label class="chk"><input type="checkbox" v-model="avoidHubs"> avoid the most connected nodes</label>

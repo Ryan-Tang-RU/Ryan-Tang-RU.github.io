@@ -656,6 +656,10 @@ def build_sitemap():
         urls += ["software.html"]
         urls += [pr["url"] for pr in software["projects"]
                  if not pr["url"].startswith("http")]
+        # Pages linked from a project's prose rather than given a card. Dropping
+        # the GLP-1 graph to one sentence took it out of the sitemap with it,
+        # which is not what demoting something on a page should mean.
+        urls += [u for u in software.get("also") or [] if not u.startswith("http")]
     body = "".join(f"<url><loc>https://{site['domain']}/{u}</loc></url>" for u in urls)
     (ROOT / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>'

@@ -17,9 +17,11 @@ window.T1DCypher = {
   neighbours: (eid, y0, y1) =>
     fill("neighbours", { eid: eid, y0: y0, y1: y1, minc: 3, limit: 30,
                          ex: "", types: "NULL" }),
-  path: (a, b, hops, avoidHubs) =>
+  // The window is passed in rather than fixed: the statement shown to a reader
+  // has to be the one that was run, and a corpus does not always start in 1960.
+  path: (a, b, hops, avoidHubs, y0, y1) =>
     fill("bfs_step", { frontier: a, seen: a, avoid: avoidHubs ? "<hubs>" : "",
-                       y0: 1960, y1: 2025, minc: 3 })
+                       y0: y0, y1: y1, minc: 3 })
     + "\n\n-- walked " + (hops || 4) + " hops from " + a + " to " + b,
   evidence: (a, b, y0, y1) =>
     fill("evidence_sentences", { a: a, b: b, y0: y0, y1: y1, scan: 400 }),

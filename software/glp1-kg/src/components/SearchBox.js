@@ -22,11 +22,20 @@ Vue.component("search-box", {
     listId: { type: String, default: "hits" },
     placeholder: { type: String,
                    default: "GLP1R, obesity, exenatide, rs6923761..." },
+    // What is already chosen, shown in the box so it can be typed over. A path
+    // endpoint used to become static text once set, and changing it meant
+    // finding the small clear button first: the box said "search, or press A"
+    // and then stopped being a box.
+    initial: { type: String, default: "" },
   },
   data: () => ({ q: "", rows: [], ix: -1, open: false, timer: null,
                  state: "idle", error: "", box: null, inText: null }),
   computed: {
     hasRows() { return this.state === "hits" && this.rows.length > 0; }
+  },
+  watch: {
+    // The chosen value changed from outside - picked on the canvas, or cleared.
+    initial(v) { this.q = v || ""; this.open = false; this.state = "idle"; },
   },
   methods: {
     onInput() {
@@ -117,6 +126,10 @@ Vue.component("search-box", {
     clear() {
       this.q = ""; this.rows = []; this.state = "idle"; this.open = false;
       this.$refs.input.focus();
+      // Whoever owns the choice this box was showing gets to drop it too. A path
+      // endpoint had its own clear button beside this one, two crosses in one
+      // field, each undoing a different half of the same thing.
+      this.$emit("cleared");
     },
     onCanvas(eid) { return this.$store.getters.onCanvas(eid); },
     glyph: (t, r) => T1DGlyphs.path(t, r),
@@ -124,6 +137,7 @@ Vue.component("search-box", {
     away(e) { if (!this.$el.contains(e.target)) this.open = false; }
   },
   mounted() {
+    if (this.initial) this.q = this.initial;
     document.addEventListener("click", this.away);
     // capture, so a scroll inside the rail counts too
     window.addEventListener("scroll", this.place, true);

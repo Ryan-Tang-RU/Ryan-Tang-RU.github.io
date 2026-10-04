@@ -9,34 +9,14 @@
 #    summary: >-
 #      One or two sentences.
 heading: Software
-description: Temporally evolving knowledge graphs of the research literature.
-intro:
-- Both projects below are <b>temporally evolving knowledge graphs</b> of a research
-  literature. A link between two entities is not a fact the graph states once. It
-  carries the year by year count of papers reporting it, the assertions extracted
-  from those papers, and the sentences those came from, so a connection can be
-  dated to its first appearance, watched as it strengthens or fades, and measured
-  against the growth of the field rather than read as a fixed fact.
-- The same pipeline has been applied to two literatures so far. Each graph is built
-  from its own PubMed corpus, annotated with PubTator 3.0, and queried in the
-  browser over the published tables. The two are separate graphs and separate
-  corpora, and neither contains the other.
+description: Tools built in the course of research.
+intro: Tools built in the course of research.
+# Pages that exist and are linked from a project's text rather than carrying a
+# card of their own. They still belong in the sitemap: a page nothing points a
+# crawler at is a page that quietly stops existing.
+also:
+- software/glp1-kg/
 projects:
-- title: Temporally Evolving GLP-1 Knowledge Graph
-  url: software/glp1-kg/
-  date: 2026
-  status: in development
-  summary: >-
-    A temporally resolved knowledge graph of the GLP-1 literature, the hormone
-    and the drugs that act on its receptor, built from 40,991 PubMed records
-    spanning 1978 to 2026, which is as far back as this literature goes.
-    The corpus has doubled since 2022, so most of this field is recent, and the
-    graph dates each connection rather than flattening it. The tagger it is built
-    on does not know the drugs this field now turns on, so semaglutide,
-    tirzepatide, liraglutide and four others are matched by name against the same
-    text and marked as such: their links are co-mentions, and they carry none of
-    the extracted assertions the rest of the graph does. Opening one says so
-    before it says anything else.
 - title: Temporally Evolving T1D Knowledge Graph
   url: software/t1d-kg/
   date: 2026
@@ -49,4 +29,6 @@ projects:
     to its first appearance and measured against a corpus baseline rather than
     read as a static fact. The interface provides entity and pair timelines,
     burst detection, shortest paths between entities never studied together, and
-    retrieval of the underlying passages.
+    retrieval of the underlying passages. The same pipeline has since been run
+    over a second literature, GLP-1, as
+    <a href="software/glp1-kg/">a separate graph on its own corpus</a>.

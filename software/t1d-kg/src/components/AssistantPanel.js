@@ -71,9 +71,9 @@ Vue.component("assistant-panel", {
         out.push("What surged between " + S.y0 + " and " + S.y1 + "?");
       else out.push("What surged in the 1990s?");
       const fallback = [
-        "When did GLP1R and obesity start appearing together?",
-        "Which diseases carry the most assertions with GLP1R?",
-        "Is semaglutide in this graph?"];
+        "When did teplizumab and C-peptide start appearing together?",
+        "Which genes carry the most assertions with type 1 diabetes?",
+        "Is liraglutide in this graph?"];
       fallback.forEach(x => { if (out.length < 3) out.push(x); });
       return out.slice(0, 3);
     },
@@ -104,7 +104,7 @@ Vue.component("assistant-panel", {
     use(ex) { this.q = ex; this.send(); },
     /* What a tool call did, in words.
 
-       The row used to read `find_entity {"name":"exenatide"}`. The reader opening
+       The row used to read `find_entity {"name":"teplizumab"}`. The reader opening
        it wants to know whether the answer rests on the right lookup, and a
        function signature makes them translate before they can tell. The result
        itself stays as JSON underneath - that is the thing being checked. */
@@ -167,7 +167,7 @@ Vue.component("assistant-panel", {
       if (done.indexOf("partners") === -1)
         out.push("What does " + nm + " connect to most strongly?");
       if (done.indexOf("sentences") === -1)
-        out.push("Show me sentences about " + nm + " and obesity");
+        out.push("Show me sentences about " + nm + " and type 1 diabetes");
       return out.slice(0, 3);
     },
     stop() { this.stopping = true; },
