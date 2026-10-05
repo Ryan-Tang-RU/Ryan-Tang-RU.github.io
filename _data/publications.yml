@@ -133,6 +133,7 @@
   - title: Exploring the Adversarial Vulnerabilities of Vision-Language-Action Models in Robotics
     url: "https://arxiv.org/pdf/2411.13587"
     authors: Taowen Wang, Cheng Han, James Liang, Wenhao Yang, Dongfang Liu, Luna Xinyu Zhang, Qifan Wang, Jiebo Luo, <b>Ruixiang Tang</b>
+    corresponding: ["Dongfang Liu", "Ruixiang Tang"]
     venue: <i>International Conference on Computer Vision, <b>ICCV</b>, 2025</i>
   - title: "Hallucinatory Image Tokens: A Training-free EAZY Approach to Detecting and Mitigating Object Hallucinations in LVLMs"
     url: "https://arxiv.org/pdf/2503.07772"

@@ -287,9 +287,21 @@ def build_home():
         for l in site["links"]
     )
     bio = "".join(f"<p>{p}</p>" for p in site["bio"])
-    areas = "".join(
+    # A figure of the four research areas stands in for the text columns when one
+    # is on disk; the columns stay as the fallback and as the alt text behind it.
+    cols = "".join(
         f'<div><h3>{a["title"]}</h3><p>{a["body"]}</p></div>' for a in site["research"]
     )
+    areas = f'<div class="areas"><div class="areas__in">{cols}</div></div>'
+    # The overview figure is four panels side by side, so it only stays legible on
+    # a wide screen; narrow ones keep the text columns and the figure is dropped.
+    fig = site.get("research_image")
+    if fig and os.path.exists(ROOT / fig):
+        w, h = image_size(ROOT / fig, (2375, 575))
+        alt = html.escape("Research areas: "
+                          + "; ".join(a["title"] for a in site["research"]))
+        areas = (f'<div class="areas areas--fig"><img class="areas__fig" src="{fig}" '
+                 f'alt="{alt}" width="{w}" height="{h}" loading="lazy"></div>') + areas
 
     items = ""
     for n in news:
@@ -335,7 +347,7 @@ def build_home():
 {joining}
 
 <h2 class="h-sec">Research Overview</h2>
-<div class="areas"><div class="areas__in">{areas}</div></div>
+{areas}
 
 <h2 class="h-sec">News</h2>
 <div class="newsband">
