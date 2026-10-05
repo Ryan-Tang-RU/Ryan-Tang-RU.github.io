@@ -66,7 +66,7 @@ bio:
 joining: I am always glad to work with outstanding students. If you are interested in collaborating with me, please send me an email at <a href="mailto:ruixiang.tang@rutgers.edu">ruixiang.tang@rutgers.edu</a>. I read every message and will consider it carefully.
 
 # Drop the overview figure here and it replaces the four text columns below.
-research_image: assets/img/research-overview.png
+research_image: assets/img/research-overview.jpg
 research:
 - title: Perception Reliability
   body: Making multimodal perception systems robust to uncertainty, distribution shift, and adversarial inputs.
