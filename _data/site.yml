@@ -65,15 +65,13 @@ bio:
 # Closing line on the home page, under Services.
 joining: I am always glad to work with outstanding students. If you are interested in collaborating with me, please send me an email at <a href="mailto:ruixiang.tang@rutgers.edu">ruixiang.tang@rutgers.edu</a>. I read every message and will consider it carefully.
 
-# Drop the overview figure here and it replaces the four text columns below.
-research_image: assets/img/research-overview.png
 research:
-- title: Perception Reliability
-  body: Making multimodal perception systems robust to uncertainty, distribution shift, and adversarial inputs.
 - title: Operational Interpretability
   body: Turning mechanistic insight into practical tools that monitor, audit, and steer model behavior once deployed.
 - title: Agent Safety & Control
   body: Keeping autonomous and multiagent systems reliable through continuous auditing, early failure prediction, and corrective intervention.
+- title: Perception Reliability
+  body: Making multimodal perception systems robust to uncertainty, distribution shift, and adversarial inputs.
 - title: AI for Biomedicine
   body: Translating trustworthy learning into high-impact problems across biology and medicine with clinical and biological collaborators.
 services:
