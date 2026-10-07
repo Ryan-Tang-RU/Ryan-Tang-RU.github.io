@@ -309,11 +309,19 @@ window.T1DApi = {
 
   neighbours: (eid, y0, y1, limit, exclude, types, rank) =>
     timed("neighbours", async () => {
-      const p = { eid: eid, y0: y0, y1: y1, minc: MINC, limit: limit || 30,
+      const want = limit || 30;
+      const skip = new Set(exclude || []);
+      // Ask for enough that `want` survive the exclusion, and exclude here rather
+      // than in the query: see the note in sql.js. `ex` is still bound, for the
+      // remaining count, which does not carry the ordering that triggers it.
+      const p = { eid: eid, y0: y0, y1: y1, minc: MINC, limit: want + skip.size,
                   ex: exclude && exclude.length ? exclude : [""],
                   types: types && types.length ? types.join(SEP) : null,
                   rank: rank === "relations" ? "relations" : "papers" };
-      const rows = await run("neighbours", p);
+      // `neighbours` no longer takes `ex`, and binding one it does not declare is
+      // an error rather than a no-op, so it gets its own parameter object.
+      const rows = (await run("neighbours", Object.assign({}, p, { ex: undefined })))
+        .filter(r => !skip.has(r.eid)).slice(0, want);
       const tot = await run("neighbours_total", p);
       const rem = await run("neighbours_remaining", p);
       const dist = {};

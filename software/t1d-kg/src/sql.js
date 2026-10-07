@@ -207,8 +207,15 @@ window.T1DSQL = {
            coalesce(r.relation_types, []) AS relation_types
     FROM agg g JOIN entities en ON en.eid = g.other
     LEFT JOIN rel r ON r.other = g.other
-    WHERE NOT list_contains(string_split($ex, chr(31)), g.other)
-      AND ($types IS NULL OR list_contains(string_split($types, chr(31)), en.type))
+    -- What is already on the canvas is filtered by the caller, not here. Binding
+    -- the canvas as one long string is what takes DuckDB-WASM down: past about a
+    -- hundred and seventy nodes this query returned its rows and left the engine
+    -- in a state where every later statement threw std::bad_cast, including the
+    -- CREATE VIEW that rebuilding the connection needs, so nothing short of a
+    -- reload recovered. The same SQL with the list written in as a literal is
+    -- fine, so the fault is in binding it. The caller asks for limit + canvas
+    -- rows and drops the ones it already has.
+    WHERE ($types IS NULL OR list_contains(string_split($types, chr(31)), en.type))
     -- Two orders, because they answer different questions: of type 1 diabetes' 30
     -- strongest partners by papers only 10 carry a relation, since the largest
     -- co-mention counts are the pair types that can never have one. By relations it
