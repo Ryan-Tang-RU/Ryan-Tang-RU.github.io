@@ -44,6 +44,7 @@
     authors: Boxuan Zhang, Jianing Zhu, Zeru Shi, Dongfang Liu, <b>Ruixiang Tang</b>
     venue: <i>Conference on Neural Information Processing Systems, <b>NeurIPS</b>, 2026</i>
   - title: On the Token Value Inequality in Efficient Reasoning
+    url: "https://arxiv.org/abs/2609.33970"
     authors: Runjia Zeng, Hang Hua, Yiyang Liu, Zhiqiang Tao, <b>Ruixiang Tang</b>, Qifan Wang, Cheng Han, Dongfang Liu
     venue: <i>Conference on Neural Information Processing Systems, <b>NeurIPS</b>, 2026</i>
   - title: "TRACES: Proactive Safety Auditing for Multi-Turn LLM Agents via Trajectory-State Modeling"
