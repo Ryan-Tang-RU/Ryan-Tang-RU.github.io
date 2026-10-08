@@ -118,8 +118,16 @@ window.T1DSQL = {
     WITH scored AS (
       SELECT eid, type, name, n_papers, species_name, term, is_name, c,
              CASE
-               WHEN norm = $q AND is_name THEN 100
-               WHEN norm = $q THEN 92
+               -- An exact match is an exact match, whether the string is
+               -- the entity's own name or a form the corpus writes it as. Which
+               -- of several exact matches a reader meant is then a question
+               -- about this corpus, and the corpus answers it: the number of
+               -- times it assigned this string to this entity. Scoring the name
+               -- above the form put an OMIM entry with two papers, literally
+               -- named "T1D", above type 1 diabetes with 89,641 on the T1D
+               -- graph, and a C. elegans Notch receptor above GLP1R on the other
+               -- one. The count travels as ev, already the next sort key.
+               WHEN norm = $q THEN 100
                WHEN list_sort(string_split(norm, ' '))
                     = list_sort(string_split($q, ' ')) THEN 88
                WHEN starts_with(norm, $q) AND is_name THEN 84
@@ -130,7 +138,10 @@ window.T1DSQL = {
                         t -> NOT contains(norm, t))) = 0 THEN 52
                ELSE 40 + 10 * jaro_winkler_similarity(norm, $q)
              END AS score,
-             CASE WHEN is_name THEN n_papers ELSE c END AS ev
+             -- How often this corpus wrote this string for this entity. A
+             -- canonical name carries no count of its own, so it falls back to
+             -- the entity's size rather than to zero.
+             CASE WHEN c > 0 THEN c ELSE n_papers / 1000 END AS ev
       FROM search
       WHERE contains(norm, $q)
          OR len(list_filter(string_split($toks, chr(31)), t -> NOT contains(norm, t))) = 0

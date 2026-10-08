@@ -118,18 +118,16 @@ window.T1DSQL = {
     WITH scored AS (
       SELECT eid, type, name, n_papers, species_name, term, is_name, c,
              CASE
-               WHEN norm = $q AND is_name THEN 100
-               -- A canonical name is one kind of evidence that the reader means
-               -- this entity. A surface form the corpus assigned to it twenty
-               -- thousand times is another, and at that scale it is the stronger
-               -- one. "glp-1" is the canonical name of a C. elegans Notch
-               -- receptor with 248 papers here, and is also what this corpus
-               -- calls GLP1R 20,310 times: on a graph of the GLP-1 literature,
-               -- answering "GLP-1" with the worm gene is the search answering a
-               -- question nobody asked. The bonus reaches its ceiling at 8,000
-               -- occurrences, so it moves nothing that is merely common, and a
-               -- tie is then broken by evidence, which is already the next key.
-               WHEN norm = $q THEN 92 + least(8, c / 1000.0)
+               -- An exact match is an exact match, whether the string is
+               -- the entity's own name or a form the corpus writes it as. Which
+               -- of several exact matches a reader meant is then a question
+               -- about this corpus, and the corpus answers it: the number of
+               -- times it assigned this string to this entity. Scoring the name
+               -- above the form put an OMIM entry with two papers, literally
+               -- named "T1D", above type 1 diabetes with 89,641 on the T1D
+               -- graph, and a C. elegans Notch receptor above GLP1R on the other
+               -- one. The count travels as ev, already the next sort key.
+               WHEN norm = $q THEN 100
                WHEN list_sort(string_split(norm, ' '))
                     = list_sort(string_split($q, ' ')) THEN 88
                WHEN starts_with(norm, $q) AND is_name THEN 84
@@ -140,7 +138,10 @@ window.T1DSQL = {
                         t -> NOT contains(norm, t))) = 0 THEN 52
                ELSE 40 + 10 * jaro_winkler_similarity(norm, $q)
              END AS score,
-             CASE WHEN is_name THEN n_papers ELSE c END AS ev
+             -- How often this corpus wrote this string for this entity. A
+             -- canonical name carries no count of its own, so it falls back to
+             -- the entity's size rather than to zero.
+             CASE WHEN c > 0 THEN c ELSE n_papers / 1000 END AS ev
       FROM search
       WHERE contains(norm, $q)
          OR len(list_filter(string_split($toks, chr(31)), t -> NOT contains(norm, t))) = 0

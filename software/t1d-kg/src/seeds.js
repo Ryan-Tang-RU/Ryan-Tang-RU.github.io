@@ -24,7 +24,7 @@ window.T1D_SEEDS = [
     { label: "CTLA4", q: "CTLA4" },
     { label: "GAD2", q: "GAD2" }]},
   { type: "Chemical", items: [
-    { label: "insulin", q: "Insulin" },
+    { label: "glucose", q: "Glucose" },
     { label: "teplizumab", q: "teplizumab" },
     { label: "metformin", q: "Metformin" },
     { label: "streptozocin", q: "Streptozocin" },
