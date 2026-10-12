@@ -6,6 +6,10 @@
     authors: Guangxun Zhang*, Brian Cai*, Boxuan Zhang, Chao Chen, <b>Ruixiang Tang</b>
     corresponding: ["Chao Chen", "Ruixiang Tang"]
     venue: <i>arXiv preprint, 2026</i>
+  - title: "Why MLLMs Struggle to Count: Overcoming Individuation and Aggregation Bottlenecks with ConvStack"
+    url: "https://arxiv.org/abs/2609.37096"
+    authors: Liwei Che, Yihao Quan, Sen Fang, Hongyi Wang, Ranjay Krishna, <b>Ruixiang Tang</b>, Vladimir Pavlovic
+    venue: <i>arXiv preprint, 2026</i>
   - title: "MemEye: A Visual-Centric Evaluation Framework for Multimodal Agent Memory"
     url: "https://arxiv.org/pdf/2605.15128"
     authors: Minghao Guo, Qingyue Jiao, Zeru Shi, Yihao Quan, Boxuan Zhang, Danrui Li, Liwei Che, Wujiang Xu, Shilong Liu, Zirui Liu, Mubbasir Kapadia, Vladimir Pavlovic, Jiang Liu, Mengdi Wang, Yiyu Shi, Dimitris N. Metaxas, and <b>Ruixiang Tang</b>
