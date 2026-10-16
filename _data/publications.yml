@@ -1,6 +1,14 @@
 # Publications, ported from the Google Sites original. Inline <b>/<i>/<a> is kept as authored there.
 - section: Preprint
   items:
+  - title: "ActICL: Post-Training for Agentic Multimodal In-Context Learning"
+    url: "https://arxiv.org/abs/2610.19475"
+    authors: Yanshu Li, <b>Ruixiang Tang</b>, Junyi Jessy Li, Elias Stengel-Eskin
+    venue: <i>arXiv preprint, 2026</i>
+  - title: "EdgeWise: Bringing Long-Horizon Agents to the Edge via Selective Cloud Delegation"
+    url: "https://arxiv.org/abs/2610.17560"
+    authors: Zeru Shi*, Jindong Jiang*, Ryo Hachiuma, Yonggan Fu, Byung-Kwan Lee, Peter Belcak, Saurav Muralidharan, Ayush Agarwal, <b>Ruixiang Tang</b>, Ambrish Dantrey, Pavlo Molchanov, Anjul Patney, Subhashree Radhakrishnan
+    venue: <i>arXiv preprint, 2026</i>
   - title: "JIVE: Jacobian-Informed Volume Expansion for Diverse Generative Sampling"
     url: "https://arxiv.org/pdf/2609.33906"
     authors: Guangxun Zhang*, Brian Cai*, Boxuan Zhang, Chao Chen, <b>Ruixiang Tang</b>
