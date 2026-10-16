@@ -1,5 +1,8 @@
 # News, ported from the Google Sites original. `tag` renders as the bracketed [paper]/[award] label.
 - date: 10/2026
+  tag: award
+  text: Our proposal on online causal auditing and governance for multi-agent systems has been selected for an <b>Amazon Research Award</b> through the AWS Agentic AI call. Many thanks to Amazon for supporting this work!
+- date: 10/2026
   text: "I gave a talk at <b>Auburn University</b> on \"<b>When AI Fails: From Mechanistic Understanding to Proactive Auditing</b>.\" <a href=\"https://drive.google.com/file/d/1nqFPZU2NPc5_T7Bx3zmn79NwlGjUp47J/view?usp=sharing\">[Slides Link]</a> Many thanks to <a href=\"https://eng.auburn.edu/directory/jiw0014\"><b>Prof. Jiaqi Wang</b></a> for hosting."
 - date: 9/2026
   tag: paper
