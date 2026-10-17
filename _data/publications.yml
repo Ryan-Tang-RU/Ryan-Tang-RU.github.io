@@ -156,11 +156,11 @@
     venue: <i>International Conference on Computer Vision, <b>ICCV</b>, 2025</i>
   - title: "When Backdoors Speak: Understanding LLM Backdoor Attacks Through Model-Generated Explanations"
     url: "https://arxiv.org/abs/2411.12701"
-    authors: "Huaizhi Ge, <a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Li,+Y\">Yiming Li</a>, <a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Wang,+Q\">Qifan Wang</a>, <a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Zhang,+Y\">Yongfeng Zhang</a>, <b>Ruixiang Tang</b>"
+    authors: Huaizhi Ge, Yiming Li, Qifan Wang, Yongfeng Zhang, <b>Ruixiang Tang</b>
     venue: <i>Association for Computational Linguistics, <b>ACL Main</b>, 2025</i>
   - title: Disentangling Memory and Reasoning Ability in Large Language Models
     url: "https://arxiv.org/abs/2411.13504"
-    authors: "<a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Jin,+M\">Mingyu Jin</a>, <a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Luo,+W\">Weidi Luo</a>, <a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Cheng,+S\">Sitao Cheng</a>, <a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Wang,+X\">Xinyi Wang</a>, <a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Hua,+W\">Wenyue Hua</a>, <a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Tang,+R\"><b>Ruixiang Tang</b></a>, <a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Wang,+W+Y\">William Yang Wang</a>, <a href=\"https://arxiv.org/search/cs?searchtype=author&amp;query=Zhang,+Y\">Yongfeng Zhang</a>"
+    authors: Mingyu Jin, Weidi Luo, Sitao Cheng, Xinyi Wang, Wenyue Hua, <b>Ruixiang Tang</b>, William Yang Wang, Yongfeng Zhang
     venue: <i>Association for Computational Linguistics, <b>ACL Main</b>, 2025</i>
   - title: "SafePersuasion: A Dataset, Taxonomy, and Baselines for Analysis of Rational Persuasion and Manipulation"
     authors: Haein Kong, A M Muntasir Rahman, <b>Ruixiang Tang</b>, Vivek Singh
