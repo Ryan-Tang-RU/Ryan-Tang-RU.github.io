@@ -1,9 +1,6 @@
 # News, ported from the Google Sites original. `tag` renders as the bracketed [paper]/[award] label.
 - date: 10/2026
   text: "I gave a talk at <b>Auburn University</b> on \"<b>When AI Fails: From Mechanistic Understanding to Proactive Auditing</b>.\" <a href=\"https://drive.google.com/file/d/1nqFPZU2NPc5_T7Bx3zmn79NwlGjUp47J/view?usp=sharing\">[Slides Link]</a> Many thanks to <a href=\"https://eng.auburn.edu/directory/jiw0014\"><b>Prof. Jiaqi Wang</b></a> for hosting."
-- date: 10/2026
-  tag: award
-  text: We received the <a href="https://www.amazon.science/research-awards"><b>Amazon Research Award</b></a>, Spring 2026. Thanks, Amazon!
 - date: 9/2026
   tag: paper
   text: Two papers accepted to <b>NeurIPS 2026</b>. We introduced online auditing for early failure prediction in multi-agent systems, and studied token value inequality for efficient reasoning.
