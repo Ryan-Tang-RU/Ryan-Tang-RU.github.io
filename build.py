@@ -314,12 +314,9 @@ def build_home():
             svc += f'<p class="svc-label">{g["label"]}</p>'
         svc += '<ul class="gs">' + "".join(f"<li>{i}</li>" for i in g["items"]) + "</ul>"
 
-    # a closing invitation, skipped if site.yml does not carry one; several
-    # paragraphs if site.yml lists them
-    invite = site.get("joining") or []
-    if isinstance(invite, str):
-        invite = [invite]
-    joining = "".join(f'<p class="joining">{p}</p>' for p in invite)
+    # a closing invitation, skipped if site.yml does not carry one
+    joining = (f'<p class="joining">{site["joining"]}</p>'
+               if site.get("joining") else "")
 
     n_news = len(news)
     body = f"""<div class="ident">
