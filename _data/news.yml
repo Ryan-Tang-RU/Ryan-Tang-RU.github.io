@@ -1,5 +1,7 @@
 # News, ported from the Google Sites original. `tag` renders as the bracketed [paper]/[award] label.
 - date: 11/2026
+  text: I gave a talk at <b>SRI International</b> introducing our group's recent work. Many thanks to <b>Dr. Rakesh Kumar</b> for hosting.
+- date: 11/2026
   text: I am happy to serve as a <b>Tutorial Co-Chair</b> for the <a href="https://acm-bcb.org/"><b>ACM Conference on Bioinformatics, Computational Biology, and Health Informatics (ACM-BCB 2027)</b></a>, to be held August 10&ndash;13, 2027 at the University of Massachusetts Boston.
 - date: 10/2026
   text: "I gave a guest lecture in <b>COMP 5630/6630 Machine Learning</b> at <b>Auburn University</b> on \"<b>When AI Fails: From Mechanistic Understanding to Proactive Auditing</b>.\" <a href=\"https://drive.google.com/file/d/1nqFPZU2NPc5_T7Bx3zmn79NwlGjUp47J/view?usp=sharing\">[Slides Link]</a> Many thanks to <a href=\"https://eng.auburn.edu/directory/jiw0014\"><b>Prof. Jiaqi Wang</b></a> for hosting."
