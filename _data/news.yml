@@ -1,5 +1,7 @@
 # News, ported from the Google Sites original. `tag` renders as the bracketed [paper]/[award] label.
 - date: 11/2026
+  text: Glad to join the <b>PanKbase retreat</b> at the University of Michigan, where we presented our temporally evolving knowledge graph of the type 1 diabetes literature. Thanks to the organizers for a great meeting!
+- date: 11/2026
   tag: award
   text: Honored to be selected for the <b>IEEE BigData 2026 New Faculty Highlights</b> program. Many thanks to the organizers!
 - date: 11/2026
