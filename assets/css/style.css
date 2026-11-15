@@ -13,8 +13,7 @@
   --blue: #4a86e8;         /* publication section headings */
   --link: #1155cc;         /* news tags, plain links */
   --green: #188038;        /* blog tags */
-  --tag-paper: #1155cc;    /* [paper] on the news list, as on the original */
-  --tag-award: #b45f06;    /* [award] */
+  --corr: #b45f06;         /* the dagger after a corresponding author */
   --honor: #a5402f;        /* (Oral), (Best Student Paper) and other distinctions */
   --banner: #3c4043;
 
@@ -183,10 +182,34 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
 .newsband { display: grid; grid-template-columns: minmax(0, 822fr) minmax(0, 260fr); gap: 56px; }
 .news { list-style: square; margin: 0; padding-left: 20px; }
 .news li { margin: 0 0 4px; }
-.news .when { font-weight: 700; }
-.news .tag { margin-right: 4px; }
-.news .tag--paper { color: var(--tag-paper); }
-.news .tag--award { color: var(--tag-award); }
+.news .when {
+  font-weight: 700;
+  color: var(--honor);
+  margin-right: 7px;
+  font-variant-numeric: tabular-nums;   /* so the dates line up down the column */
+}
+
+/* Each kind of item carries a small pill, tinted so the column can be skimmed
+   by category. Backgrounds stay pale enough that the text, not the pill, reads
+   first; every pair clears 4.5:1 against its own background. */
+.news .tag {
+  display: inline-block;
+  margin-right: 7px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+.news .tag--paper    { color: #3a3a8c; background: #eceafa; }
+.news .tag--preprint { color: #8a5a16; background: #fbf1dd; }
+.news .tag--award    { color: #7a3b7e; background: #f5e9f6; }
+.news .tag--grant    { color: #a33246; background: #fae9eb; }
+.news .tag--talk     { color: #1a4a9c; background: #e8eefb; }
+.news .tag--service  { color: #2f6b35; background: #e7f2e7; }
+.news .tag--student  { color: #1f6b5c; background: #e3f1ed; }
 
 /* The news list is much longer than the press rail beside it. It used to be a
    nested scroll box, which traps the wheel: the page stops moving while the
@@ -257,7 +280,7 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 34px 0 0; }
 .pubs .t a { color: inherit; text-decoration: none; }
 .pubs .t a:hover { text-decoration: underline; }
 .pubs .a { display: block; }
-.pubs .corr { font-weight: 700; color: var(--tag-award); }
+.pubs .corr { font-weight: 700; color: var(--corr); }
 .pubs .v { display: block; font-style: italic; color: var(--ink-head); }
 /* a distinction noted after the venue, kept a muted brick red rather than a bright one */
 .pubs .v .honor { color: var(--honor); }

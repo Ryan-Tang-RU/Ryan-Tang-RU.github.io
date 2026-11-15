@@ -44,6 +44,12 @@ FONTS = (
 )
 
 
+def news_date(d):
+    """'9/2026' is written [2026/09], so the dates line up down the column."""
+    month, _, year = d.partition("/")
+    return f"{year}/{int(month):02d}" if month.isdigit() and year else d
+
+
 def image_size(path, default=(400, 500)):
     """Read width and height out of a JPEG or PNG header, so <img> can carry them."""
     try:
@@ -293,10 +299,11 @@ def build_home():
 
     items = ""
     for n in news:
-        tag = (f'<span class="tag tag--{n["tag"]}">[{n["tag"]}]</span>'
+        tag = (f'<span class="tag tag--{n["tag"]}">{n["tag"]}</span>'
                if n.get("tag") else "")
-        when = f'<span class="when">{n["date"]}:</span> ' if n.get("date") else ""
-        items += f"<li>{tag}{when}{n['text']}</li>"
+        when = (f'<span class="when">[{news_date(n["date"])}]</span>'
+                if n.get("date") else "")
+        items += f"<li>{when}{tag}{n['text']}</li>"
 
     press = ""
     for item in site["press"]:
