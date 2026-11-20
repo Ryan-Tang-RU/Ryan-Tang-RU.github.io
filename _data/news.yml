@@ -1,5 +1,8 @@
 # News, ported from the Google Sites original. `tag` renders as the bracketed [paper]/[award] label.
 - date: 11/2026
+  tag: talk
+  text: I gave a lightning talk at the <a href="https://sites.rutgers.edu/raise/fa_26_njbda/"><b>New Jersey Big Data Alliance Annual Research Forum</b></a> at Rutgers.
+- date: 11/2026
   tag: student
   text: Congratulations to <a href="https://itsqyh.github.io/"><b>Yihao Quan</b></a> on being accepted to the <b>SDM 2026 Doctoral Forum</b>, with an NSF travel award.
 - date: 11/2026
