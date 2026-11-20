@@ -1,6 +1,6 @@
 # News, ported from the Google Sites original. `tag` renders as the bracketed [paper]/[award] label.
 - date: 11/2026
-  tag: award
+  tag: talk
   text: I received a <b>Best Lightning Talk Award</b> at the <a href="https://sites.rutgers.edu/raise/fa_26_njbda/"><b>New Jersey Big Data Alliance Annual Research Forum</b></a> at Rutgers.
 - date: 11/2026
   tag: student
