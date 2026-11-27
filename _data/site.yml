@@ -72,8 +72,8 @@ research:
   body: Keeping autonomous and multiagent systems reliable through continuous auditing, early failure prediction, and corrective intervention.
 - title: Perception Reliability
   body: Making multimodal perception systems robust to uncertainty, distribution shift, and adversarial inputs.
-- title: AI for Biomedicine
-  body: Translating trustworthy learning into high-impact problems across biology and medicine with clinical and biological collaborators.
+- title: AI for Science
+  body: Translating trustworthy learning into high-impact scientific problems, working closely with collaborators across biology, medicine, and the natural sciences.
 services:
 - items:
   - "Tutorial Co-Chair: ACM Conference on Bioinformatics, Computational Biology, and Health Informatics (ACM-BCB), 2027"
