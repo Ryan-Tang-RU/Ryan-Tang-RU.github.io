@@ -23,3 +23,11 @@
   - Incentives
   url: ninetynine.html
   summary: A claim that keeps coming up on podcasts is that PhDs are useless, papers are useless, and ninety-nine percent of academia produces work nobody needs. The long tail it points at is real, but it is not a disease specific to research. Industry filters its failures out of sight while academia archives its own in public and forever. What deserves the criticism is not the ninety-nine percent itself, but an incentive system that rewards safe output and makes intellectual risk professionally irrational.
+- title: "Faster Results, Same Standards: What I Ask of Students in AI for Science"
+  date: November 27 2026
+  tags:
+  - Research Culture
+  - AI for Science
+  - Advising
+  url: standards.html
+  summary: AI has lowered the cost of producing a result by a large factor, but it has not lowered the bar for a good one. When results get cheap, judgment becomes the scarce part. This post sets out what the tools change and what they leave untouched, and the concrete things I ask of students in my group, from beating the simplest baseline to writing the claim before running the experiment.
